@@ -1,0 +1,58 @@
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  
+  lane :lint do
+    swiftlint(mode: :lint, strict: true)
+  end
+
+  lane :lint_autocorrect do
+    swiftlint(mode: :autocorrect)
+  end
+
+  lane :tests do
+    core_test
+    card_test
+    ui_unit_test
+    ui_test
+  end
+
+  lane :card_test do
+    run_tests(
+      workspace: "ryft-ios.xcodeproj/project.xcworkspace",
+      scheme: "RyftCard",
+      devices: ["iPhone 12"]
+    )
+  end
+
+  lane :core_test do
+    run_tests(
+      workspace: "ryft-ios.xcodeproj/project.xcworkspace",
+      scheme: "RyftCore",
+      devices: ["iPhone 12"]
+    )
+  end
+
+  lane :ui_unit_test do
+    run_tests(
+      workspace: "ryft-ios.xcodeproj/project.xcworkspace",
+      scheme: "RyftUI",
+      devices: ["iPhone 12"]
+    )
+  end
+
+  lane :ui_test do
+    run_tests(
+      workspace: "ryft-ios.xcodeproj/project.xcworkspace",
+      scheme: "RyftUITestApp",
+      devices: ["iPhone 12"],
+      derived_data_path: "scan_derived_data"
+    )
+  end
+
+  #todo: add lane to bump and tag new version
+
+end

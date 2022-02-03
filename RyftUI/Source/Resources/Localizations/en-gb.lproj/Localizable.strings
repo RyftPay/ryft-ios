@@ -1,0 +1,16 @@
+"card_drop_in_title" = "Credit / Debit Card";
+"card_number_placeholder" = "Card Number";
+"cvc_placeholder" = "CVC";
+"expiration_placeholder" = "MM/YY";
+"pay_now" = "Pay Now";
+"cancel_title" = "Cancel";
+"insufficient_funds" = "Your payment method does not have sufficient funds";
+"declined_do_not_honour" = "Your bank have declined this card";
+"invalid_card_number" = "Your card number is invalid";
+"restricted_card" = "Your card has been restricted";
+"security_violation" = "Security violation";
+"expired_card" = "Your card has expired";
+"gateway_reject" = "Your bank have declined this payment";
+"bad_track_data" = "Your CVC or card expiration is invalid";
+"3ds_authentication_failure" = "You failed to successfully authorize your payment method";
+"unknown" = "An unknown error occurred";
