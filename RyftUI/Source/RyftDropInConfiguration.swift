@@ -1,17 +1,22 @@
+import PassKit
+
 public struct RyftDropInConfiguration {
 
     public let clientSecret: String
     public let accountId: String?
     public let display: RyftDropInDisplayConfig?
+    public let applePay: RyftApplePayConfig?
 
     public init(
         clientSecret: String,
         accountId: String? = nil,
-        display: RyftDropInDisplayConfig? = nil
+        display: RyftDropInDisplayConfig? = nil,
+        applePay: RyftApplePayConfig? = nil
     ) {
         self.clientSecret = clientSecret
         self.accountId = accountId
         self.display = display
+        self.applePay = applePay
     }
 
     public struct RyftDropInDisplayConfig {

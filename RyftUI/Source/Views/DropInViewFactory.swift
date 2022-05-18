@@ -1,6 +1,17 @@
 import UIKit
+import PassKit
 
 final class DropInViewFactory {
+
+    static func createApplePayButton() -> PKPaymentButton {
+        let button = PKPaymentButton(
+            paymentButtonType: .plain,
+            paymentButtonStyle: .backwardsCompatible
+        )
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.accessibilityIdentifier = "RyftApplePayButton"
+        return button
+    }
 
     static func createContainerView(theme: RyftUITheme) -> UIView {
         let view = UIView()
