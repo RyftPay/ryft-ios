@@ -81,10 +81,9 @@ public final class RyftDropInPaymentViewController: UIViewController {
     }()
 
     private lazy var cancelButton: UIButton = {
-        return DropInViewFactory.createCancelButton(
-            theme: theme,
-            buttonTap: #selector(cancelClicked)
-        )
+        let button = DropInViewFactory.createCancelButton(theme: theme)
+        button.addTarget(self, action: #selector(cancelClicked), for: .touchUpInside)
+        return button
     }()
 
     private lazy var buttonStackView: UIStackView = {
