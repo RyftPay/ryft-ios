@@ -109,6 +109,13 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         XCTAssertTrue(app.alerts.element.waitForExistence(timeout: 5))
     }
 
+    func test_dropIn_isDismissed_afterClickingCancel() {
+        openDropIn()
+        let cancelButton = app.buttons["RyftButton-Cancel"]
+        cancelButton.tap()
+        XCTAssertFalse(app.buttons["RyftButton-Cancel"].exists)
+    }
+
     private func openDropIn() {
         app.buttons["ShowDropInButton"].tap()
     }

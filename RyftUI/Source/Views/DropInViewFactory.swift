@@ -42,10 +42,7 @@ final class DropInViewFactory {
         return button
     }
 
-    static func createCancelButton(
-        theme: RyftUITheme,
-        buttonTap: Selector
-    ) -> UIButton {
+    static func createCancelButton(theme: RyftUITheme) -> UIButton {
         let button = UIButton()
         button.setTitle(
             NSLocalizedStringUtility.cancelTitle,
@@ -58,7 +55,6 @@ final class DropInViewFactory {
         button.layer.borderColor = theme.cancelButtonBorderColor.cgColor
         button.layer.cornerRadius = 4
         button.clipsToBounds = true
-        button.addTarget(self, action: buttonTap, for: .touchUpInside)
         button.accessibilityIdentifier = "RyftButton-Cancel"
         return button
     }
