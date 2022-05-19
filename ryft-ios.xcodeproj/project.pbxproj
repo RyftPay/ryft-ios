@@ -59,13 +59,6 @@
 		D868930227A2BE76003DBFAA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D868930127A2BE76003DBFAA /* Images.xcassets */; };
 		D868930927A2BF5C003DBFAA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D868930727A2BF5C003DBFAA /* Localizable.strings */; };
 		D868930D27A2BF7B003DBFAA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D868930B27A2BF7B003DBFAA /* Localizable.strings */; };
-		D8AB657A2833D4EF009EF72C /* Money.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB65792833D4EF009EF72C /* Money.swift */; };
-		D8AB657C2833D503009EF72C /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB657B2833D503009EF72C /* Currency.swift */; };
-		D8AB657F2833D54C009EF72C /* PaymentSessionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB657E2833D54B009EF72C /* PaymentSessionTest.swift */; };
-		D8AB65812833D563009EF72C /* CurrencyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB65802833D563009EF72C /* CurrencyTest.swift */; };
-		D8AB65832833D584009EF72C /* MoneyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB65822833D584009EF72C /* MoneyTest.swift */; };
-		D8AB65862833F976009EF72C /* CurrencyUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB65852833F976009EF72C /* CurrencyUtility.swift */; };
-		D8AB65892833FD94009EF72C /* CurrencyUtilityTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB65882833FD94009EF72C /* CurrencyUtilityTest.swift */; };
 		D8AB658C2834DB1F009EF72C /* RyftApplePayComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB658B2834DB1F009EF72C /* RyftApplePayComponent.swift */; };
 		D8AB658E2834DBE8009EF72C /* RyftApplePayConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB658D2834DBE8009EF72C /* RyftApplePayConfig.swift */; };
 		D8AB65902834DC2A009EF72C /* RyftPaymentState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB658F2834DC2A009EF72C /* RyftPaymentState.swift */; };
@@ -238,13 +231,6 @@
 		D868930127A2BE76003DBFAA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D868930827A2BF5C003DBFAA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Localizable.strings; sourceTree = "<group>"; };
 		D868930C27A2BF7B003DBFAA /* en-gb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-gb"; path = Localizable.strings; sourceTree = "<group>"; };
-		D8AB65792833D4EF009EF72C /* Money.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Money.swift; sourceTree = "<group>"; };
-		D8AB657B2833D503009EF72C /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
-		D8AB657E2833D54B009EF72C /* PaymentSessionTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentSessionTest.swift; sourceTree = "<group>"; };
-		D8AB65802833D563009EF72C /* CurrencyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyTest.swift; sourceTree = "<group>"; };
-		D8AB65822833D584009EF72C /* MoneyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyTest.swift; sourceTree = "<group>"; };
-		D8AB65852833F976009EF72C /* CurrencyUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyUtility.swift; sourceTree = "<group>"; };
-		D8AB65882833FD94009EF72C /* CurrencyUtilityTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyUtilityTest.swift; sourceTree = "<group>"; };
 		D8AB658B2834DB1F009EF72C /* RyftApplePayComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftApplePayComponent.swift; sourceTree = "<group>"; };
 		D8AB658D2834DBE8009EF72C /* RyftApplePayConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftApplePayConfig.swift; sourceTree = "<group>"; };
 		D8AB658F2834DC2A009EF72C /* RyftPaymentState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftPaymentState.swift; sourceTree = "<group>"; };
@@ -453,7 +439,6 @@
 		D868927F27A2A4F2003DBFAA /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				D8AB65842833F965009EF72C /* Utility */,
 				D868929927A2A8D4003DBFAA /* Api */,
 				D868928E27A2A836003DBFAA /* Models */,
 				D868928C27A2A82E003DBFAA /* Constants.swift */,
@@ -479,8 +464,6 @@
 				D868929127A2A86E003DBFAA /* PaymentSessionError.swift */,
 				D868929527A2A894003DBFAA /* PaymentSessionRequiredAction.swift */,
 				D868929727A2A8AA003DBFAA /* PaymentSessionStatus.swift */,
-				D8AB65792833D4EF009EF72C /* Money.swift */,
-				D8AB657B2833D503009EF72C /* Currency.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -604,32 +587,6 @@
 			path = "en-gb.lproj";
 			sourceTree = "<group>";
 		};
-		D8AB657D2833D524009EF72C /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				D8AB657E2833D54B009EF72C /* PaymentSessionTest.swift */,
-				D8AB65802833D563009EF72C /* CurrencyTest.swift */,
-				D8AB65822833D584009EF72C /* MoneyTest.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		D8AB65842833F965009EF72C /* Utility */ = {
-			isa = PBXGroup;
-			children = (
-				D8AB65852833F976009EF72C /* CurrencyUtility.swift */,
-			);
-			path = Utility;
-			sourceTree = "<group>";
-		};
-		D8AB65872833FD85009EF72C /* Utility */ = {
-			isa = PBXGroup;
-			children = (
-				D8AB65882833FD94009EF72C /* CurrencyUtilityTest.swift */,
-			);
-			path = Utility;
-			sourceTree = "<group>";
-		};
 		D8AB658A2834DB09009EF72C /* Component */ = {
 			isa = PBXGroup;
 			children = (
@@ -663,8 +620,6 @@
 		D8F1637527A2E43F0076CC02 /* RyftCoreTests */ = {
 			isa = PBXGroup;
 			children = (
-				D8AB65872833FD85009EF72C /* Utility */,
-				D8AB657D2833D524009EF72C /* Models */,
 				D8F1638127A2E6590076CC02 /* Api */,
 				D8F1637827A2E43F0076CC02 /* Info.plist */,
 				D8F1637F27A2E63A0076CC02 /* TestFixtures.swift */,
@@ -1077,11 +1032,8 @@
 				D868929827A2A8AA003DBFAA /* PaymentSessionStatus.swift in Sources */,
 				D868928D27A2A82E003DBFAA /* Constants.swift in Sources */,
 				D86892A327A2A938003DBFAA /* HttpError.swift in Sources */,
-				D8AB657C2833D503009EF72C /* Currency.swift in Sources */,
-				D8AB65862833F976009EF72C /* CurrencyUtility.swift in Sources */,
 				D868929F27A2A911003DBFAA /* Endpoint.swift in Sources */,
 				D86892A927A2A973003DBFAA /* RyftApiError.swift in Sources */,
-				D8AB657A2833D4EF009EF72C /* Money.swift in Sources */,
 				D86892A527A2A94A003DBFAA /* HttpMethod.swift in Sources */,
 				D868929D27A2A8FE003DBFAA /* DefaultRyftApiClient.swift in Sources */,
 				D86892A127A2A924003DBFAA /* HttpClient.swift in Sources */,
@@ -1146,13 +1098,9 @@
 			files = (
 				D8F1638727A2E6B50076CC02 /* MockHttpClient.swift in Sources */,
 				D8F1638327A2E6700076CC02 /* AttemptPaymentRequestTest.swift in Sources */,
-				D8AB65832833D584009EF72C /* MoneyTest.swift in Sources */,
 				D8F1638927A2E7040076CC02 /* EndpointTest.swift in Sources */,
-				D8AB65812833D563009EF72C /* CurrencyTest.swift in Sources */,
-				D8AB657F2833D54C009EF72C /* PaymentSessionTest.swift in Sources */,
 				D8F1638027A2E63A0076CC02 /* TestFixtures.swift in Sources */,
 				D8F1638527A2E6970076CC02 /* DefaultRyftApiClientTests.swift in Sources */,
-				D8AB65892833FD94009EF72C /* CurrencyUtilityTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
