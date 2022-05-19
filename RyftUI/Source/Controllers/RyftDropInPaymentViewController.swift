@@ -281,7 +281,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
         NSLayoutConstraint.activate([
             containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             containerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            applePayButton.heightAnchor.constraint(equalToConstant: 42),
+            applePayButton.heightAnchor.constraint(equalToConstant: 44),
             applePayButton.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 15),
             applePayButton.leadingAnchor.constraint(
                 equalTo: containerView.leadingAnchor,

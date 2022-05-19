@@ -1,4 +1,5 @@
 "card_drop_in_title" = "Credit / Debit Card";
+"card_drop_in_or" = "or";
 "card_number_placeholder" = "Card Number";
 "cvc_placeholder" = "CVC";
 "expiration_placeholder" = "MM/YY";

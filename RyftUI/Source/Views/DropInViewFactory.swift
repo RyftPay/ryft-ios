@@ -30,6 +30,15 @@ final class DropInViewFactory {
         return label
     }
 
+    static func createOrLabel() -> UILabel {
+        let label = UILabel()
+        label.text = NSLocalizedStringUtility.or
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 14)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }
+
     static func createPayButton(
         customTitle: String?,
         buttonTap: @escaping () -> Void

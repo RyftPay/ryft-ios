@@ -4,6 +4,7 @@ import Foundation
 final class NSLocalizedStringUtility {
 
     static let cardDropInTitle = getString(forKey: "card_drop_in_title")
+    static let or = getString(forKey: "card_drop_in_or")
     static let cardNumberPlaceholder = getString(forKey: "card_number_placeholder")
     static let cvcPlaceholder = getString(forKey: "cvc_placeholder")
     static let expirationPlaceholder = getString(forKey: "expiration_placeholder")

@@ -1,3 +1,5 @@
+import Foundation
+
 public final class CurrencyUtility {
 
     public static func minorUnits(from alphabeticCurrencyCode: String) -> Int {
