@@ -12,7 +12,9 @@ final class RyftSeparatorView: UIView {
     }()
 
     private lazy var middleLabel: UILabel = {
-        return DropInViewFactory.createOrLabel()
+        let label = DropInViewFactory.createOrLabel()
+        label.textColor = theme.separatorMiddleLabelColor
+        return label
     }()
 
     private lazy var viewRight: UIView = {
@@ -22,29 +24,35 @@ final class RyftSeparatorView: UIView {
         return view
     }()
 
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupViews()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupViews()
+    }
+
+    private func setupViews() {
+        translatesAutoresizingMaskIntoConstraints = false
+        addSubview(viewLeft)
+        addSubview(middleLabel)
+        addSubview(viewRight)
+        setupConstraints()
+        accessibilityIdentifier = "RyftSeparatorView"
+    }
+
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-//            cardIconImage.heightAnchor.constraint(equalToConstant: 17),
-//            cardIconImage.widthAnchor.constraint(equalToConstant: 25),
-//            cardNumberInput.leadingAnchor.constraint(
-//                equalTo: leadingAnchor,
-//                constant: 15
-//            ),
-//            cardNumberInput.trailingAnchor.constraint(
-//                equalTo: trailingAnchor,
-//                constant: -15
-//            ),
-//            cardNumberInput.topAnchor.constraint(
-//                equalTo: topAnchor,
-//                constant: 5
-//            ),
-//            cardNumberInput.bottomAnchor.constraint(
-//                equalTo: bottomAnchor,
-//                constant: -5
-//            ),
-//            cardNumberInput.centerYAnchor.constraint(
-//                equalTo: centerYAnchor
-//            )
+            viewLeft.heightAnchor.constraint(equalToConstant: 1),
+            viewRight.heightAnchor.constraint(equalToConstant: 1),
+            viewLeft.leadingAnchor.constraint(equalTo: leadingAnchor),
+            viewRight.trailingAnchor.constraint(equalTo: trailingAnchor),
+            middleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            middleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            middleLabel.leadingAnchor.constraint(equalTo: viewLeft.trailingAnchor, constant: 12),
+            middleLabel.trailingAnchor.constraint(equalTo: viewRight.leadingAnchor, constant: -12)
         ])
     }
 }

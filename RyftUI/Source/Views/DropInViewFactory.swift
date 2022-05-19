@@ -34,7 +34,7 @@ final class DropInViewFactory {
         let label = UILabel()
         label.text = NSLocalizedStringUtility.or
         label.textAlignment = .center
-        label.font = .systemFont(ofSize: 14)
+        label.font = .italicSystemFont(ofSize: 14)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }

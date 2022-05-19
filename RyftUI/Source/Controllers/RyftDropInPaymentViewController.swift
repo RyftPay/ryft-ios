@@ -39,8 +39,8 @@ public final class RyftDropInPaymentViewController: UIViewController {
     }()
 
     private lazy var titleSeparatorView: UIView = {
-        let view = UIView()
-        view.backgroundColor = theme.separatorLineColor
+        let view = RyftSeparatorView()
+        view.theme = theme
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()

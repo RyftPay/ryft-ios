@@ -17,6 +17,7 @@ public final class RyftUITheme {
     public var emptyInputBackgroundColor: UIColor = .emptyInputBackgroundColor
     public var nonEmptyInputBackgroundColor: UIColor = .nonEmptyInputBackgroundColor
     public var separatorLineColor: UIColor = .separatorLineColor
+    public var separatorMiddleLabelColor: UIColor = .separatorMiddleLabelColor
     public var cancelButtonBackgroundColor: UIColor = .cancelButtonBackgroundColor
     public var cancelButtonBorderColor: UIColor = .cancelButtonBorderColor
     public var cancelButtonTitleColor: UIColor = .cancelButtonTitleColor
