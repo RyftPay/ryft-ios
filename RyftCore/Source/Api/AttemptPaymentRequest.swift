@@ -2,6 +2,8 @@ public struct AttemptPaymentRequest {
 
     let clientSecret: String
     let cardDetails: PaymentRequestCardDetails?
+    let walletDetails: PaymentRequestWalletDetails?
+    let billingAddress: BillingAddress?
 
     public static func fromCard(
         clientSecret: String,
@@ -17,7 +19,25 @@ public struct AttemptPaymentRequest {
                 expiryMonth: expiryMonth,
                 expiryYear: expiryYear,
                 cvc: cvc
-            )
+            ),
+            walletDetails: nil,
+            billingAddress: nil
+        )
+    }
+
+    public static func fromApplePay(
+        clientSecret: String,
+        applePayToken: String,
+        billingAddress: BillingAddress?
+    ) -> AttemptPaymentRequest {
+        AttemptPaymentRequest(
+            clientSecret: clientSecret,
+            cardDetails: nil,
+            walletDetails: PaymentRequestWalletDetails(
+                type: "ApplePay",
+                applePayToken: applePayToken
+            ),
+            billingAddress: billingAddress
         )
     }
 
@@ -29,7 +49,7 @@ public struct AttemptPaymentRequest {
         let cvc: String
 
         func toJson() -> [String: Any] {
-            return [
+            [
                 "number": number,
                 "expiryMonth": expiryMonth,
                 "expiryYear": expiryYear,
@@ -52,12 +72,41 @@ public struct AttemptPaymentRequest {
         }
     }
 
+    public struct PaymentRequestWalletDetails: Equatable, Hashable {
+
+        let type: String
+        let applePayToken: String
+
+        func toJson() -> [String: Any] {
+            [
+                "type": type,
+                "applePayToken": applePayToken
+            ]
+        }
+
+        public func hash(into hasher: inout Hasher) {
+            hasher.combine(type)
+            hasher.combine(applePayToken)
+        }
+
+        public static func == (lhs: PaymentRequestWalletDetails, rhs: PaymentRequestWalletDetails) -> Bool {
+            return lhs.type == rhs.type
+                && lhs.applePayToken == rhs.applePayToken
+        }
+    }
+
     func toJson() -> [String: Any] {
         var json: [String: Any] = [
             "clientSecret": clientSecret
         ]
         if let card = cardDetails {
             json["cardDetails"] = card.toJson() as Any
+        }
+        if let walletDetails = walletDetails {
+            json["walletDetails"] = walletDetails.toJson() as Any
+        }
+        if let billingAddress = billingAddress {
+            json["billingAddress"] = billingAddress.toJson() as Any
         }
         return json
     }

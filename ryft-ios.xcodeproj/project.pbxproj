@@ -59,6 +59,15 @@
 		D868930227A2BE76003DBFAA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D868930127A2BE76003DBFAA /* Images.xcassets */; };
 		D868930927A2BF5C003DBFAA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D868930727A2BF5C003DBFAA /* Localizable.strings */; };
 		D868930D27A2BF7B003DBFAA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D868930B27A2BF7B003DBFAA /* Localizable.strings */; };
+		D89384992836759500F67926 /* PaymentSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89384982836759500F67926 /* PaymentSessionTests.swift */; };
+		D893849B283677E400F67926 /* BillingAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = D893849A283677E400F67926 /* BillingAddress.swift */; };
+		D893849D283679B200F67926 /* BillingAddressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D893849C283679B200F67926 /* BillingAddressTests.swift */; };
+		D8AB659C28367393009EF72C /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB659B28367393009EF72C /* Currency.swift */; };
+		D8AB659F283673BC009EF72C /* CurrencyUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB659E283673BC009EF72C /* CurrencyUtility.swift */; };
+		D8AB65A228367403009EF72C /* CurrencyUtilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB65A128367403009EF72C /* CurrencyUtilityTests.swift */; };
+		D8AB65A828367466009EF72C /* CurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB65A728367466009EF72C /* CurrencyTests.swift */; };
+		D8AB65AA283674E9009EF72C /* MoneyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB65A9283674E9009EF72C /* MoneyTests.swift */; };
+		D8AB65AC283674FE009EF72C /* Money.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB65AB283674FE009EF72C /* Money.swift */; };
 		D8F1635D27A2DB460076CC02 /* RyftCard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D868924C27A2A3E8003DBFAA /* RyftCard.framework */; };
 		D8F1636427A2DC030076CC02 /* TestFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F1636327A2DC030076CC02 /* TestFixtures.swift */; };
 		D8F1636627A2DD3F0076CC02 /* RyftCardFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F1636527A2DD3F0076CC02 /* RyftCardFormatterTests.swift */; };
@@ -224,6 +233,15 @@
 		D868930127A2BE76003DBFAA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D868930827A2BF5C003DBFAA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Localizable.strings; sourceTree = "<group>"; };
 		D868930C27A2BF7B003DBFAA /* en-gb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-gb"; path = Localizable.strings; sourceTree = "<group>"; };
+		D89384982836759500F67926 /* PaymentSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentSessionTests.swift; sourceTree = "<group>"; };
+		D893849A283677E400F67926 /* BillingAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingAddress.swift; sourceTree = "<group>"; };
+		D893849C283679B200F67926 /* BillingAddressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingAddressTests.swift; sourceTree = "<group>"; };
+		D8AB659B28367393009EF72C /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
+		D8AB659E283673BC009EF72C /* CurrencyUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyUtility.swift; sourceTree = "<group>"; };
+		D8AB65A128367403009EF72C /* CurrencyUtilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyUtilityTests.swift; sourceTree = "<group>"; };
+		D8AB65A728367466009EF72C /* CurrencyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyTests.swift; sourceTree = "<group>"; };
+		D8AB65A9283674E9009EF72C /* MoneyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyTests.swift; sourceTree = "<group>"; };
+		D8AB65AB283674FE009EF72C /* Money.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Money.swift; sourceTree = "<group>"; };
 		D8F1635827A2DB460076CC02 /* RyftCardTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RyftCardTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8F1635C27A2DB460076CC02 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D8F1636327A2DC030076CC02 /* TestFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFixtures.swift; sourceTree = "<group>"; };
@@ -422,6 +440,7 @@
 		D868927F27A2A4F2003DBFAA /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				D8AB659D283673AC009EF72C /* Utility */,
 				D868929927A2A8D4003DBFAA /* Api */,
 				D868928E27A2A836003DBFAA /* Models */,
 				D868928C27A2A82E003DBFAA /* Constants.swift */,
@@ -446,6 +465,8 @@
 				D868929127A2A86E003DBFAA /* PaymentSessionError.swift */,
 				D868929527A2A894003DBFAA /* PaymentSessionRequiredAction.swift */,
 				D868929727A2A8AA003DBFAA /* PaymentSessionStatus.swift */,
+				D8AB659B28367393009EF72C /* Currency.swift */,
+				D8AB65AB283674FE009EF72C /* Money.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -462,6 +483,7 @@
 				D86892A627A2A961003DBFAA /* RyftApiClient.swift */,
 				D86892A827A2A973003DBFAA /* RyftApiError.swift */,
 				D86892AA27A2A98C003DBFAA /* RyftHttpClient.swift */,
+				D893849A283677E400F67926 /* BillingAddress.swift */,
 			);
 			path = Api;
 			sourceTree = "<group>";
@@ -566,6 +588,32 @@
 			path = "en-gb.lproj";
 			sourceTree = "<group>";
 		};
+		D8AB659D283673AC009EF72C /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				D8AB659E283673BC009EF72C /* CurrencyUtility.swift */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
+		D8AB65A0283673EC009EF72C /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				D8AB65A128367403009EF72C /* CurrencyUtilityTests.swift */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
+		D8AB65A62836744E009EF72C /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				D8AB65A728367466009EF72C /* CurrencyTests.swift */,
+				D8AB65A9283674E9009EF72C /* MoneyTests.swift */,
+				D89384982836759500F67926 /* PaymentSessionTests.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		D8F1635927A2DB460076CC02 /* RyftCardTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -591,6 +639,8 @@
 		D8F1637527A2E43F0076CC02 /* RyftCoreTests */ = {
 			isa = PBXGroup;
 			children = (
+				D8AB65A62836744E009EF72C /* Models */,
+				D8AB65A0283673EC009EF72C /* Utility */,
 				D8F1638127A2E6590076CC02 /* Api */,
 				D8F1637827A2E43F0076CC02 /* Info.plist */,
 				D8F1637F27A2E63A0076CC02 /* TestFixtures.swift */,
@@ -605,6 +655,7 @@
 				D8F1638427A2E6970076CC02 /* DefaultRyftApiClientTests.swift */,
 				D8F1638627A2E6B50076CC02 /* MockHttpClient.swift */,
 				D8F1638827A2E7040076CC02 /* EndpointTest.swift */,
+				D893849C283679B200F67926 /* BillingAddressTests.swift */,
 			);
 			path = Api;
 			sourceTree = "<group>";
@@ -1005,14 +1056,18 @@
 				D86892A327A2A938003DBFAA /* HttpError.swift in Sources */,
 				D868929F27A2A911003DBFAA /* Endpoint.swift in Sources */,
 				D86892A927A2A973003DBFAA /* RyftApiError.swift in Sources */,
+				D8AB659C28367393009EF72C /* Currency.swift in Sources */,
+				D8AB65AC283674FE009EF72C /* Money.swift in Sources */,
 				D86892A527A2A94A003DBFAA /* HttpMethod.swift in Sources */,
 				D868929D27A2A8FE003DBFAA /* DefaultRyftApiClient.swift in Sources */,
 				D86892A127A2A924003DBFAA /* HttpClient.swift in Sources */,
 				D868929B27A2A8E4003DBFAA /* AttemptPaymentRequest.swift in Sources */,
+				D893849B283677E400F67926 /* BillingAddress.swift in Sources */,
 				D868929227A2A86E003DBFAA /* PaymentSessionError.swift in Sources */,
 				D86892AB27A2A98C003DBFAA /* RyftHttpClient.swift in Sources */,
 				D868929627A2A894003DBFAA /* PaymentSessionRequiredAction.swift in Sources */,
 				D868929027A2A851003DBFAA /* PaymentSession.swift in Sources */,
+				D8AB659F283673BC009EF72C /* CurrencyUtility.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1062,9 +1117,14 @@
 			files = (
 				D8F1638727A2E6B50076CC02 /* MockHttpClient.swift in Sources */,
 				D8F1638327A2E6700076CC02 /* AttemptPaymentRequestTest.swift in Sources */,
+				D893849D283679B200F67926 /* BillingAddressTests.swift in Sources */,
 				D8F1638927A2E7040076CC02 /* EndpointTest.swift in Sources */,
 				D8F1638027A2E63A0076CC02 /* TestFixtures.swift in Sources */,
+				D8AB65A828367466009EF72C /* CurrencyTests.swift in Sources */,
 				D8F1638527A2E6970076CC02 /* DefaultRyftApiClientTests.swift in Sources */,
+				D8AB65AA283674E9009EF72C /* MoneyTests.swift in Sources */,
+				D89384992836759500F67926 /* PaymentSessionTests.swift in Sources */,
+				D8AB65A228367403009EF72C /* CurrencyUtilityTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
