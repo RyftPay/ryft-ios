@@ -26,7 +26,8 @@ class AttemptPaymentRequestTest: XCTestCase {
     func test_fromApplePay_shouldReturnExpectedValue() {
         let value = AttemptPaymentRequest.fromApplePay(
             clientSecret: "secret",
-            applePayToken: "base64-encoded-apple-pay-token"
+            applePayToken: "base64-encoded-apple-pay-token",
+            billingAddress: nil
         )
         let expectedWalletDetails = AttemptPaymentRequest.PaymentRequestWalletDetails(
             type: "ApplePay",
@@ -75,7 +76,8 @@ class AttemptPaymentRequestTest: XCTestCase {
     func test_toJson_shouldReturnExpectedValue_forApplePayPayment() {
         let result = AttemptPaymentRequest.fromApplePay(
             clientSecret: "secret",
-            applePayToken: "base64-encoded-apple-pay-token"
+            applePayToken: "base64-encoded-apple-pay-token",
+            billingAddress: nil
         ).toJson()
         XCTAssertNotNil(result["clientSecret"])
         XCTAssertNotNil(result["walletDetails"])
@@ -98,5 +100,28 @@ class AttemptPaymentRequestTest: XCTestCase {
         XCTAssertEqual("secret", clientSecret)
         XCTAssertEqual("ApplePay", walletType)
         XCTAssertEqual("base64-encoded-apple-pay-token", applePayToken)
+    }
+
+    func test_toJson_shouldIncludeBillingAddress_whenItIsPresent() {
+        let billingAddress = TestFixtures.billingAddress()
+        let result = AttemptPaymentRequest.fromApplePay(
+            clientSecret: "secret",
+            applePayToken: "base64-encoded-apple-pay-token",
+            billingAddress: billingAddress
+        ).toJson()
+        XCTAssertNotNil(result["billingAddress"])
+        guard let billingAddressJson = result["billingAddress"] as? [String: Any] else {
+            XCTFail("serialized JSON billingAddress field was not expected type")
+            return
+        }
+        guard
+            let country = billingAddressJson["country"] as? String,
+            let postalCode = billingAddressJson["postalCode"] as? String
+        else {
+            XCTFail("serialized JSON billingAddress did not contain the expected fields")
+            return
+        }
+        XCTAssertEqual(billingAddress.country, country)
+        XCTAssertEqual(billingAddress.postalCode, postalCode)
     }
 }

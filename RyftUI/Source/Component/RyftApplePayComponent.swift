@@ -89,7 +89,8 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
         apiClient.attemptPayment(
             request: AttemptPaymentRequest.fromApplePay(
                 clientSecret: clientSecret,
-                applePayToken: applePayToken
+                applePayToken: applePayToken,
+                billingAddress: nil
             ),
             accountId: accountId
         ) { result in

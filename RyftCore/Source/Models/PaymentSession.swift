@@ -10,7 +10,7 @@ public struct PaymentSession: Codable {
     public let createdTimestamp: Int64
 
     public func amountAsMoney() -> Money {
-        Money.from(amount, currencyCode: currency)
+        Money(currencyCode: currency, amount: amount)
     }
 
     enum CodingKeys: String, CodingKey {
