@@ -2,7 +2,13 @@ import UIKit
 
 final class RyftSeparatorView: UIView {
 
+    enum SeperatorStyle {
+        case singleLine
+        case wordSeparated
+    }
+
     var theme: RyftUITheme = .defaultTheme
+    var style: SeperatorStyle = .singleLine
 
     private lazy var viewLeft: UIView = {
         let view = UIView()
@@ -14,6 +20,7 @@ final class RyftSeparatorView: UIView {
     private lazy var middleLabel: UILabel = {
         let label = DropInViewFactory.createOrLabel()
         label.textColor = theme.separatorMiddleLabelColor
+        label.accessibilityIdentifier = "RyftSeparatorMiddleLabel"
         return label
     }()
 
@@ -24,35 +31,49 @@ final class RyftSeparatorView: UIView {
         return view
     }()
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupViews()
+    init(style: SeperatorStyle) {
+        super.init(frame: .zero)
+        setupViews(style)
+        setupConstraints(style)
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupViews()
+        fatalError("init(coder:) has not been implemented")
     }
 
-    private func setupViews() {
+    private func setupViews(_ style: SeperatorStyle) {
         translatesAutoresizingMaskIntoConstraints = false
         addSubview(viewLeft)
-        addSubview(middleLabel)
-        addSubview(viewRight)
-        setupConstraints()
+        if style == .wordSeparated {
+            addSubview(middleLabel)
+            addSubview(viewRight)
+        }
+        setupConstraints(style)
         accessibilityIdentifier = "RyftSeparatorView"
     }
 
-    private func setupConstraints() {
-        NSLayoutConstraint.activate([
-            viewLeft.heightAnchor.constraint(equalToConstant: 1),
-            viewRight.heightAnchor.constraint(equalToConstant: 1),
-            viewLeft.leadingAnchor.constraint(equalTo: leadingAnchor),
-            viewRight.trailingAnchor.constraint(equalTo: trailingAnchor),
-            middleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            middleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-            middleLabel.leadingAnchor.constraint(equalTo: viewLeft.trailingAnchor, constant: 12),
-            middleLabel.trailingAnchor.constraint(equalTo: viewRight.leadingAnchor, constant: -12)
-        ])
+    private func setupConstraints(_ style: SeperatorStyle) {
+        var constraints: [NSLayoutConstraint] = []
+        switch style {
+        case .singleLine:
+            constraints = [
+                viewLeft.heightAnchor.constraint(equalToConstant: 1),
+                viewLeft.leadingAnchor.constraint(equalTo: leadingAnchor),
+                viewLeft.trailingAnchor.constraint(equalTo: trailingAnchor)
+            ]
+        case .wordSeparated:
+            constraints = [
+                viewLeft.heightAnchor.constraint(equalToConstant: 1),
+                viewRight.heightAnchor.constraint(equalToConstant: 1),
+                viewLeft.leadingAnchor.constraint(equalTo: leadingAnchor),
+                viewRight.trailingAnchor.constraint(equalTo: trailingAnchor),
+                middleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+                middleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+                middleLabel.leadingAnchor.constraint(equalTo: viewLeft.trailingAnchor, constant: 12),
+                middleLabel.trailingAnchor.constraint(equalTo: viewRight.leadingAnchor, constant: -12)
+            ]
+        }
+        NSLayoutConstraint.activate(constraints)
     }
 }

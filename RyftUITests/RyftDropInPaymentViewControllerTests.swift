@@ -11,6 +11,20 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         app.launch()
     }
 
+    func test_dropIn_hasExpectedElementsAtTop_whenApplePayIsSupported() {
+        openDropInWithApplePay()
+        XCTAssertTrue(app.buttons["RyftApplePayButton"].exists)
+        XCTAssertFalse(app.staticTexts["RyftTitleLabel"].exists)
+        XCTAssertTrue(app.staticTexts["RyftSeparatorMiddleLabel"].exists)
+    }
+
+    func test_dropIn_hasExpectedElementsAtTop_whenApplePayIsNotSupported() {
+        openDropIn()
+        XCTAssertFalse(app.buttons["RyftApplePayButton"].exists)
+        XCTAssertTrue(app.staticTexts["RyftTitleLabel"].exists)
+        XCTAssertFalse(app.staticTexts["RyftSeparatorMiddleLabel"].exists)
+    }
+
     func test_dropIn_hasExpectedInputFields() throws {
         openDropIn()
         let cardInputField = app.otherElements["RyftCardNumberInputField"]
@@ -118,6 +132,10 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
 
     private func openDropIn() {
         app.buttons["ShowDropInButton"].tap()
+    }
+
+    private func openDropInWithApplePay() {
+        app.buttons["ShowDropInButtonWithApplePay"].tap()
     }
 
     private func typeCardDetails(

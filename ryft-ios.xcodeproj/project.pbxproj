@@ -72,6 +72,7 @@
 		D8AB65942834DF02009EF72C /* PaymentSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB65932834DF02009EF72C /* PaymentSession+Extension.swift */; };
 		D8AB65962834E006009EF72C /* PKPaymentStyle+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB65952834E006009EF72C /* PKPaymentStyle+Extension.swift */; };
 		D8AB6598283641A5009EF72C /* RyftSeparatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB6597283641A5009EF72C /* RyftSeparatorView.swift */; };
+		D8AB659A2836515D009EF72C /* RyftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB65992836515D009EF72C /* RyftUI.swift */; };
 		D8F1635D27A2DB460076CC02 /* RyftCard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D868924C27A2A3E8003DBFAA /* RyftCard.framework */; };
 		D8F1636427A2DC030076CC02 /* TestFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F1636327A2DC030076CC02 /* TestFixtures.swift */; };
 		D8F1636627A2DD3F0076CC02 /* RyftCardFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F1636527A2DD3F0076CC02 /* RyftCardFormatterTests.swift */; };
@@ -250,6 +251,7 @@
 		D8AB65932834DF02009EF72C /* PaymentSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PaymentSession+Extension.swift"; sourceTree = "<group>"; };
 		D8AB65952834E006009EF72C /* PKPaymentStyle+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PKPaymentStyle+Extension.swift"; sourceTree = "<group>"; };
 		D8AB6597283641A5009EF72C /* RyftSeparatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftSeparatorView.swift; sourceTree = "<group>"; };
+		D8AB65992836515D009EF72C /* RyftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftUI.swift; sourceTree = "<group>"; };
 		D8F1635827A2DB460076CC02 /* RyftCardTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RyftCardTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8F1635C27A2DB460076CC02 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D8F1636327A2DC030076CC02 /* TestFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFixtures.swift; sourceTree = "<group>"; };
@@ -443,6 +445,7 @@
 				D86892C227A2AD4B003DBFAA /* RyftImages.swift */,
 				D86892C427A2AD6F003DBFAA /* RyftDropInConfiguration.swift */,
 				D8AB658D2834DBE8009EF72C /* RyftApplePayConfig.swift */,
+				D8AB65992836515D009EF72C /* RyftUI.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -1110,6 +1113,7 @@
 				D86892BD27A2ACD8003DBFAA /* URL+Extension.swift in Sources */,
 				D8AB65962834E006009EF72C /* PKPaymentStyle+Extension.swift in Sources */,
 				D86892C527A2AD6F003DBFAA /* RyftDropInConfiguration.swift in Sources */,
+				D8AB659A2836515D009EF72C /* RyftUI.swift in Sources */,
 				D86892DB27A2AF33003DBFAA /* RyftCardExpirationInputField.swift in Sources */,
 				D8F163E727A3EE6D0076CC02 /* DropInViewFactory.swift in Sources */,
 				D86892C327A2AD4B003DBFAA /* RyftImages.swift in Sources */,

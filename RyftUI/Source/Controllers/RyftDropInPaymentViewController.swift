@@ -24,6 +24,10 @@ public final class RyftDropInPaymentViewController: UIViewController {
     private var transitionHandler: SlidingTransitioningHandler?
     private var applePayComponent: RyftApplePayComponent?
 
+    private lazy var showApplePay: Bool = {
+        RyftUI.supportsApplePay() && config.applePay != nil
+    }()
+
     private lazy var containerView: UIView = {
         return DropInViewFactory.createContainerView(theme: theme)
     }()
@@ -39,7 +43,10 @@ public final class RyftDropInPaymentViewController: UIViewController {
     }()
 
     private lazy var titleSeparatorView: UIView = {
-        let view = RyftSeparatorView()
+        let style = showApplePay
+            ? RyftSeparatorView.SeperatorStyle.wordSeparated
+            : RyftSeparatorView.SeperatorStyle.singleLine
+        let view = RyftSeparatorView(style: style)
         view.theme = theme
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -270,38 +277,49 @@ public final class RyftDropInPaymentViewController: UIViewController {
     // swiftlint:disable function_body_length
     private func setupConstraints() {
         view.addSubview(containerView)
-        containerView.addSubview(titleLabel)
-        containerView.addSubview(applePayButton)
-        containerView.addSubview(titleSeparatorView)
-        containerView.addSubview(containerStackView)
-        containerView.addSubview(paySeparatorView)
-        containerView.addSubview(buttonStackView)
+        [titleSeparatorView, containerStackView, paySeparatorView, buttonStackView].forEach {
+            containerView.addSubview($0)
+        }
 
         let leadingAnchorIndent: CGFloat = 20
         NSLayoutConstraint.activate([
             containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             containerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            applePayButton.heightAnchor.constraint(equalToConstant: 44),
-            applePayButton.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 15),
-            applePayButton.leadingAnchor.constraint(
-                equalTo: containerView.leadingAnchor,
-                constant: leadingAnchorIndent
-            ),
-            applePayButton.trailingAnchor.constraint(
-                equalTo: containerView.trailingAnchor,
-                constant: -leadingAnchorIndent
-            ),
-            titleLabel.heightAnchor.constraint(equalToConstant: 30),
-            titleLabel.topAnchor.constraint(equalTo: applePayButton.topAnchor, constant: 12),
-            titleLabel.leadingAnchor.constraint(
-                equalTo: containerView.leadingAnchor,
-                constant: leadingAnchorIndent
-            ),
-            titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+        ])
+        if showApplePay {
+            containerView.addSubview(applePayButton)
+            NSLayoutConstraint.activate([
+                applePayButton.heightAnchor.constraint(equalToConstant: 44),
+                applePayButton.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 15),
+                applePayButton.leadingAnchor.constraint(
+                    equalTo: containerView.leadingAnchor,
+                    constant: leadingAnchorIndent
+                ),
+                applePayButton.trailingAnchor.constraint(
+                    equalTo: containerView.trailingAnchor,
+                    constant: -leadingAnchorIndent
+                ),
+            ])
+        } else {
+            containerView.addSubview(titleLabel)
+            NSLayoutConstraint.activate([
+                titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 5),
+                titleLabel.heightAnchor.constraint(equalToConstant: 30),
+                titleLabel.leadingAnchor.constraint(
+                    equalTo: containerView.leadingAnchor,
+                    constant: leadingAnchorIndent
+                ),
+                titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor)
+            ])
+        }
+
+        let separatorTopAnchorOffset: CGFloat = showApplePay ? 25 : 12
+        let separatorTopAnchor = showApplePay ? applePayButton.bottomAnchor : titleLabel.bottomAnchor
+        NSLayoutConstraint.activate([
             titleSeparatorView.heightAnchor.constraint(equalToConstant: 1),
             titleSeparatorView.topAnchor.constraint(
-                equalTo: titleLabel.bottomAnchor,
-                constant: 12
+                equalTo: separatorTopAnchor,
+                constant: separatorTopAnchorOffset
             ),
             titleSeparatorView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             titleSeparatorView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
@@ -420,7 +438,6 @@ extension RyftDropInPaymentViewController: RyftApplePayComponentDelegate {
         finishedWith status: RyftApplePayComponent.RyftApplePayPaymentStatus
     ) {
         applePayButton.isEnabled = true
-        print("apple pay finished with status = \(status)")
         switch status {
         case .cancelled:
             break

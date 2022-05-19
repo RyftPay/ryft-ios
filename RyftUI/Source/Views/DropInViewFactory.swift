@@ -27,6 +27,7 @@ final class DropInViewFactory {
         label.text = NSLocalizedStringUtility.cardDropInTitle
         label.font = .boldSystemFont(ofSize: 16)
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.accessibilityIdentifier = "RyftTitleLabel"
         return label
     }
 

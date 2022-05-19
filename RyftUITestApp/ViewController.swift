@@ -22,9 +22,24 @@ final class ViewController: UIViewController {
         return button
     }()
 
+    lazy var checkoutWithApplePayButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("ShowDropIn (ApplePay)", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = view.tintColor
+        button.layer.cornerRadius = 8
+        button.clipsToBounds = true
+        button.accessibilityIdentifier = "ShowDropInButtonWithApplePay"
+        return button
+    }()
+
     lazy var containerStackView: UIStackView = {
         let spacer = UIView()
-        let stackView = UIStackView(arrangedSubviews: [titleLabel, checkoutButton])
+        let stackView = UIStackView(arrangedSubviews: [
+            titleLabel,
+            checkoutButton,
+            checkoutWithApplePayButton
+        ])
         stackView.axis = .vertical
         stackView.spacing = 16.0
         return stackView
@@ -40,6 +55,11 @@ final class ViewController: UIViewController {
             action: #selector(showDropIn),
             for: .touchUpInside
         )
+        checkoutWithApplePayButton.addTarget(
+            self,
+            action: #selector(showDropInWithApplePay),
+            for: .touchUpInside
+        )
     }
 
     private func setupConstraints() {
@@ -52,7 +72,8 @@ final class ViewController: UIViewController {
             containerStackView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -24),
             containerStackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
             containerStackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -24),
-            checkoutButton.heightAnchor.constraint(equalToConstant: 50)
+            checkoutButton.heightAnchor.constraint(equalToConstant: 50),
+            checkoutWithApplePayButton.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
 
@@ -62,6 +83,25 @@ final class ViewController: UIViewController {
             config: RyftDropInConfiguration(
                 clientSecret: "ps_123",
                 accountId: nil
+            ),
+            apiClient: MockRyftApiClient(),
+            delegate: self
+        )
+        ryftDropIn?.theme = myTheme
+        present(ryftDropIn!, animated: true, completion: nil)
+    }
+
+    @objc private func showDropInWithApplePay() {
+        let myTheme = RyftUITheme.defaultTheme
+        ryftDropIn = RyftDropInPaymentViewController(
+            config: RyftDropInConfiguration(
+                clientSecret: "ps_123",
+                accountId: nil,
+                applePay: RyftApplePayConfig(
+                    merchantIdentifier: "Id",
+                    merchantCountryCode: "GB",
+                    merchantName: "Ryft"
+                )
             ),
             apiClient: MockRyftApiClient(),
             delegate: self
