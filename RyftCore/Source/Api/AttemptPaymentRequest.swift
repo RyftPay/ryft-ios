@@ -3,6 +3,7 @@ public struct AttemptPaymentRequest {
     let clientSecret: String
     let cardDetails: PaymentRequestCardDetails?
     let walletDetails: PaymentRequestWalletDetails?
+    let billingAddress: BillingAddress?
 
     public static func fromCard(
         clientSecret: String,
@@ -19,13 +20,15 @@ public struct AttemptPaymentRequest {
                 expiryYear: expiryYear,
                 cvc: cvc
             ),
-            walletDetails: nil
+            walletDetails: nil,
+            billingAddress: nil
         )
     }
 
     public static func fromApplePay(
         clientSecret: String,
-        applePayToken: String
+        applePayToken: String,
+        billingAddress: BillingAddress?
     ) -> AttemptPaymentRequest {
         AttemptPaymentRequest(
             clientSecret: clientSecret,
@@ -33,7 +36,8 @@ public struct AttemptPaymentRequest {
             walletDetails: PaymentRequestWalletDetails(
                 type: "ApplePay",
                 applePayToken: applePayToken
-            )
+            ),
+            billingAddress: billingAddress
         )
     }
 
@@ -100,6 +104,9 @@ public struct AttemptPaymentRequest {
         }
         if let walletDetails = walletDetails {
             json["walletDetails"] = walletDetails.toJson() as Any
+        }
+        if let billingAddress = billingAddress {
+            json["billingAddress"] = billingAddress.toJson() as Any
         }
         return json
     }

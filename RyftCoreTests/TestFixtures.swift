@@ -14,4 +14,17 @@ final class TestFixtures {
             createdTimestamp: 123
         )
     }
+
+    static func billingAddress() -> BillingAddress {
+        BillingAddress(
+            firstName: nil,
+            lastName: nil,
+            lineOne: nil,
+            lineTwo: nil,
+            city: nil,
+            country: "US",
+            postalCode: "94043",
+            region: nil
+        )
+    }
 }

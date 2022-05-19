@@ -6,7 +6,8 @@ public final class CurrencyUtility {
         switch alphabeticCurrencyCode {
         case "BIF", "CLP":
             return 0
-        case "AFN", "ALL", "COP", "IDR", "IRR", "KPW", "LAK", "LBP", "MMK", "MGA", "PKR", "RSD", "SYP", "SOS", "SLL", "YER":
+        case "AFN", "ALL", "COP", "IDR", "IRR", "KPW", "LAK", "LBP",
+            "MMK", "MGA", "PKR", "RSD", "SYP", "SOS", "SLL", "YER":
             return 2
         case "BHD", "IQD":
             return 3

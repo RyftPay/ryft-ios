@@ -1,0 +1,89 @@
+import XCTest
+
+@testable import RyftCore
+
+class BillingAddressTests: XCTestCase {
+
+    func test_toJson_shouldReturnExpectedValue_whenNilFieldsAreMissing() {
+        let billingAddress = TestFixtures.billingAddress()
+        let result = billingAddress.toJson()
+        XCTAssertNil(result["firstName"])
+        XCTAssertNil(result["lastName"])
+        XCTAssertNil(result["lineOne"])
+        XCTAssertNil(result["lineTwo"])
+        XCTAssertNil(result["city"])
+        XCTAssertNil(result["region"])
+        guard let country = result["country"] as? String else {
+            XCTFail("serialized JSON country field was not expected type")
+            return
+        }
+        guard let postalCode = result["postalCode"] as? String else {
+            XCTFail("serialized JSON postalCode field was not expected type")
+            return
+        }
+        XCTAssertEqual("US", country)
+        XCTAssertEqual("94043", postalCode)
+    }
+
+    // swiftlint:disable function_body_length
+    func test_toJson_shouldReturnExpectedValue_whenNilFieldsArePresent() {
+        let billingAddress = BillingAddress(
+            firstName: "John",
+            lastName: "Doe",
+            lineOne: "c/o Google LLC",
+            lineTwo: "1600 Amphitheatre Pkwy",
+            city: "Mountain View",
+            country: "US",
+            postalCode: "94043",
+            region: "CA"
+        )
+        let result = billingAddress.toJson()
+        XCTAssertNotNil(result["firstName"])
+        XCTAssertNotNil(result["lastName"])
+        XCTAssertNotNil(result["lineOne"])
+        XCTAssertNotNil(result["lineTwo"])
+        XCTAssertNotNil(result["city"])
+        XCTAssertNotNil(result["region"])
+        guard let firstName = result["firstName"] as? String else {
+            XCTFail("serialized JSON firstName field was not expected type")
+            return
+        }
+        guard let lastName = result["lastName"] as? String else {
+            XCTFail("serialized JSON lastName field was not expected type")
+            return
+        }
+        guard let lineOne = result["lineOne"] as? String else {
+            XCTFail("serialized JSON lineOne field was not expected type")
+            return
+        }
+        guard let lineTwo = result["lineTwo"] as? String else {
+            XCTFail("serialized JSON lineTwo field was not expected type")
+            return
+        }
+        guard let city = result["city"] as? String else {
+            XCTFail("serialized JSON city field was not expected type")
+            return
+        }
+        guard let country = result["country"] as? String else {
+            XCTFail("serialized JSON country field was not expected type")
+            return
+        }
+        guard let postalCode = result["postalCode"] as? String else {
+            XCTFail("serialized JSON postalCode field was not expected type")
+            return
+        }
+        guard let region = result["region"] as? String else {
+            XCTFail("serialized JSON region field was not expected type")
+            return
+        }
+        XCTAssertEqual("John", firstName)
+        XCTAssertEqual("Doe", lastName)
+        XCTAssertEqual("c/o Google LLC", lineOne)
+        XCTAssertEqual("1600 Amphitheatre Pkwy", lineTwo)
+        XCTAssertEqual("Mountain View", city)
+        XCTAssertEqual("US", country)
+        XCTAssertEqual("94043", postalCode)
+        XCTAssertEqual("CA", region)
+    }
+    // swiftlint:enable function_body_length
+}
