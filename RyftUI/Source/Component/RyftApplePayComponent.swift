@@ -83,14 +83,13 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
         didAuthorizePayment payment: PKPayment,
         handler completion: @escaping (PKPaymentAuthorizationResult) -> Void
     ) {
-//        print("billingAddress = \(payment.billingContact?.postalAddress), billingName = \(payment.billingContact?.name)")
         let applePayToken = payment.token.paymentData.base64EncodedString()
         paymentState = .processing
         apiClient.attemptPayment(
             request: AttemptPaymentRequest.fromApplePay(
                 clientSecret: clientSecret,
                 applePayToken: applePayToken,
-                billingAddress: nil
+                billingAddress: BillingAddress(pkContact: payment.billingContact)
             ),
             accountId: accountId
         ) { result in

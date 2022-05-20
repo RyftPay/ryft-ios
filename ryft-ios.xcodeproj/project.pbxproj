@@ -59,6 +59,9 @@
 		D868930227A2BE76003DBFAA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D868930127A2BE76003DBFAA /* Images.xcassets */; };
 		D868930927A2BF5C003DBFAA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D868930727A2BF5C003DBFAA /* Localizable.strings */; };
 		D868930D27A2BF7B003DBFAA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D868930B27A2BF7B003DBFAA /* Localizable.strings */; };
+		D89384992836759500F67926 /* PaymentSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89384982836759500F67926 /* PaymentSessionTests.swift */; };
+		D893849B283677E400F67926 /* BillingAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = D893849A283677E400F67926 /* BillingAddress.swift */; };
+		D893849D283679B200F67926 /* BillingAddressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D893849C283679B200F67926 /* BillingAddressTests.swift */; };
 		D8AB658C2834DB1F009EF72C /* RyftApplePayComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB658B2834DB1F009EF72C /* RyftApplePayComponent.swift */; };
 		D8AB658E2834DBE8009EF72C /* RyftApplePayConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB658D2834DBE8009EF72C /* RyftApplePayConfig.swift */; };
 		D8AB65902834DC2A009EF72C /* RyftPaymentState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB658F2834DC2A009EF72C /* RyftPaymentState.swift */; };
@@ -66,9 +69,6 @@
 		D8AB65962834E006009EF72C /* PKPaymentStyle+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB65952834E006009EF72C /* PKPaymentStyle+Extension.swift */; };
 		D8AB6598283641A5009EF72C /* RyftSeparatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB6597283641A5009EF72C /* RyftSeparatorView.swift */; };
 		D8AB659A2836515D009EF72C /* RyftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB65992836515D009EF72C /* RyftUI.swift */; };
-		D89384992836759500F67926 /* PaymentSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89384982836759500F67926 /* PaymentSessionTests.swift */; };
-		D893849B283677E400F67926 /* BillingAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = D893849A283677E400F67926 /* BillingAddress.swift */; };
-		D893849D283679B200F67926 /* BillingAddressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D893849C283679B200F67926 /* BillingAddressTests.swift */; };
 		D8AB659C28367393009EF72C /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB659B28367393009EF72C /* Currency.swift */; };
 		D8AB659F283673BC009EF72C /* CurrencyUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB659E283673BC009EF72C /* CurrencyUtility.swift */; };
 		D8AB65A228367403009EF72C /* CurrencyUtilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB65A128367403009EF72C /* CurrencyUtilityTests.swift */; };
@@ -240,6 +240,9 @@
 		D868930127A2BE76003DBFAA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D868930827A2BF5C003DBFAA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Localizable.strings; sourceTree = "<group>"; };
 		D868930C27A2BF7B003DBFAA /* en-gb */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en-gb"; path = Localizable.strings; sourceTree = "<group>"; };
+		D89384982836759500F67926 /* PaymentSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentSessionTests.swift; sourceTree = "<group>"; };
+		D893849A283677E400F67926 /* BillingAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingAddress.swift; sourceTree = "<group>"; };
+		D893849C283679B200F67926 /* BillingAddressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingAddressTests.swift; sourceTree = "<group>"; };
 		D8AB658B2834DB1F009EF72C /* RyftApplePayComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftApplePayComponent.swift; sourceTree = "<group>"; };
 		D8AB658D2834DBE8009EF72C /* RyftApplePayConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftApplePayConfig.swift; sourceTree = "<group>"; };
 		D8AB658F2834DC2A009EF72C /* RyftPaymentState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftPaymentState.swift; sourceTree = "<group>"; };
@@ -247,9 +250,6 @@
 		D8AB65952834E006009EF72C /* PKPaymentStyle+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PKPaymentStyle+Extension.swift"; sourceTree = "<group>"; };
 		D8AB6597283641A5009EF72C /* RyftSeparatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftSeparatorView.swift; sourceTree = "<group>"; };
 		D8AB65992836515D009EF72C /* RyftUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftUI.swift; sourceTree = "<group>"; };
-		D89384982836759500F67926 /* PaymentSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentSessionTests.swift; sourceTree = "<group>"; };
-		D893849A283677E400F67926 /* BillingAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingAddress.swift; sourceTree = "<group>"; };
-		D893849C283679B200F67926 /* BillingAddressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingAddressTests.swift; sourceTree = "<group>"; };
 		D8AB659B28367393009EF72C /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
 		D8AB659E283673BC009EF72C /* CurrencyUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyUtility.swift; sourceTree = "<group>"; };
 		D8AB65A128367403009EF72C /* CurrencyUtilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyUtilityTests.swift; sourceTree = "<group>"; };

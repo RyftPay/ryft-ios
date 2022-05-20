@@ -14,9 +14,9 @@ platform :ios do
   end
 
   lane :tests do
-    # core_test
-    # card_test
-    # ui_unit_test
+    core_test
+    card_test
+    ui_unit_test
     ui_test
   end
 
