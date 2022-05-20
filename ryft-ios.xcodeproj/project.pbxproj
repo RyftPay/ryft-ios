@@ -62,6 +62,7 @@
 		D89384992836759500F67926 /* PaymentSessionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89384982836759500F67926 /* PaymentSessionTests.swift */; };
 		D893849B283677E400F67926 /* BillingAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = D893849A283677E400F67926 /* BillingAddress.swift */; };
 		D893849D283679B200F67926 /* BillingAddressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D893849C283679B200F67926 /* BillingAddressTests.swift */; };
+		D89384A32837908B00F67926 /* RyftUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89384A22837908B00F67926 /* RyftUITests.swift */; };
 		D8AB658C2834DB1F009EF72C /* RyftApplePayComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB658B2834DB1F009EF72C /* RyftApplePayComponent.swift */; };
 		D8AB658E2834DBE8009EF72C /* RyftApplePayConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB658D2834DBE8009EF72C /* RyftApplePayConfig.swift */; };
 		D8AB65902834DC2A009EF72C /* RyftPaymentState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB658F2834DC2A009EF72C /* RyftPaymentState.swift */; };
@@ -243,6 +244,7 @@
 		D89384982836759500F67926 /* PaymentSessionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentSessionTests.swift; sourceTree = "<group>"; };
 		D893849A283677E400F67926 /* BillingAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingAddress.swift; sourceTree = "<group>"; };
 		D893849C283679B200F67926 /* BillingAddressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingAddressTests.swift; sourceTree = "<group>"; };
+		D89384A22837908B00F67926 /* RyftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftUITests.swift; sourceTree = "<group>"; };
 		D8AB658B2834DB1F009EF72C /* RyftApplePayComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftApplePayComponent.swift; sourceTree = "<group>"; };
 		D8AB658D2834DBE8009EF72C /* RyftApplePayConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftApplePayConfig.swift; sourceTree = "<group>"; };
 		D8AB658F2834DC2A009EF72C /* RyftPaymentState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftPaymentState.swift; sourceTree = "<group>"; };
@@ -697,6 +699,7 @@
 				D8F1639927A2E7EF0076CC02 /* Models */,
 				D8F1639227A2E7790076CC02 /* Info.plist */,
 				D8F163E327A3E8C10076CC02 /* MockRyftApiClient.swift */,
+				D89384A22837908B00F67926 /* RyftUITests.swift */,
 			);
 			path = RyftUIUnitTests;
 			sourceTree = "<group>";
@@ -1169,6 +1172,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D8F163A127A2F7380076CC02 /* RyftCardCvcInputFieldTests.swift in Sources */,
+				D89384A32837908B00F67926 /* RyftUITests.swift in Sources */,
 				D8F1639B27A2E8070076CC02 /* RyftDropInCardDetailsTests.swift in Sources */,
 				D8F1639E27A2F0F20076CC02 /* URLExtensionTests.swift in Sources */,
 				D8F163E427A3E8C10076CC02 /* MockRyftApiClient.swift in Sources */,

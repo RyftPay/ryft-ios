@@ -94,8 +94,8 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
             accountId: accountId
         ) { result in
             DispatchQueue.main.async {
-                self.handlePaymentResult(result) { status, _ in
-                    let errors: [Error] = []
+                self.handlePaymentResult(result) { status, error in
+                    let errors: [Error] = RyftUI.pkPaymentErrors(error)
                     completion(PKPaymentAuthorizationResult(status: status, errors: errors))
                 }
             }
@@ -130,7 +130,7 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
         case .failure(let e):
             print("error = \(e)")
             paymentState = .failed(error: e, nil)
-            completion(.failure, nil)
+            completion(.failure, e)
         }
     }
 
@@ -143,6 +143,6 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
             )
         )
         paymentAuthController?.delegate = self
-        paymentAuthController?.present()
+        paymentAuthController?.present() //TODO pass through completion
     }
 }
