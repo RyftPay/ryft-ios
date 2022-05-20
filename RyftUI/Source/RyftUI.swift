@@ -1,7 +1,7 @@
 import PassKit
 import RyftCore
 
-final public class RyftUI {
+public final class RyftUI {
 
     public static let supportedNetworks: [PKPaymentNetwork] = [.visa, .masterCard]
 
@@ -35,7 +35,7 @@ final public class RyftUI {
         guard let field = parts[1].components(separatedBy: " ").first else {
             return nil
         }
-        var billingAddressError: Error? = nil
+        var billingAddressError: Error?
         switch field {
         case "firstName", "lastName":
             billingAddressError = NSError(

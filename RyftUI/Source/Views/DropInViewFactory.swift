@@ -33,7 +33,7 @@ final class DropInViewFactory {
 
     static func createOrLabel() -> UILabel {
         let label = UILabel()
-        label.text = NSLocalizedStringUtility.or
+        label.text = NSLocalizedStringUtility.orWord
         label.textAlignment = .center
         label.font = .italicSystemFont(ofSize: 14)
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -67,5 +67,26 @@ final class DropInViewFactory {
         button.clipsToBounds = true
         button.accessibilityIdentifier = "RyftButton-Cancel"
         return button
+    }
+
+    static func createAlert(
+        message: String,
+        defaultActionHandler: (((UIAlertAction) -> Void)?)
+    ) -> UIAlertController {
+        let alert = UIAlertController(
+            title: NSLocalizedStringUtility.oopsWord,
+            message: message,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedStringUtility.cancelTitle,
+            style: .cancel
+        ))
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedStringUtility.retryWord,
+            style: .default,
+            handler: defaultActionHandler
+        ))
+        return alert
     }
 }

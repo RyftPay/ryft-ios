@@ -15,3 +15,6 @@
 "bad_track_data" = "Your CVC or card expiration is invalid";
 "3ds_authentication_failure" = "You failed to successfully authorize your payment method";
 "unknown" = "An unknown error occurred";
+"oops" = "Oops!";
+"retry" = "Retry";
+"apple_pay_present_error" = "There was an unexpected issue displaying Apple Pay";

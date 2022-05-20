@@ -22,7 +22,7 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
 
     public enum RyftApplePayPaymentStatus {
         case cancelled
-        case error(error: Error?)
+        case error(error: Error?, paymentError: RyftPaymentError?)
         case success(paymentSession: PaymentSession)
     }
 
@@ -33,9 +33,7 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
         apiClient: RyftApiClient,
         delegate: RyftApplePayComponentDelegate
     ) {
-        guard PKPaymentAuthorizationController.canMakePayments(
-            usingNetworks: [.visa, .masterCard]
-        ) else {
+        guard RyftUI.supportsApplePay() else {
             return nil
         }
         self.clientSecret = clientSecret
@@ -46,14 +44,17 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
         super.init()
     }
 
-    public func present() {
+    public func present(completion: ((Bool) -> Void)?) {
         apiClient.getPaymentSession(
             id: String(clientSecret.components(separatedBy: "_secret_")[0]),
             clientSecret: clientSecret,
             accountId: accountId
         ) { result in
             DispatchQueue.main.async {
-                self.handleGetPaymentSession(result)
+                self.handleGetPaymentSession(
+                    result,
+                    applePayPresentCompletion: completion
+                )
             }
         }
     }
@@ -69,9 +70,12 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
             delegate?.applePayPayment(finishedWith: .cancelled)
         case .processing:
             break
-        case .failed(let ryftError):
+        case let .failed(error, ryftError):
             controller.dismiss()
-            delegate?.applePayPayment(finishedWith: .error(error: nil))
+            delegate?.applePayPayment(finishedWith: .error(
+                error: error,
+                paymentError: ryftError
+            ))
         case .complete(let paymentSession):
             controller.dismiss()
             delegate?.applePayPayment(finishedWith: .success(paymentSession: paymentSession))
@@ -95,19 +99,27 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
         ) { result in
             DispatchQueue.main.async {
                 self.handlePaymentResult(result) { status, error in
-                    let errors: [Error] = RyftUI.pkPaymentErrors(error)
-                    completion(PKPaymentAuthorizationResult(status: status, errors: errors))
+                    completion(PKPaymentAuthorizationResult(
+                        status: status,
+                        errors: RyftUI.pkPaymentErrors(error)
+                    ))
                 }
             }
         }
     }
 
-    private func handleGetPaymentSession(_ result: Result<PaymentSession, HttpError>) {
+    private func handleGetPaymentSession(
+        _ result: Result<PaymentSession, HttpError>,
+        applePayPresentCompletion: ((Bool) -> Void)?
+    ) {
         switch result {
         case .success(let paymentSession):
-            presentApplePaySheet(with: paymentSession)
+            presentApplePaySheet(
+                with: paymentSession,
+                completion: applePayPresentCompletion
+            )
         case .failure:
-            print("error loading payment")
+            applePayPresentCompletion?(false)
         }
     }
 
@@ -123,18 +135,19 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
             }
             if let lastError = paymentSession.lastError {
                 let ryftError = RyftPaymentError(paymentSessionError: lastError)
-                print("lastError = \(ryftError)")
                 paymentState = .failed(error: nil, ryftError)
                 completion(.failure, nil)
             }
-        case .failure(let e):
-            print("error = \(e)")
-            paymentState = .failed(error: e, nil)
-            completion(.failure, e)
+        case .failure(let error):
+            paymentState = .failed(error: error, nil)
+            completion(.failure, error)
         }
     }
 
-    private func presentApplePaySheet(with payment: PaymentSession) {
+    private func presentApplePaySheet(
+        with payment: PaymentSession,
+        completion: ((Bool) -> Void)?
+    ) {
         self.paymentAuthController = PKPaymentAuthorizationController(
             paymentRequest: payment.toPKPayment(
                 merchantIdentifier: config.merchantIdentifier,
@@ -143,6 +156,6 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
             )
         )
         paymentAuthController?.delegate = self
-        paymentAuthController?.present() //TODO pass through completion
+        paymentAuthController?.present(completion: completion)
     }
 }
