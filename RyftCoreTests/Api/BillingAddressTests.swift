@@ -43,6 +43,33 @@ class BillingAddressTests: XCTestCase {
         XCTAssertEqual(expected, billingAddress)
     }
 
+    func test_initFromPKContact_shouldReturnExpectedResult_whenPersonHasBlankName() {
+        var person = pkPerson
+        person.givenName = ""
+        person.familyName = ""
+        let contact = PKContact()
+        let cnAddress = CNMutablePostalAddress()
+        cnAddress.isoCountryCode = "US"
+        cnAddress.postalCode = "94043"
+        contact.name = person
+        contact.postalAddress = cnAddress
+        guard let billingAddress = BillingAddress(pkContact: contact) else {
+            XCTFail("expected non-nil billingAddress from PKContact \(contact)")
+            return
+        }
+        let expected = BillingAddress(
+            firstName: nil,
+            lastName: nil,
+            lineOne: nil,
+            lineTwo: nil,
+            city: nil,
+            country: "US",
+            postalCode: "94043",
+            region: nil
+        )
+        XCTAssertEqual(expected, billingAddress)
+    }
+
     func test_initFromPKContact_shouldReturnExpectedResult_whenPostalAddressAndPersonArePresent() {
         let contact = PKContact()
         let cnAddress = CNMutablePostalAddress()

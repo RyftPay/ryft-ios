@@ -35,8 +35,8 @@ public struct BillingAddress: Equatable, Hashable {
         guard let pkContact = pkContact, let postalAddress = pkContact.postalAddress else {
             return nil
         }
-        self.firstName = pkContact.name?.givenName
-        self.lastName = pkContact.name?.familyName
+        self.firstName = BillingAddress.stringValueIfNonBlank(pkContact.name?.givenName)
+        self.lastName = BillingAddress.stringValueIfNonBlank(pkContact.name?.familyName)
         self.lineOne = BillingAddress.stringValueIfNonBlank(postalAddress.street)
         self.lineTwo = nil
         self.city = BillingAddress.stringValueIfNonBlank(postalAddress.city)
@@ -82,7 +82,10 @@ public struct BillingAddress: Equatable, Hashable {
             && lhs.region == rhs.region
     }
 
-    private static func stringValueIfNonBlank(_ value: String) -> String? {
-        value.isEmpty ? nil : value
+    private static func stringValueIfNonBlank(_ maybeValue: String?) -> String? {
+        guard let value = maybeValue, !value.isEmpty else {
+            return nil
+        }
+        return value
     }
 }
