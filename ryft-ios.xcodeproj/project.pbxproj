@@ -63,6 +63,9 @@
 		D893849B283677E400F67926 /* BillingAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = D893849A283677E400F67926 /* BillingAddress.swift */; };
 		D893849D283679B200F67926 /* BillingAddressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D893849C283679B200F67926 /* BillingAddressTests.swift */; };
 		D89384A32837908B00F67926 /* RyftUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89384A22837908B00F67926 /* RyftUITests.swift */; };
+		D89384AB2837E36B00F67926 /* RyftApplePayComponentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89384AA2837E36A00F67926 /* RyftApplePayComponentTests.swift */; };
+		D89384AD28380D0700F67926 /* XCUIElement+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89384AC28380D0700F67926 /* XCUIElement+Extension.swift */; };
+		D89384B12838F92C00F67926 /* ApplePayComponentDelegateTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89384B02838F92C00F67926 /* ApplePayComponentDelegateTester.swift */; };
 		D8AB658C2834DB1F009EF72C /* RyftApplePayComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB658B2834DB1F009EF72C /* RyftApplePayComponent.swift */; };
 		D8AB658E2834DBE8009EF72C /* RyftApplePayConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB658D2834DBE8009EF72C /* RyftApplePayConfig.swift */; };
 		D8AB65902834DC2A009EF72C /* RyftPaymentState.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB658F2834DC2A009EF72C /* RyftPaymentState.swift */; };
@@ -245,6 +248,9 @@
 		D893849A283677E400F67926 /* BillingAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingAddress.swift; sourceTree = "<group>"; };
 		D893849C283679B200F67926 /* BillingAddressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingAddressTests.swift; sourceTree = "<group>"; };
 		D89384A22837908B00F67926 /* RyftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftUITests.swift; sourceTree = "<group>"; };
+		D89384AA2837E36A00F67926 /* RyftApplePayComponentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftApplePayComponentTests.swift; sourceTree = "<group>"; };
+		D89384AC28380D0700F67926 /* XCUIElement+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIElement+Extension.swift"; sourceTree = "<group>"; };
+		D89384B02838F92C00F67926 /* ApplePayComponentDelegateTester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplePayComponentDelegateTester.swift; sourceTree = "<group>"; };
 		D8AB658B2834DB1F009EF72C /* RyftApplePayComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftApplePayComponent.swift; sourceTree = "<group>"; };
 		D8AB658D2834DBE8009EF72C /* RyftApplePayConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftApplePayConfig.swift; sourceTree = "<group>"; };
 		D8AB658F2834DC2A009EF72C /* RyftPaymentState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftPaymentState.swift; sourceTree = "<group>"; };
@@ -611,6 +617,15 @@
 			path = "en-gb.lproj";
 			sourceTree = "<group>";
 		};
+		D89384A92837E2B800F67926 /* Component */ = {
+			isa = PBXGroup;
+			children = (
+				D89384AA2837E36A00F67926 /* RyftApplePayComponentTests.swift */,
+				D89384B02838F92C00F67926 /* ApplePayComponentDelegateTester.swift */,
+			);
+			path = Component;
+			sourceTree = "<group>";
+		};
 		D8AB658A2834DB09009EF72C /* Component */ = {
 			isa = PBXGroup;
 			children = (
@@ -694,6 +709,7 @@
 		D8F1638F27A2E7780076CC02 /* RyftUIUnitTests */ = {
 			isa = PBXGroup;
 			children = (
+				D89384A92837E2B800F67926 /* Component */,
 				D8F1639F27A2F7260076CC02 /* Views */,
 				D8F1639C27A2F0E00076CC02 /* Extension */,
 				D8F1639927A2E7EF0076CC02 /* Models */,
@@ -748,6 +764,7 @@
 			children = (
 				D8F163D727A31F480076CC02 /* Info.plist */,
 				D8F163DD27A344CA0076CC02 /* RyftDropInPaymentViewControllerTests.swift */,
+				D89384AC28380D0700F67926 /* XCUIElement+Extension.swift */,
 			);
 			path = RyftUITests;
 			sourceTree = "<group>";
@@ -1171,8 +1188,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D89384B12838F92C00F67926 /* ApplePayComponentDelegateTester.swift in Sources */,
 				D8F163A127A2F7380076CC02 /* RyftCardCvcInputFieldTests.swift in Sources */,
 				D89384A32837908B00F67926 /* RyftUITests.swift in Sources */,
+				D89384AB2837E36B00F67926 /* RyftApplePayComponentTests.swift in Sources */,
 				D8F1639B27A2E8070076CC02 /* RyftDropInCardDetailsTests.swift in Sources */,
 				D8F1639E27A2F0F20076CC02 /* URLExtensionTests.swift in Sources */,
 				D8F163E427A3E8C10076CC02 /* MockRyftApiClient.swift in Sources */,
@@ -1195,6 +1214,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D8F163DE27A344CA0076CC02 /* RyftDropInPaymentViewControllerTests.swift in Sources */,
+				D89384AD28380D0700F67926 /* XCUIElement+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

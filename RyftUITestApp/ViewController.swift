@@ -1,5 +1,6 @@
 import UIKit
 import RyftUI
+import RyftCore
 
 final class ViewController: UIViewController {
 
@@ -9,6 +10,62 @@ final class ViewController: UIViewController {
         label.font = .boldSystemFont(ofSize: 32)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
+    }()
+
+    lazy var applyPayToggle: UISwitch = {
+        let toggle = UISwitch()
+        toggle.setOn(false, animated: false)
+        toggle.accessibilityIdentifier = "ApplePayToggle"
+        return toggle
+    }()
+
+    lazy var applePayToggleStackView: UIStackView = {
+        let label = UILabel()
+        label.text = "Enable Apple Pay"
+        let stackView = UIStackView(arrangedSubviews: [
+            label,
+            applyPayToggle,
+        ])
+        stackView.axis = .horizontal
+        stackView.spacing = 5.0
+        return stackView
+    }()
+
+    lazy var getPaymentSessionErrorToggle: UISwitch = {
+        let toggle = UISwitch()
+        toggle.setOn(false, animated: true)
+        toggle.accessibilityIdentifier = "GetPaymentSessionErrorToggle"
+        return toggle
+    }()
+
+    lazy var getPaymentSessionErrorToggleStackView: UIStackView = {
+        let label = UILabel()
+        label.text = "Get PaymentSession error"
+        let stackView = UIStackView(arrangedSubviews: [
+            label,
+            getPaymentSessionErrorToggle,
+        ])
+        stackView.axis = .horizontal
+        stackView.spacing = 5.0
+        return stackView
+    }()
+
+    lazy var failPaymentControl: UISegmentedControl = {
+        let toggle = UISegmentedControl(items: ["None", "General", "BillingAddress"])
+        toggle.accessibilityIdentifier = "FailPaymentControl"
+        return toggle
+    }()
+
+    lazy var failPaymentControlStackView: UIStackView = {
+        let label = UILabel()
+        label.text = "Fail payment?"
+        let stackView = UIStackView(arrangedSubviews: [
+            label,
+            failPaymentControl,
+        ])
+        stackView.axis = .vertical
+        stackView.spacing = 5.0
+        return stackView
     }()
 
     lazy var checkoutButton: UIButton = {
@@ -22,23 +79,14 @@ final class ViewController: UIViewController {
         return button
     }()
 
-    lazy var checkoutWithApplePayButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("ShowDropIn (ApplePay)", for: .normal)
-        button.setTitleColor(.white, for: .normal)
-        button.backgroundColor = view.tintColor
-        button.layer.cornerRadius = 8
-        button.clipsToBounds = true
-        button.accessibilityIdentifier = "ShowDropInButtonWithApplePay"
-        return button
-    }()
-
     lazy var containerStackView: UIStackView = {
         let spacer = UIView()
         let stackView = UIStackView(arrangedSubviews: [
             titleLabel,
-            checkoutButton,
-            checkoutWithApplePayButton
+            applePayToggleStackView,
+            getPaymentSessionErrorToggleStackView,
+            failPaymentControlStackView,
+            checkoutButton
         ])
         stackView.axis = .vertical
         stackView.spacing = 16.0
@@ -55,11 +103,6 @@ final class ViewController: UIViewController {
             action: #selector(showDropIn),
             for: .touchUpInside
         )
-        checkoutWithApplePayButton.addTarget(
-            self,
-            action: #selector(showDropInWithApplePay),
-            for: .touchUpInside
-        )
     }
 
     private func setupConstraints() {
@@ -72,38 +115,46 @@ final class ViewController: UIViewController {
             containerStackView.bottomAnchor.constraint(equalTo: safeArea.bottomAnchor, constant: -24),
             containerStackView.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 24),
             containerStackView.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -24),
-            checkoutButton.heightAnchor.constraint(equalToConstant: 50),
-            checkoutWithApplePayButton.heightAnchor.constraint(equalToConstant: 50)
+            checkoutButton.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
 
     @objc private func showDropIn() {
-        let myTheme = RyftUITheme.defaultTheme
-        ryftDropIn = RyftDropInPaymentViewController(
-            config: RyftDropInConfiguration(
-                clientSecret: "ps_123",
-                accountId: nil
-            ),
-            apiClient: MockRyftApiClient(),
-            delegate: self
-        )
-        ryftDropIn?.theme = myTheme
-        present(ryftDropIn!, animated: true, completion: nil)
-    }
-
-    @objc private func showDropInWithApplePay() {
+        let apiClient = MockRyftApiClient()
+        if getPaymentSessionErrorToggle.isOn {
+            apiClient.getPaymentSessionResult = .failure(.general(message: "boom!"))
+        }
+        if failPaymentControl.selectedSegmentIndex == 1 {
+            apiClient.attemptPaymentResult = .failure(.general(message: "uh oh"))
+        }
+        if failPaymentControl.selectedSegmentIndex == 2 {
+            apiClient.attemptPaymentResult = .failure(.badResponse(detail: HttpError.HttpErrorDetail(
+                statusCode: 400,
+                body: RyftApiError(
+                    requestId: UUID().uuidString.lowercased(),
+                    code: "some_code",
+                    errors: [
+                        RyftApiError.RyftApiErrorElement(
+                            code: "400",
+                            message: "billingAddress.city is invalid"
+                        )
+                    ]
+                )
+            )))
+        }
         let myTheme = RyftUITheme.defaultTheme
         ryftDropIn = RyftDropInPaymentViewController(
             config: RyftDropInConfiguration(
                 clientSecret: "ps_123",
                 accountId: nil,
-                applePay: RyftApplePayConfig(
-                    merchantIdentifier: "Id",
-                    merchantCountryCode: "GB",
-                    merchantName: "Ryft"
-                )
+                applePay: applyPayToggle.isOn
+                    ? RyftApplePayConfig(
+                        merchantIdentifier: "Id",
+                        merchantCountryCode: "GB",
+                        merchantName: "Ryft"
+                    ) : nil
             ),
-            apiClient: MockRyftApiClient(),
+            apiClient: apiClient,
             delegate: self
         )
         ryftDropIn?.theme = myTheme
@@ -114,15 +165,19 @@ final class ViewController: UIViewController {
 extension ViewController: RyftDropInPaymentDelegate {
 
     func onPaymentResult(result: RyftPaymentResult) {
+        var title = "Payment Failed"
         var message = "failure"
         switch result {
         case .failed(let error):
             message = error.displayError
+        case .success(let paymentSession):
+            title = "Payment Success"
+            message = paymentSession.id
         default:
             break
         }
         let alert = UIAlertController(
-            title: "Result",
+            title: title,
             message: message,
             preferredStyle: .alert
         )

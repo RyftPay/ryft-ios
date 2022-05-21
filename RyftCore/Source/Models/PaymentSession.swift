@@ -9,6 +9,26 @@ public struct PaymentSession: Codable {
     public let returnUrl: String
     public let createdTimestamp: Int64
 
+    public init(
+        id: String,
+        amount: Int,
+        currency: String,
+        status: PaymentSessionStatus,
+        lastError: PaymentSessionError?,
+        requiredAction: PaymentSessionRequiredAction?,
+        returnUrl: String,
+        createdTimestamp: Int64
+    ) {
+        self.id = id
+        self.amount = amount
+        self.currency = currency
+        self.status = status
+        self.lastError = lastError
+        self.requiredAction = requiredAction
+        self.returnUrl = returnUrl
+        self.createdTimestamp = createdTimestamp
+    }
+
     public func amountAsMoney() -> Money {
         Money(currencyCode: currency, amount: amount)
     }
