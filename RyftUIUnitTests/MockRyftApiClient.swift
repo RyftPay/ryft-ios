@@ -3,7 +3,7 @@ import RyftCore
 final class MockRyftApiClient: RyftApiClient {
 
     var paymentSession: PaymentSession?
-    var didCallGetPaymentSession: Bool = false
+    var didCallGetPaymentSession = false
 
     func attemptPayment(
         request: AttemptPaymentRequest,
