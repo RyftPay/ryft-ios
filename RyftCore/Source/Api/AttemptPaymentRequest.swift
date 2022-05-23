@@ -1,9 +1,12 @@
+import PassKit
+
 public struct AttemptPaymentRequest {
 
     let clientSecret: String
     let cardDetails: PaymentRequestCardDetails?
     let walletDetails: PaymentRequestWalletDetails?
     let billingAddress: BillingAddress?
+    let customerDetails: PaymentRequestCustomerDetails?
 
     public static func fromCard(
         clientSecret: String,
@@ -21,14 +24,16 @@ public struct AttemptPaymentRequest {
                 cvc: cvc
             ),
             walletDetails: nil,
-            billingAddress: nil
+            billingAddress: nil,
+            customerDetails: nil
         )
     }
 
     public static func fromApplePay(
         clientSecret: String,
         applePayToken: String,
-        billingAddress: BillingAddress?
+        billingAddress: BillingAddress?,
+        customerDetails: PaymentRequestCustomerDetails?
     ) -> AttemptPaymentRequest {
         AttemptPaymentRequest(
             clientSecret: clientSecret,
@@ -37,7 +42,8 @@ public struct AttemptPaymentRequest {
                 type: "ApplePay",
                 applePayToken: applePayToken
             ),
-            billingAddress: billingAddress
+            billingAddress: billingAddress,
+            customerDetails: customerDetails
         )
     }
 
@@ -107,6 +113,9 @@ public struct AttemptPaymentRequest {
         }
         if let billingAddress = billingAddress {
             json["billingAddress"] = billingAddress.toJson() as Any
+        }
+        if let customerDetails = customerDetails {
+            json["customerDetails"] = customerDetails.toJson() as Any
         }
         return json
     }

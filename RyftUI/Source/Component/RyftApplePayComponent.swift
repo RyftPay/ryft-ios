@@ -139,6 +139,7 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
                 completion(.failure, nil)
             }
         case .failure(let error):
+            print(error)
             paymentState = .failed(error: error, nil)
             completion(.failure, error)
         }

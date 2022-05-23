@@ -2,7 +2,7 @@ import XCTest
 
 @testable import RyftCore
 
-class AttemptPaymentRequestTest: XCTestCase {
+final class AttemptPaymentRequestTest: XCTestCase {
 
     func test_fromCard_shouldReturnExpectedValue() {
         let value = AttemptPaymentRequest.fromCard(
@@ -27,7 +27,8 @@ class AttemptPaymentRequestTest: XCTestCase {
         let value = AttemptPaymentRequest.fromApplePay(
             clientSecret: "secret",
             applePayToken: "base64-encoded-apple-pay-token",
-            billingAddress: nil
+            billingAddress: nil,
+            customerDetails: nil
         )
         let expectedWalletDetails = AttemptPaymentRequest.PaymentRequestWalletDetails(
             type: "ApplePay",
@@ -35,6 +36,24 @@ class AttemptPaymentRequestTest: XCTestCase {
         )
         XCTAssertTrue(value.clientSecret == "secret")
         XCTAssertTrue(value.walletDetails == expectedWalletDetails)
+        XCTAssertNil(value.cardDetails)
+    }
+
+    func test_fromApplePay_shouldReturnExpectedValue_whenCustomerDetailsAreGiven() {
+        let value = AttemptPaymentRequest.fromApplePay(
+            clientSecret: "secret",
+            applePayToken: "base64-encoded-apple-pay-token",
+            billingAddress: nil,
+            customerDetails: PaymentRequestCustomerDetails(email: "support@ryftpay.com")
+        )
+        let expectedWalletDetails = AttemptPaymentRequest.PaymentRequestWalletDetails(
+            type: "ApplePay",
+            applePayToken: "base64-encoded-apple-pay-token"
+        )
+        let expectedCustomerDetails = PaymentRequestCustomerDetails(email: "support@ryftpay.com")
+        XCTAssertTrue(value.clientSecret == "secret")
+        XCTAssertTrue(value.walletDetails == expectedWalletDetails)
+        XCTAssertTrue(value.customerDetails == expectedCustomerDetails)
         XCTAssertNil(value.cardDetails)
     }
 
@@ -77,7 +96,8 @@ class AttemptPaymentRequestTest: XCTestCase {
         let result = AttemptPaymentRequest.fromApplePay(
             clientSecret: "secret",
             applePayToken: "base64-encoded-apple-pay-token",
-            billingAddress: nil
+            billingAddress: nil,
+            customerDetails: nil
         ).toJson()
         XCTAssertNotNil(result["clientSecret"])
         XCTAssertNotNil(result["walletDetails"])
@@ -107,7 +127,8 @@ class AttemptPaymentRequestTest: XCTestCase {
         let result = AttemptPaymentRequest.fromApplePay(
             clientSecret: "secret",
             applePayToken: "base64-encoded-apple-pay-token",
-            billingAddress: billingAddress
+            billingAddress: billingAddress,
+            customerDetails: nil
         ).toJson()
         XCTAssertNotNil(result["billingAddress"])
         guard let billingAddressJson = result["billingAddress"] as? [String: Any] else {
@@ -123,5 +144,25 @@ class AttemptPaymentRequestTest: XCTestCase {
         }
         XCTAssertEqual(billingAddress.country, country)
         XCTAssertEqual(billingAddress.postalCode, postalCode)
+    }
+
+    func test_toJson_shouldIncludeCustomerDetails_whenTheyIsPresent() {
+        let customerDetails = PaymentRequestCustomerDetails(email: "support@ryftpay.com")
+        let result = AttemptPaymentRequest.fromApplePay(
+            clientSecret: "secret",
+            applePayToken: "base64-encoded-apple-pay-token",
+            billingAddress: nil,
+            customerDetails: customerDetails
+        ).toJson()
+        XCTAssertNotNil(result["customerDetails"])
+        guard let customerDetailsJson = result["customerDetails"] as? [String: Any] else {
+            XCTFail("serialized JSON customerDetails field was not expected type")
+            return
+        }
+        guard let email = customerDetailsJson["email"] as? String else {
+            XCTFail("serialized JSON customerDetails did not contain the expected fields")
+            return
+        }
+        XCTAssertEqual(customerDetails.email, email)
     }
 }

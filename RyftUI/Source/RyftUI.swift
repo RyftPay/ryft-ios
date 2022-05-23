@@ -25,7 +25,8 @@ public final class RyftUI {
     static func pkPaymentError(
         _ element: RyftApiError.RyftApiErrorElement
     ) -> Error? {
-        guard element.message.starts(with: "billingAddress") else {
+        guard element.message.starts(with: "billingAddress") ||
+            element.message.starts(with: "customerDetails") else {
             return nil
         }
         let parts = element.message.components(separatedBy: ".")
@@ -35,10 +36,15 @@ public final class RyftUI {
         guard let field = parts[1].components(separatedBy: " ").first else {
             return nil
         }
-        var billingAddressError: Error?
+        var error: Error?
         switch field {
+        case "email":
+            error = PKPaymentRequest.paymentContactInvalidError(
+                withContactField: .emailAddress,
+                localizedDescription: element.message
+            )
         case "firstName", "lastName":
-            billingAddressError = NSError(
+            error = NSError(
                 domain: PKPaymentErrorDomain,
                 code: PKPaymentError.billingContactInvalidError.rawValue,
                 userInfo: [
@@ -47,33 +53,33 @@ public final class RyftUI {
                 ]
             )
         case "lineOne":
-            billingAddressError = PKPaymentRequest.paymentBillingAddressInvalidError(
+            error = PKPaymentRequest.paymentBillingAddressInvalidError(
                 withKey: CNPostalAddressStreetKey,
                 localizedDescription: element.message
             )
         case "city":
-            billingAddressError = PKPaymentRequest.paymentBillingAddressInvalidError(
+            error = PKPaymentRequest.paymentBillingAddressInvalidError(
                 withKey: CNPostalAddressCityKey,
                 localizedDescription: element.message
             )
         case "country":
-            billingAddressError = PKPaymentRequest.paymentBillingAddressInvalidError(
+            error = PKPaymentRequest.paymentBillingAddressInvalidError(
                 withKey: CNPostalAddressCountryKey,
                 localizedDescription: element.message
             )
         case "postalCode":
-            billingAddressError = PKPaymentRequest.paymentBillingAddressInvalidError(
+            error = PKPaymentRequest.paymentBillingAddressInvalidError(
                 withKey: CNPostalAddressPostalCodeKey,
                 localizedDescription: element.message
             )
         case "region":
-            billingAddressError = PKPaymentRequest.paymentBillingAddressInvalidError(
+            error = PKPaymentRequest.paymentBillingAddressInvalidError(
                 withKey: CNPostalAddressStateKey,
                 localizedDescription: element.message
             )
         default:
             break
         }
-        return billingAddressError
+        return error
     }
 }

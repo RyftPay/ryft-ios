@@ -41,6 +41,22 @@ final class RyftUITests: XCTestCase {
         XCTAssertEqual(0, result.count)
     }
 
+    func test_pkPaymentErrors_shouldReturnExpectedError_whenCustomerEmailIsInvalid() {
+        let error = badResponseError(errors: [
+            RyftApiError.RyftApiErrorElement(
+                code: "400",
+                message: "customerDetails.email is invalid"
+            )
+        ])
+        let expected = PKPaymentRequest.paymentContactInvalidError(
+            withContactField: .emailAddress,
+            localizedDescription: "customerDetails.email is invalid"
+        ) as NSError
+        let result = RyftUI.pkPaymentErrors(error)
+        XCTAssertEqual(1, result.count)
+        XCTAssertEqual(expected, result[0] as NSError)
+    }
+
     func test_pkPaymentErrors_shouldReturnExpectedError_whenBillingAddressLineOneIsInvalid() {
         let error = badResponseError(errors: [
             RyftApiError.RyftApiErrorElement(

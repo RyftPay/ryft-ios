@@ -22,6 +22,7 @@ extension PaymentSession {
             )
         ]
         payment.requiredBillingContactFields = [.postalAddress]
+        payment.requiredShippingContactFields = customerEmail == nil ? [.emailAddress] : []
         return payment
     }
 }
