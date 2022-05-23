@@ -6,7 +6,7 @@ final class MockRyftApiClient: RyftApiClient {
         id: "ps_01FCTS1XMKH9FF43CAFA4CXT3P",
         amount: 350,
         currency: "GBP",
-        status: .approved,
+        status: .pendingPayment,
         customerEmail: nil,
         lastError: nil,
         requiredAction: nil,
