@@ -1,7 +1,7 @@
 import XCTest
 import PassKit
+import RyftCore
 
-@testable import RyftCore
 @testable import RyftUI
 
 final class RyftUITests: XCTestCase {
