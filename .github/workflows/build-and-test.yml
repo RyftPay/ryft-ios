@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     runs-on: macos-11
-    timeout-minutes: 20
+    timeout-minutes: 25
     env:
       FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 6
 

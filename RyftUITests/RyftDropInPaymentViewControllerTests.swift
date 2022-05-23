@@ -230,7 +230,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         applePayButton.forceTap()
 
         let applePay = XCUIApplication(bundleIdentifier: "com.apple.PassbookUIService")
-        XCTAssertTrue(applePay.wait(for: .runningForeground, timeout: 10))
+        XCTAssertTrue(applePay.wait(for: .runningForeground, timeout: 25))
 
         if let email = customerEmail {
             /*
