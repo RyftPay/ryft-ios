@@ -4,7 +4,7 @@
 
 Ryft for iOS allows you to accept in-app payments securely and safely using our customisable UI elements.
 
-<img src="images/drop-in-white-mastercard.png" width=30% height=30%> <img src="images/drop-in-dark-mastercard.png" width=30% height=30%>
+<img src="images/drop-in-light-applepay.png" width=30% height=30%> <img src="images/drop-in-dark-applepay.png" width=30% height=30%>
 
 ## Requirements
 
@@ -97,6 +97,130 @@ func onPaymentResult(result: RyftPaymentResult) {
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alert.addAction(UIAlertAction(title: "Try again", style: .default) { _ in
             self.showDropIn()
+        })
+        present(alert, animated: true, completion: nil)
+    }
+}
+```
+
+## Adding Apple Pay
+
+If you want to offer Apple Pay then simply add the necessary config when initialising the drop-in:
+
+```swift
+@objc private func showDropIn() {
+    ryftDropIn = RyftDropInPaymentViewController(
+        config: RyftDropInConfiguration(
+            clientSecret: "<the client secret of the payment-session>",
+            accountId: "nil | <the Id of the sub-account you are taking payments for>",
+            applePay: RyftApplePayConfig(
+                merchantIdentifier: "merchant.com.<you>",
+                merchantCountryCode: "GB",
+                merchantName: "<your merchant name to display on the Apple Pay sheet>"
+            )
+        ),
+        publicApiKey: "<your public API key",
+        delegate: self
+    )
+    present(ryftDropIn!, animated: true, completion: nil)
+}
+```
+
+We will automatically display Apple Pay as an option provided your config is correct and the customer has an eligible card setup in their wallet.
+
+### Using Apple Pay as a standalone payment option
+
+It's considered best practice to offer Apple Pay as early as possible. For example, you may want to display it as early as a product listing/product page.
+
+You can use our `RyftApplePayComponent` by itself (without the drop-in controller) if you wish to facilitate this.
+
+#### Initialise the component
+
+You can initialise the component in one of two ways:
+
+- `RyftApplePayComponentConfig.auto` - let Ryft construct and populate the information on the Apple Pay sheet
+- `RyftApplePayComponent.manual` - handle constructing Apple's `PKPaymentRequest` yourself
+
+We recommend using `.auto`, this ensures that the financials displayed to the customer match what Ryft expects when authorizing the payment and reduces the payment failing due to an inconsistency.
+
+```swift
+@objc private func applePayButtonClicked() {
+    let config = RyftApplePayConfig(
+        merchantIdentifier: "merchant.com.<you>",
+        merchantCountryCode: "GB",
+        merchantName: "<your merchant name to display on the Apple Pay sheet>"
+    )
+    // create a fresh instance each time you want to display the ApplePay sheet
+    let applePayComponent = RyftApplePayComponent(
+        publicApiKey: "<your public API key>",
+        clientSecret: config.clientSecret,
+        accountId: "nil | <the Id of the sub-account you are taking payments for>",
+        config: .auto(config: config),
+        delegate: self
+    )
+    applePayComponent?.present { presented in
+        if !presented {
+            /*
+            * something went wrong with presenting the ApplePay sheet
+            * show an alert or retry
+            */
+            self.applePayButton.isEnabled = true
+        }
+    }
+}
+```
+
+#### Implementing the RyftApplePayComponentDelegate
+
+Once the customer has submitted their payment, the drop-in will dismiss.
+
+To handle the result, the following methods of `RyftDropInPaymentDelegate` need to be implemented:
+
+```swift
+func applePayPayment(
+    finishedWith status: RyftApplePayComponent.RyftApplePayPaymentStatus
+)
+```
+
+This method is invoked with one of several states:
+
+```swift
+ // user dismissed/cancelled the Apple Pay sheet
+case cancelled
+// either an unexpected error occurred or the payment failed to authorize
+case error(error: Error?, paymentError: RyftPaymentError?)
+// payment successful, show a receipt view
+case success(paymentSession: PaymentSession)
+```
+
+**Example:**
+
+```swift
+public func applePayPayment(
+    finishedWith status: RyftApplePayComponent.RyftApplePayPaymentStatus
+) {
+    applePayButton.isEnabled = true
+    switch status {
+    case .cancelled:
+        break
+    case .success(let paymentSession):
+        /*
+        * display your receipt/success view
+        * the Ryft payment session is returned should you want to use
+        * any of the values on it
+        */
+        showSuccessView()
+    case .error(_, let paymentError):
+        // payment failed, show an alert to the customer
+        // `paymentError.displayError` provides a human friendly message you can display
+        let alert = UIAlertController(
+            title: "Error taking payment",
+            message: error.displayError,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Try again", style: .default) { _ in
+            self.applePayClicked()
         })
         present(alert, animated: true, completion: nil)
     }
