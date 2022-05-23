@@ -10,6 +10,10 @@ final class PaymentRequestCustomerDetailsTests: XCTestCase {
         XCTAssertEqual("support@ryftpay.com", result.email)
     }
 
+    func test_init_fromPKContact_shouldReturnNil_whenContactIsNil() {
+        XCTAssertNil(PaymentRequestCustomerDetails(pkContact: nil))
+    }
+
     func test_init_fromPKContact_shouldReturnNil_whenEmailAddressIsMissing() {
         let contact = PKContact()
         XCTAssertNil(PaymentRequestCustomerDetails(pkContact: contact))

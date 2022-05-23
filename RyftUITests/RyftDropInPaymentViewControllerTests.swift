@@ -177,7 +177,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
 
     func test_dropIn_shouldDisplayAlert_whenApplePayPaymentFails_dueToApiError() {
         app.switches["ApplePayToggle"].forceTap()
-        app.segmentedControls["FailPaymentControl"].buttons.element(boundBy: 1).forceTap()
+        app.segmentedControls["FailPaymentControl"].buttons.element(boundBy: 0).forceTap()
         openDropIn()
         _ = payWithApplePay()
         XCTAssertTrue(app.alerts.element.staticTexts["Payment Failed"].waitForExistence(timeout: 5))
@@ -185,10 +185,18 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
 
     func test_dropIn_shouldDisplayErrorOnApplePaySheet_whenApplePayPaymentFails_dueToBillingAddressError() {
         app.switches["ApplePayToggle"].forceTap()
-        app.segmentedControls["FailPaymentControl"].buttons.element(boundBy: 2).forceTap()
+        app.segmentedControls["FailPaymentControl"].buttons.element(boundBy: 1).forceTap()
         openDropIn()
         let applePay = payWithApplePay()
         XCTAssertTrue(applePay.staticTexts["Update Billing Address"].waitForExistence(timeout: 5))
+    }
+
+    func test_dropIn_shouldDisplayErrorOnApplePaySheet_whenApplePayPaymentFails_dueToCustomerEmailError() {
+        app.switches["ApplePayToggle"].forceTap()
+        app.segmentedControls["FailPaymentControl"].buttons.element(boundBy: 2).forceTap()
+        openDropIn()
+        let applePay = payWithApplePay()
+        XCTAssertTrue(applePay.staticTexts["Update Shipping Contact"].waitForExistence(timeout: 5))
     }
 
     func test_dropIn_shouldDisplaySuccessAlert_whenApplePayPaymentSucceeds() {

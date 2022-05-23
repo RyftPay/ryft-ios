@@ -93,7 +93,8 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
             request: AttemptPaymentRequest.fromApplePay(
                 clientSecret: clientSecret,
                 applePayToken: applePayToken,
-                billingAddress: BillingAddress(pkContact: payment.billingContact)
+                billingAddress: BillingAddress(pkContact: payment.billingContact),
+                customerDetails: PaymentRequestCustomerDetails(pkContact: payment.shippingContact)
             ),
             accountId: accountId
         ) { result in
@@ -139,7 +140,6 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
                 completion(.failure, nil)
             }
         case .failure(let error):
-            print(error)
             paymentState = .failed(error: error, nil)
             completion(.failure, error)
         }

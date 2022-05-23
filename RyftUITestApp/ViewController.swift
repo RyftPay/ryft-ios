@@ -51,7 +51,7 @@ final class ViewController: UIViewController {
     }()
 
     lazy var failPaymentControl: UISegmentedControl = {
-        let toggle = UISegmentedControl(items: ["None", "General", "BillingAddress"])
+        let toggle = UISegmentedControl(items: ["General", "BillingAddress", "CustomerEmail"])
         toggle.accessibilityIdentifier = "FailPaymentControl"
         return toggle
     }()
@@ -124,8 +124,23 @@ final class ViewController: UIViewController {
         if getPaymentSessionErrorToggle.isOn {
             apiClient.getPaymentSessionResult = .failure(.general(message: "boom!"))
         }
-        if failPaymentControl.selectedSegmentIndex == 1 {
+        if failPaymentControl.selectedSegmentIndex == 0 {
             apiClient.attemptPaymentResult = .failure(.general(message: "uh oh"))
+        }
+        if failPaymentControl.selectedSegmentIndex == 1 {
+            apiClient.attemptPaymentResult = .failure(.badResponse(detail: HttpError.HttpErrorDetail(
+                statusCode: 400,
+                body: RyftApiError(
+                    requestId: UUID().uuidString.lowercased(),
+                    code: "some_code",
+                    errors: [
+                        RyftApiError.RyftApiErrorElement(
+                            code: "400",
+                            message: "billingAddress.city is invalid"
+                        )
+                    ]
+                )
+            )))
         }
         if failPaymentControl.selectedSegmentIndex == 2 {
             apiClient.attemptPaymentResult = .failure(.badResponse(detail: HttpError.HttpErrorDetail(
@@ -136,7 +151,7 @@ final class ViewController: UIViewController {
                     errors: [
                         RyftApiError.RyftApiErrorElement(
                             code: "400",
-                            message: "billingAddress.city is invalid"
+                            message: "customerDetails.email is invalid"
                         )
                     ]
                 )
