@@ -16,9 +16,14 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
     private var paymentState: RyftPaymentState = .notStarted
     private let clientSecret: String
     private let accountId: String?
-    private let config: RyftApplePayConfig
     private let apiClient: RyftApiClient
+    private let config: RyftApplePayComponentConfig
     private var paymentAuthController: PKPaymentAuthorizationController?
+
+    public enum RyftApplePayComponentConfig {
+        case auto(config: RyftApplePayConfig)
+        case manual(paymentRequest: PKPaymentRequest)
+    }
 
     public enum RyftApplePayPaymentStatus {
         case cancelled
@@ -29,8 +34,26 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
     public required init?(
         clientSecret: String,
         accountId: String?,
-        config: RyftApplePayConfig,
-        apiClient: RyftApiClient,
+        config: RyftApplePayComponentConfig,
+        delegate: RyftApplePayComponentDelegate,
+        apiClient: RyftApiClient
+    ) {
+        guard RyftUI.supportsApplePay() else {
+            return nil
+        }
+        self.clientSecret = clientSecret
+        self.accountId = accountId
+        self.config = config
+        self.delegate = delegate
+        self.apiClient = apiClient
+        super.init()
+    }
+
+    public required init?(
+        publicApiKey: String,
+        clientSecret: String,
+        accountId: String?,
+        config: RyftApplePayComponentConfig,
         delegate: RyftApplePayComponentDelegate
     ) {
         guard RyftUI.supportsApplePay() else {
@@ -39,12 +62,24 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
         self.clientSecret = clientSecret
         self.accountId = accountId
         self.config = config
-        self.apiClient = apiClient
+        self.apiClient = DefaultRyftApiClient(publicApiKey: publicApiKey)
         self.delegate = delegate
         super.init()
     }
 
     public func present(completion: ((Bool) -> Void)?) {
+        switch config {
+        case .auto(let config):
+            populatePayment(with: config, completion: completion)
+        case .manual(let paymentRequest):
+            presentApplePaySheet(with: paymentRequest, completion: completion)
+        }
+    }
+
+    private func populatePayment(
+        with config: RyftApplePayConfig,
+        completion: ((Bool) -> Void)?
+    ) {
         apiClient.getPaymentSession(
             id: String(clientSecret.components(separatedBy: "_secret_")[0]),
             clientSecret: clientSecret,
@@ -52,6 +87,7 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
         ) { result in
             DispatchQueue.main.async {
                 self.handleGetPaymentSession(
+                    config,
                     result,
                     applePayPresentCompletion: completion
                 )
@@ -110,6 +146,7 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
     }
 
     private func handleGetPaymentSession(
+        _ config: RyftApplePayConfig,
         _ result: Result<PaymentSession, HttpError>,
         applePayPresentCompletion: ((Bool) -> Void)?
     ) {
@@ -117,6 +154,7 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
         case .success(let paymentSession):
             presentApplePaySheet(
                 with: paymentSession,
+                and: config,
                 completion: applePayPresentCompletion
             )
         case .failure:
@@ -147,15 +185,24 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
 
     private func presentApplePaySheet(
         with payment: PaymentSession,
+        and config: RyftApplePayConfig,
         completion: ((Bool) -> Void)?
     ) {
-        self.paymentAuthController = PKPaymentAuthorizationController(
-            paymentRequest: payment.toPKPayment(
+        presentApplePaySheet(
+            with: payment.toPKPayment(
                 merchantIdentifier: config.merchantIdentifier,
                 merchantCountry: config.merchantCountryCode,
                 merchantName: config.merchantName
-            )
+            ),
+            completion: completion
         )
+    }
+
+    private func presentApplePaySheet(
+        with paymentRequest: PKPaymentRequest,
+        completion: ((Bool) -> Void)?
+    ) {
+        self.paymentAuthController = PKPaymentAuthorizationController(paymentRequest: paymentRequest)
         paymentAuthController?.delegate = self
         paymentAuthController?.present(completion: completion)
     }

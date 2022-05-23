@@ -3,6 +3,7 @@ import RyftCore
 final class MockRyftApiClient: RyftApiClient {
 
     var paymentSession: PaymentSession?
+    var didCallGetPaymentSession: Bool = false
 
     func attemptPayment(
         request: AttemptPaymentRequest,
@@ -18,6 +19,7 @@ final class MockRyftApiClient: RyftApiClient {
         accountId: String?,
         completion: @escaping PaymentSessionResponse
     ) {
+        didCallGetPaymentSession = true
         guard let paymentSession = paymentSession else {
             completion(.failure(HttpError.general(message: "API response [get-payment]")))
             return

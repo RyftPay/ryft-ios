@@ -411,9 +411,9 @@ public final class RyftDropInPaymentViewController: UIViewController {
         self.applePayComponent = RyftApplePayComponent(
             clientSecret: config.clientSecret,
             accountId: config.accountId,
-            config: applePayConfig,
-            apiClient: apiClient,
-            delegate: self
+            config: .auto(config: applePayConfig),
+            delegate: self,
+            apiClient: apiClient
         )
         applePayButton.isEnabled = false
         applePayComponent?.present { presented in
