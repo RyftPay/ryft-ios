@@ -141,12 +141,12 @@ You can initialise the component in one of two ways:
 - `RyftApplePayComponentConfig.auto` - let Ryft construct and populate the information on the Apple Pay sheet
 - `RyftApplePayComponent.manual` - handle constructing Apple's `PKPaymentRequest` yourself
 
-We recommend using `.auto`, this ensures that the financials displayed to the customer match what Ryft expects when authorizing the payment and reduces the payment failing due to an inconsistency.
+We recommend using `.auto`. This ensures that the financials displayed to the customer match what Ryft expects when authorizing the payment and reduces the chance of the payment failing due to an inconsistency on the client-side and backend.
 
 ```swift
 @objc private func applePayButtonClicked() {
     let config = RyftApplePayConfig(
-        merchantIdentifier: "merchant.com.<you>",
+        merchantIdentifier: "<your merchant ID>",
         merchantCountryCode: "GB",
         merchantName: "<your merchant name to display on the Apple Pay sheet>"
     )
