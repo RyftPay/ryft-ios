@@ -41,7 +41,6 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         let applePayButton = app.buttons["RyftApplePayButton"]
         applePayButton.tap()
         XCTAssertTrue(app.alerts.element.waitForExistence(timeout: 5))
-        print(app.alerts.element.staticTexts)
         XCTAssertTrue(app.alerts.element.staticTexts["Oops!"].exists)
     }
 

@@ -1,8 +1,8 @@
 import XCTest
 import RyftCore
+import PassKit
 
 @testable import RyftUI
-import PassKit
 
 final class PaymentSessionExtensionTests: XCTestCase {
 
