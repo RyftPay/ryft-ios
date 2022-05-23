@@ -48,7 +48,7 @@ platform :ios do
     run_tests(
       workspace: "ryft-ios.xcodeproj/project.xcworkspace",
       scheme: "RyftUITestApp",
-      devices: ["iPhone 12 Pro"],
+      devices: ["iPhone 12"],
       derived_data_path: "scan_derived_data"
     )
   end
