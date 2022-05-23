@@ -150,7 +150,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
     }
 
     func test_dropIn_shouldDisplayAlert_whenCardPaymentFails() {
-        app.segmentedControls["FailPaymentControl"].buttons.element(boundBy: 1).forceTap()
+        app.segmentedControls["FailPaymentControl"].buttons.element(boundBy: 0).forceTap()
         openDropIn()
         typeCardDetails(
             cardNumber: "5169750000001111",
@@ -194,7 +194,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         app.switches["ApplePayToggle"].forceTap()
         app.segmentedControls["FailPaymentControl"].buttons.element(boundBy: 2).forceTap()
         openDropIn()
-        let applePay = payWithApplePay()
+        let applePay = payWithApplePay(customerEmail: "invalid")
         XCTAssertTrue(applePay.staticTexts["Update Shipping Contact"].waitForExistence(timeout: 5))
     }
 
@@ -225,12 +225,20 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         cvcInput.textFields.element.typeText(cvc)
     }
 
-    private func payWithApplePay() -> XCUIApplication {
+    private func payWithApplePay(customerEmail: String? = nil) -> XCUIApplication {
         let applePayButton = app.buttons["RyftApplePayButton"]
         applePayButton.forceTap()
 
         let applePay = XCUIApplication(bundleIdentifier: "com.apple.PassbookUIService")
         XCTAssertTrue(applePay.wait(for: .runningForeground, timeout: 10))
+
+        if let email = customerEmail {
+            /*
+             * when testing on a local env once you enter an email address the contact value on the
+             * Apple Pay sheet is already populated so there's no need to fill it
+             */
+            enterEmailAddressForApplePay(applePay, email: email)
+        }
 
         /*
          * ApplePay sheet within the simulator defaults to "Pay with Touch Id"
@@ -241,6 +249,9 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         XCTAssertTrue(cardButton.waitForExistence(timeout: 10))
         cardButton.tap()
 
+        // enter billingAddress if not already present (required)
+        enterBillingAddressForApplePay(applePay)
+
         // select the card again within the ApplePay sheet card selection
         cardButton = applePay.buttons.containing(masterCardButtonPredicate).element
         XCTAssertTrue(cardButton.waitForExistence(timeout: 10))
@@ -249,5 +260,40 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         XCTAssertTrue(payButton.waitForExistence(timeout: 10))
         payButton.tap()
         return applePay
+    }
+
+    private func enterEmailAddressForApplePay(
+        _ applePay: XCUIApplication,
+        email: String
+    ) {
+        let addEmailButton = applePay.buttons["Add Email Address"]
+        if addEmailButton.exists {
+            applePay.buttons["Add Email Address"].forceTap()
+            applePay.tables.cells["Add Email Address"].forceTap()
+            applePay.textFields.containing(NSPredicate(format: "placeholderValue contains 'Email'"))
+                .element
+                .typeText(email)
+            applePay.buttons.containing(NSPredicate(format: "label contains 'Done'"))
+                .element
+                .forceTap()
+        }
+    }
+
+    private func enterBillingAddressForApplePay(_ applePay: XCUIApplication) {
+        let addBillingAddress = applePay.buttons.containing(
+            NSPredicate(format: "label contains 'Add Billing Address'")
+        ).element
+        if addBillingAddress.exists {
+            applePay.tables.cells["Add Billing Address"].forceTap()
+            let firstNameCell = applePay.tables.cells["First Name"]
+            let streetCell = applePay.tables.cells["Street, Search Contact or Address"]
+            firstNameCell.forceTap()
+            firstNameCell.typeText("Nathan")
+            streetCell.forceTap()
+            streetCell.typeText("c/o Google LLC")
+            applePay.buttons.containing(NSPredicate(format: "label contains 'Done'"))
+                .element
+                .forceTap()
+        }
     }
 }

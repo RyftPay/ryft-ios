@@ -143,6 +143,18 @@ final class ViewController: UIViewController {
             )))
         }
         if failPaymentControl.selectedSegmentIndex == 2 {
+            let paymentSessionRequiringEmail = PaymentSession(
+                id: "ps_01FCTS1XMKH9FF43CAFA4CXT3P",
+                amount: 350,
+                currency: "GBP",
+                status: .pendingPayment,
+                customerEmail: nil,
+                lastError: nil,
+                requiredAction: nil,
+                returnUrl: "https://ryftpay.com",
+                createdTimestamp: 123
+            )
+            apiClient.getPaymentSessionResult = .success(paymentSessionRequiringEmail)
             apiClient.attemptPaymentResult = .failure(.badResponse(detail: HttpError.HttpErrorDetail(
                 statusCode: 400,
                 body: RyftApiError(
