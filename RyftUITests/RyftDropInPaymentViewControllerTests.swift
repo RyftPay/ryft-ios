@@ -35,8 +35,8 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
     }
 
     func test_dropIn_shouldDisplayAlert_whenApplePayPresentationFails_dueToFailureToFetchPayment() {
-        app.switches["ApplePayToggle"].tap()
-        app.switches["GetPaymentSessionErrorToggle"].tap()
+        app.switches["ApplePayToggle"].forceTap()
+        app.switches["GetPaymentSessionErrorToggle"].forceTap()
         openDropIn()
         let applePayButton = app.buttons["RyftApplePayButton"]
         applePayButton.tap()
@@ -227,7 +227,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
 
     private func payWithApplePay() -> XCUIApplication {
         let applePayButton = app.buttons["RyftApplePayButton"]
-        applePayButton.tap()
+        applePayButton.forceTap()
 
         let applePay = XCUIApplication(bundleIdentifier: "com.apple.PassbookUIService")
         XCTAssertTrue(applePay.wait(for: .runningForeground, timeout: 10))
@@ -246,7 +246,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         XCTAssertTrue(cardButton.waitForExistence(timeout: 10))
         cardButton.forceTap()
         let payButton = applePay.buttons["Pay with Passcode"]
-        XCTAssertTrue(payButton.waitForExistence(timeout: 5))
+        XCTAssertTrue(payButton.waitForExistence(timeout: 10))
         payButton.tap()
         return applePay
     }
