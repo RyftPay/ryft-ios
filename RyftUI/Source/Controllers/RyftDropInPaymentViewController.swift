@@ -266,6 +266,12 @@ public final class RyftDropInPaymentViewController: UIViewController {
         transitionHandler?.userInteractionEnabled = state != .loading
     }
 
+    private func updateButtonStatesForApplePay(state: RyftConfirmButton.ButtonState) {
+        payButton.state = cardDetails.isValid() ? .enabled : payButton.state
+        cancelButton.isEnabled = state == .enabled
+        transitionHandler?.userInteractionEnabled = state == .enabled
+    }
+
     private func setupView() {
         view.backgroundColor = .clear
     }
@@ -416,6 +422,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
             apiClient: apiClient
         )
         applePayButton.isEnabled = false
+        updateButtonStatesForApplePay(state: .disabled)
         applePayComponent?.present { presented in
             if !presented {
                 self.present(DropInViewFactory.createAlert(
@@ -426,6 +433,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
                     animated: true
                 )
                 self.applePayButton.isEnabled = true
+                self.updateButtonStatesForApplePay(state: .enabled)
             }
         }
     }
@@ -437,6 +445,7 @@ extension RyftDropInPaymentViewController: RyftApplePayComponentDelegate {
         finishedWith status: RyftApplePayComponent.RyftApplePayPaymentStatus
     ) {
         applePayButton.isEnabled = true
+        updateButtonStatesForApplePay(state: .enabled)
         switch status {
         case .cancelled:
             break

@@ -74,7 +74,7 @@ final class RyftApplePayComponentTests: XCTestCase {
             config: .manual(paymentRequest: paymentRequest)
         )
         let expectation = expectation(description: "test")
-        component?.present { presented in
+        component?.present { _ in
             XCTAssertFalse(apiClient.didCallGetPaymentSession)
             expectation.fulfill()
         }

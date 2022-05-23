@@ -13,7 +13,7 @@ extension PaymentSession {
         payment.merchantCapabilities = .capability3DS
         payment.countryCode = merchantCountry
         payment.currencyCode = self.currency
-        payment.supportedNetworks = [.visa, .masterCard]
+        payment.supportedNetworks = RyftUI.supportedNetworks
         payment.paymentSummaryItems = [
             PKPaymentSummaryItem(
                 label: merchantName,
