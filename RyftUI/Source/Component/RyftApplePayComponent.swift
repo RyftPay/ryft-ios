@@ -171,12 +171,11 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
             if paymentSession.status == .approved || paymentSession.status == .captured {
                 paymentState = .complete(paymentSession)
                 completion(.success, nil)
+                return
             }
-            if let lastError = paymentSession.lastError {
-                let ryftError = RyftPaymentError(paymentSessionError: lastError)
-                paymentState = .failed(error: nil, ryftError)
-                completion(.failure, nil)
-            }
+            let ryftError = RyftPaymentError(paymentSessionError: paymentSession.lastError ?? .unknown)
+            paymentState = .failed(error: nil, ryftError)
+            completion(.failure, nil)
         case .failure(let error):
             paymentState = .failed(error: error, nil)
             completion(.failure, error)
