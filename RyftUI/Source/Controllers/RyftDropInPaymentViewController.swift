@@ -1,6 +1,7 @@
 import UIKit
 import RyftCore
 import RyftCard
+import PassKit
 
 public protocol RyftDropInPaymentDelegate: AnyObject {
     func onPaymentResult(result: RyftPaymentResult)
@@ -21,9 +22,24 @@ public final class RyftDropInPaymentViewController: UIViewController {
 
     private var cardDetails = RyftDropInCardDetails.incomplete
     private var transitionHandler: SlidingTransitioningHandler?
+    private var applePayComponent: RyftApplePayComponent?
+
+    private lazy var estimatedHeight: CGFloat = {
+        return defaultHeight + (showApplePay ? 40 : 0)
+    }()
+
+    private lazy var showApplePay: Bool = {
+        RyftUI.supportsApplePay() && config.applePay != nil
+    }()
 
     private lazy var containerView: UIView = {
         return DropInViewFactory.createContainerView(theme: theme)
+    }()
+
+    private lazy var applePayButton: PKPaymentButton = {
+        let button = DropInViewFactory.createApplePayButton()
+        button.addTarget(self, action: #selector(applePayClicked), for: .touchUpInside)
+        return button
     }()
 
     private lazy var titleLabel: UILabel = {
@@ -31,8 +47,11 @@ public final class RyftDropInPaymentViewController: UIViewController {
     }()
 
     private lazy var titleSeparatorView: UIView = {
-        let view = UIView()
-        view.backgroundColor = theme.separatorLineColor
+        let style = showApplePay
+            ? RyftSeparatorView.SeperatorStyle.wordSeparated
+            : RyftSeparatorView.SeperatorStyle.singleLine
+        let view = RyftSeparatorView(style: style)
+        view.theme = theme
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -87,12 +106,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
     }()
 
     private lazy var buttonStackView: UIStackView = {
-        let stackView = UIStackView(
-            arrangedSubviews: [
-                payButton,
-                cancelButton
-            ]
-        )
+        let stackView = UIStackView(arrangedSubviews: [payButton, cancelButton])
         stackView.axis = .horizontal
         stackView.spacing = 14.0
         stackView.backgroundColor = theme.primaryBackgroundColor
@@ -102,12 +116,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
     }()
 
     private lazy var containerStackView: UIStackView = {
-        let stackView = UIStackView(
-            arrangedSubviews: [
-                cardNumberInputField,
-                cardExpirationCvcStackView
-            ]
-        )
+        let stackView = UIStackView(arrangedSubviews: [cardNumberInputField, cardExpirationCvcStackView])
         stackView.axis = .vertical
         stackView.spacing = 16.0
         stackView.backgroundColor = theme.primaryBackgroundColor
@@ -129,6 +138,12 @@ public final class RyftDropInPaymentViewController: UIViewController {
         self.delegate = delegate
         self.apiClient = DefaultRyftApiClient(publicApiKey: publicApiKey)
         super.init(nibName: nil, bundle: nil)
+        self.transitionHandler = SlidingTransitioningHandler(
+            presentedViewController: self,
+            height: estimatedHeight
+        )
+        transitioningDelegate = self.transitionHandler
+        modalPresentationStyle = .custom
     }
 
     public init(
@@ -142,7 +157,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         self.transitionHandler = SlidingTransitioningHandler(
             presentedViewController: self,
-            height: defaultHeight
+            height: estimatedHeight
         )
         transitioningDelegate = self.transitionHandler
         modalPresentationStyle = .custom
@@ -165,10 +180,6 @@ public final class RyftDropInPaymentViewController: UIViewController {
         setupConstraints()
         setupKeyboardEvents()
         view.accessibilityIdentifier = "RyftDropIn"
-    }
-
-    override public func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
     }
 
     public func handleRequiredAction(
@@ -238,16 +249,27 @@ public final class RyftDropInPaymentViewController: UIViewController {
             )
         }
         updateButtonStates(state: .enabled)
+        invokeDelegate(with: paymentResult, shouldDismiss: shouldDismiss)
+    }
+
+    private func invokeDelegate(with result: RyftPaymentResult, shouldDismiss: Bool) {
         if shouldDismiss {
             dismiss(animated: true, completion: nil)
         }
-        delegate?.onPaymentResult(result: paymentResult)
+        delegate?.onPaymentResult(result: result)
     }
 
     private func updateButtonStates(state: RyftConfirmButton.ButtonState) {
         payButton.state = state
         cancelButton.isEnabled = state != .loading
+        applePayButton.isEnabled = state != .loading
         transitionHandler?.userInteractionEnabled = state != .loading
+    }
+
+    private func updateButtonStatesForApplePay(state: RyftConfirmButton.ButtonState) {
+        payButton.state = cardDetails.isValid() ? .enabled : payButton.state
+        cancelButton.isEnabled = state == .enabled
+        transitionHandler?.userInteractionEnabled = state == .enabled
     }
 
     private func setupView() {
@@ -257,27 +279,49 @@ public final class RyftDropInPaymentViewController: UIViewController {
     // swiftlint:disable function_body_length
     private func setupConstraints() {
         view.addSubview(containerView)
-        containerView.addSubview(titleLabel)
-        containerView.addSubview(titleSeparatorView)
-        containerView.addSubview(containerStackView)
-        containerView.addSubview(paySeparatorView)
-        containerView.addSubview(buttonStackView)
+        [titleSeparatorView, containerStackView, paySeparatorView, buttonStackView].forEach {
+            containerView.addSubview($0)
+        }
 
         let leadingAnchorIndent: CGFloat = 20
         NSLayoutConstraint.activate([
             containerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            containerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            titleLabel.heightAnchor.constraint(equalToConstant: 30),
-            titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 12),
-            titleLabel.leadingAnchor.constraint(
-                equalTo: containerView.leadingAnchor,
-                constant: leadingAnchorIndent
-            ),
-            titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            containerView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+        if showApplePay {
+            containerView.addSubview(applePayButton)
+            NSLayoutConstraint.activate([
+                applePayButton.heightAnchor.constraint(equalToConstant: 44),
+                applePayButton.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 15),
+                applePayButton.leadingAnchor.constraint(
+                    equalTo: containerView.leadingAnchor,
+                    constant: leadingAnchorIndent
+                ),
+                applePayButton.trailingAnchor.constraint(
+                    equalTo: containerView.trailingAnchor,
+                    constant: -leadingAnchorIndent
+                )
+            ])
+        } else {
+            containerView.addSubview(titleLabel)
+            NSLayoutConstraint.activate([
+                titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 5),
+                titleLabel.heightAnchor.constraint(equalToConstant: 30),
+                titleLabel.leadingAnchor.constraint(
+                    equalTo: containerView.leadingAnchor,
+                    constant: leadingAnchorIndent
+                ),
+                titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor)
+            ])
+        }
+
+        let separatorTopAnchorOffset: CGFloat = showApplePay ? 25 : 12
+        let separatorTopAnchor = showApplePay ? applePayButton.bottomAnchor : titleLabel.bottomAnchor
+        NSLayoutConstraint.activate([
             titleSeparatorView.heightAnchor.constraint(equalToConstant: 1),
             titleSeparatorView.topAnchor.constraint(
-                equalTo: titleLabel.bottomAnchor,
-                constant: 12
+                equalTo: separatorTopAnchor,
+                constant: separatorTopAnchorOffset
             ),
             titleSeparatorView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             titleSeparatorView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
@@ -306,18 +350,13 @@ public final class RyftDropInPaymentViewController: UIViewController {
             paySeparatorView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             paySeparatorView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             buttonStackView.topAnchor.constraint(equalTo: paySeparatorView.bottomAnchor, constant: 24),
-            buttonStackView.leadingAnchor.constraint(
-                equalTo: containerView.leadingAnchor,
-                constant: 20
-            ),
-            buttonStackView.trailingAnchor.constraint(
-                equalTo: containerView.trailingAnchor,
-                constant: -20
-            ),
+            buttonStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
+            buttonStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
+            buttonStackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -40),
             payButton.widthAnchor.constraint(equalTo: buttonStackView.widthAnchor, multiplier: 0.7)
         ])
         containerViewHeightConstraint = containerView.heightAnchor.constraint(
-            equalToConstant: defaultHeight
+            greaterThanOrEqualToConstant: defaultHeight
         )
         containerViewBottomConstraint = containerView.bottomAnchor.constraint(
             equalTo: view.bottomAnchor,
@@ -367,6 +406,60 @@ public final class RyftDropInPaymentViewController: UIViewController {
         transitionHandler?.height = updatedHeightPresentationHeight
         UIView.animate(withDuration: 0.1) {
           self.view.layoutIfNeeded()
+        }
+    }
+
+    @objc
+    func applePayClicked() {
+        guard let applePayConfig = config.applePay else {
+            return
+        }
+        self.applePayComponent = RyftApplePayComponent(
+            clientSecret: config.clientSecret,
+            accountId: config.accountId,
+            config: .auto(config: applePayConfig),
+            delegate: self,
+            apiClient: apiClient
+        )
+        applePayButton.isEnabled = false
+        updateButtonStatesForApplePay(state: .disabled)
+        applePayComponent?.present { presented in
+            if !presented {
+                self.present(DropInViewFactory.createAlert(
+                    message: NSLocalizedStringUtility.applePayPresentError,
+                    defaultActionHandler: { _ in
+                        self.applePayClicked()
+                    }),
+                    animated: true
+                )
+                self.applePayButton.isEnabled = true
+                self.updateButtonStatesForApplePay(state: .enabled)
+            }
+        }
+    }
+}
+
+extension RyftDropInPaymentViewController: RyftApplePayComponentDelegate {
+
+    public func applePayPayment(
+        finishedWith status: RyftApplePayComponent.RyftApplePayPaymentStatus
+    ) {
+        applePayButton.isEnabled = true
+        updateButtonStatesForApplePay(state: .enabled)
+        switch status {
+        case .cancelled:
+            break
+        case .success(let paymentSession):
+            invokeDelegate(
+                with: .success(paymentSession: paymentSession),
+                shouldDismiss: true
+            )
+        case .error(_, let paymentError):
+            let ryftError = paymentError ?? .init(paymentSessionError: .unknown)
+            invokeDelegate(
+                with: .failed(error: ryftError),
+                shouldDismiss: true
+            )
         }
     }
 }

@@ -8,6 +8,7 @@ final class TestFixtures {
             amount: 350,
             currency: "GBP",
             status: .approved,
+            customerEmail: nil,
             lastError: nil,
             requiredAction: nil,
             returnUrl: "https://ryftpay.com",

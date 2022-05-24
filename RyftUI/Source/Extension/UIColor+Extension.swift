@@ -77,6 +77,18 @@ extension UIColor {
         return defaultColor
     }
 
+    static var separatorMiddleLabelColor: UIColor {
+        let defaultColor = UIColor(netHex: 0x939393)
+        if #available(iOS 13.0, *) {
+            return UIColor(dynamicProvider: { trait in
+                trait.userInterfaceStyle == .dark
+                    ? UIColor(netHex: 0x949494)
+                    : defaultColor
+            })
+        }
+        return defaultColor
+    }
+
     static var cancelButtonBackgroundColor: UIColor {
         let defaultColor = UIColor(netHex: 0xD9D9D9)
         if #available(iOS 13.0, *) {

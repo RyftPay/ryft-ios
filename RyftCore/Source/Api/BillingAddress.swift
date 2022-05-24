@@ -1,3 +1,5 @@
+import PassKit
+
 public struct BillingAddress: Equatable, Hashable {
 
     public let firstName: String?
@@ -27,6 +29,20 @@ public struct BillingAddress: Equatable, Hashable {
         self.country = country
         self.postalCode = postalCode
         self.region = region
+    }
+
+    public init?(pkContact: PKContact?) {
+        guard let pkContact = pkContact, let postalAddress = pkContact.postalAddress else {
+            return nil
+        }
+        self.firstName = BillingAddress.stringValueIfNonBlank(pkContact.name?.givenName)
+        self.lastName = BillingAddress.stringValueIfNonBlank(pkContact.name?.familyName)
+        self.lineOne = BillingAddress.stringValueIfNonBlank(postalAddress.street)
+        self.lineTwo = nil
+        self.city = BillingAddress.stringValueIfNonBlank(postalAddress.city)
+        self.country = postalAddress.isoCountryCode
+        self.postalCode = postalAddress.postalCode
+        self.region = BillingAddress.stringValueIfNonBlank(postalAddress.state)
     }
 
     func toJson() -> [String: Any] {
@@ -64,5 +80,12 @@ public struct BillingAddress: Equatable, Hashable {
             && lhs.country == rhs.country
             && lhs.postalCode == rhs.postalCode
             && lhs.region == rhs.region
+    }
+
+    private static func stringValueIfNonBlank(_ maybeValue: String?) -> String? {
+        guard let value = maybeValue, !value.isEmpty else {
+            return nil
+        }
+        return value
     }
 }

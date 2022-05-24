@@ -4,11 +4,44 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
 
     var app: XCUIApplication!
 
+    private let visaCardButtonPredicate = NSPredicate(
+        format: "label contains 'Simulated Card - Visa, ‪•••• 1234‬'"
+    )
+    private let masterCardButtonPredicate = NSPredicate(
+        format: "label contains 'Simulated Card - MasterCard, ‪•••• 1234‬'"
+    )
+
     override func setUpWithError() throws {
         continueAfterFailure = false
         app = XCUIApplication()
         app.launchArguments = ["UI Tests"]
         app.launch()
+        sleep(2) // some elements don't seem to become hittable unless we wait after launch
+    }
+
+    func test_dropIn_hasExpectedElementsAtTop_whenApplePayIsSupported() {
+        app.switches["ApplePayToggle"].tap()
+        openDropIn()
+        XCTAssertTrue(app.buttons["RyftApplePayButton"].exists)
+        XCTAssertFalse(app.staticTexts["RyftTitleLabel"].exists)
+        XCTAssertTrue(app.staticTexts["RyftSeparatorMiddleLabel"].exists)
+    }
+
+    func test_dropIn_hasExpectedElementsAtTop_whenApplePayIsNotSupported() {
+        openDropIn()
+        XCTAssertFalse(app.buttons["RyftApplePayButton"].exists)
+        XCTAssertTrue(app.staticTexts["RyftTitleLabel"].exists)
+        XCTAssertFalse(app.staticTexts["RyftSeparatorMiddleLabel"].exists)
+    }
+
+    func test_dropIn_shouldDisplayAlert_whenApplePayPresentationFails_dueToFailureToFetchPayment() {
+        app.switches["ApplePayToggle"].forceTap()
+        app.switches["GetPaymentSessionErrorToggle"].forceTap()
+        openDropIn()
+        let applePayButton = app.buttons["RyftApplePayButton"]
+        applePayButton.tap()
+        XCTAssertTrue(app.alerts.element.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.alerts.element.staticTexts["Oops!"].exists)
     }
 
     func test_dropIn_hasExpectedInputFields() throws {
@@ -53,9 +86,9 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         XCTAssertTrue(expirationInput.waitForExistence(timeout: 3))
 
         expirationInput.textFields.element.tap()
-        expirationInput.textFields.element.typeText("1022")
+        expirationInput.textFields.element.typeText("1032")
         XCTAssertEqual(
-            "10/22",
+            "10/32",
             expirationInput.textFields.element.value as! String
         )
     }
@@ -69,7 +102,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
 
         cardNumberInput.textFields.element.tap()
         cardNumberInput.textFields.element.typeText("4242424242424242")
-        expirationInput.textFields.element.typeText("1022")
+        expirationInput.textFields.element.typeText("1032")
         cvcInput.textFields.element.typeText("100")
 
         XCTAssertEqual(
@@ -77,7 +110,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
             cardNumberInput.textFields.element.value as! String
         )
         XCTAssertEqual(
-            "10/22",
+            "10/32",
             expirationInput.textFields.element.value as! String
         )
         XCTAssertEqual(
@@ -90,7 +123,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         openDropIn()
         typeCardDetails(
             cardNumber: "4242424242424242",
-            expiration: "1022",
+            expiration: "1032",
             cvc: "100"
         )
         let payButton = app.otherElements["RyftConfirmButton-Pay"]
@@ -101,7 +134,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         openDropIn()
         typeCardDetails(
             cardNumber: "4242424242424242",
-            expiration: "1022",
+            expiration: "1032",
             cvc: "100"
         )
         let payButton = app.otherElements["RyftConfirmButton-Pay"]
@@ -114,6 +147,62 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         let cancelButton = app.buttons["RyftButton-Cancel"]
         cancelButton.tap()
         XCTAssertFalse(app.buttons["RyftButton-Cancel"].exists)
+    }
+
+    func test_dropIn_shouldDisplayAlert_whenCardPaymentFails() {
+        app.segmentedControls["FailPaymentControl"].buttons.element(boundBy: 0).forceTap()
+        openDropIn()
+        typeCardDetails(
+            cardNumber: "5169750000001111",
+            expiration: "1032",
+            cvc: "100"
+        )
+        let payButton = app.otherElements["RyftConfirmButton-Pay"]
+        payButton.buttons.element.tap()
+        XCTAssertTrue(app.alerts.element.staticTexts["Payment Failed"].waitForExistence(timeout: 5))
+    }
+
+    func test_dropIn_shouldDisplaySuccess_whenCardPaymentSucceeds() {
+        openDropIn()
+        typeCardDetails(
+            cardNumber: "5169750000001111",
+            expiration: "1032",
+            cvc: "100"
+        )
+        let payButton = app.otherElements["RyftConfirmButton-Pay"]
+        payButton.buttons.element.tap()
+        XCTAssertTrue(app.alerts.element.staticTexts["Payment Success"].waitForExistence(timeout: 5))
+    }
+
+    func test_dropIn_shouldDisplayAlert_whenApplePayPaymentFails_dueToApiError() {
+        app.switches["ApplePayToggle"].forceTap()
+        app.segmentedControls["FailPaymentControl"].buttons.element(boundBy: 0).forceTap()
+        openDropIn()
+        _ = payWithApplePay()
+        XCTAssertTrue(app.alerts.element.staticTexts["Payment Failed"].waitForExistence(timeout: 5))
+    }
+
+    func test_dropIn_shouldDisplayErrorOnApplePaySheet_whenApplePayPaymentFails_dueToBillingAddressError() {
+        app.switches["ApplePayToggle"].forceTap()
+        app.segmentedControls["FailPaymentControl"].buttons.element(boundBy: 1).forceTap()
+        openDropIn()
+        let applePay = payWithApplePay()
+        XCTAssertTrue(applePay.staticTexts["Update Billing Address"].waitForExistence(timeout: 5))
+    }
+
+    func test_dropIn_shouldDisplayErrorOnApplePaySheet_whenApplePayPaymentFails_dueToCustomerEmailError() {
+        app.switches["ApplePayToggle"].forceTap()
+        app.segmentedControls["FailPaymentControl"].buttons.element(boundBy: 2).forceTap()
+        openDropIn()
+        let applePay = payWithApplePay(customerEmail: "invalid")
+        XCTAssertTrue(applePay.staticTexts["Update Shipping Contact"].waitForExistence(timeout: 5))
+    }
+
+    func test_dropIn_shouldDisplaySuccessAlert_whenApplePayPaymentSucceeds() {
+        app.switches["ApplePayToggle"].forceTap()
+        openDropIn()
+        _ = payWithApplePay()
+        XCTAssertTrue(app.alerts.element.staticTexts["Payment Success"].waitForExistence(timeout: 5))
     }
 
     private func openDropIn() {
@@ -134,5 +223,79 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         cardNumberInput.textFields.element.typeText(cardNumber)
         expirationInput.textFields.element.typeText(expiration)
         cvcInput.textFields.element.typeText(cvc)
+    }
+
+    private func payWithApplePay(customerEmail: String? = nil) -> XCUIApplication {
+        let applePayButton = app.buttons["RyftApplePayButton"]
+        applePayButton.forceTap()
+
+        let applePay = XCUIApplication(bundleIdentifier: "com.apple.PassbookUIService")
+        XCTAssertTrue(applePay.wait(for: .runningForeground, timeout: 25))
+
+        if let email = customerEmail {
+            /*
+             * when testing on a local env once you enter an email address the contact value on the
+             * Apple Pay sheet is already populated so there's no need to fill it
+             */
+            enterEmailAddressForApplePay(applePay, email: email)
+        }
+
+        /*
+         * ApplePay sheet within the simulator defaults to "Pay with Touch Id"
+         * we need to select the already selected card again to have the "Pay with passcode"
+         * button to show (which we can then tap in these tests)
+         */
+        var cardButton = applePay.buttons.containing(visaCardButtonPredicate).element
+        XCTAssertTrue(cardButton.waitForExistence(timeout: 10))
+        cardButton.tap()
+
+        // enter billingAddress if not already present (required)
+        enterBillingAddressForApplePay(applePay)
+
+        // select the card again within the ApplePay sheet card selection
+        cardButton = applePay.buttons.containing(masterCardButtonPredicate).element
+        XCTAssertTrue(cardButton.waitForExistence(timeout: 10))
+        cardButton.forceTap()
+        let payButton = applePay.buttons["Pay with Passcode"]
+        XCTAssertTrue(payButton.waitForExistence(timeout: 10))
+        payButton.tap()
+        return applePay
+    }
+
+    private func enterEmailAddressForApplePay(
+        _ applePay: XCUIApplication,
+        email: String
+    ) {
+        let addEmailButton = applePay.buttons["Add Email Address"]
+        _ = addEmailButton.waitForExistence(timeout: 15)
+        if addEmailButton.exists {
+            applePay.buttons["Add Email Address"].forceTap()
+            applePay.tables.cells["Add Email Address"].forceTap()
+            applePay.textFields.containing(NSPredicate(format: "placeholderValue contains 'Email'"))
+                .element
+                .typeText(email)
+            applePay.buttons.containing(NSPredicate(format: "label contains 'Done'"))
+                .element
+                .forceTap()
+        }
+    }
+
+    private func enterBillingAddressForApplePay(_ applePay: XCUIApplication) {
+        let addBillingAddress = applePay.buttons.containing(
+            NSPredicate(format: "label contains 'Add Billing Address'")
+        ).element
+        _ = addBillingAddress.waitForExistence(timeout: 15)
+        if addBillingAddress.exists {
+            applePay.tables.cells["Add Billing Address"].forceTap()
+            let firstNameCell = applePay.tables.cells["First Name"]
+            let streetCell = applePay.tables.cells["Street, Search Contact or Address"]
+            firstNameCell.forceTap()
+            firstNameCell.typeText("Nathan")
+            streetCell.forceTap()
+            streetCell.typeText("c/o Google LLC")
+            applePay.buttons.containing(NSPredicate(format: "label contains 'Done'"))
+                .element
+                .forceTap()
+        }
     }
 }

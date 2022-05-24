@@ -1,8 +1,125 @@
 import XCTest
+import PassKit
 
 @testable import RyftCore
 
 class BillingAddressTests: XCTestCase {
+
+    private lazy var pkPerson: PersonNameComponents = {
+        var person = PersonNameComponents()
+        person.givenName = "Nathan"
+        person.familyName = "Drake"
+        person.nickname = "Nate"
+        return person
+    }()
+
+    func test_initFromPKContact_shouldReturnNil_whenPostalAddressIsMissing() {
+        let contact = PKContact()
+        contact.name = pkPerson
+        XCTAssertNil(BillingAddress(pkContact: contact))
+    }
+
+    func test_initFromPKContact_shouldReturnExpectedResult_whenPostalAddressIsPresent() {
+        let contact = PKContact()
+        let cnAddress = CNMutablePostalAddress()
+        cnAddress.isoCountryCode = "US"
+        cnAddress.postalCode = "94043"
+        contact.name = nil
+        contact.postalAddress = cnAddress
+        guard let billingAddress = BillingAddress(pkContact: contact) else {
+            XCTFail("expected non-nil billingAddress from PKContact \(contact)")
+            return
+        }
+        let expected = BillingAddress(
+            firstName: nil,
+            lastName: nil,
+            lineOne: nil,
+            lineTwo: nil,
+            city: nil,
+            country: "US",
+            postalCode: "94043",
+            region: nil
+        )
+        XCTAssertEqual(expected, billingAddress)
+    }
+
+    func test_initFromPKContact_shouldReturnExpectedResult_whenPersonHasBlankName() {
+        var person = pkPerson
+        person.givenName = ""
+        person.familyName = ""
+        let contact = PKContact()
+        let cnAddress = CNMutablePostalAddress()
+        cnAddress.isoCountryCode = "US"
+        cnAddress.postalCode = "94043"
+        contact.name = person
+        contact.postalAddress = cnAddress
+        guard let billingAddress = BillingAddress(pkContact: contact) else {
+            XCTFail("expected non-nil billingAddress from PKContact \(contact)")
+            return
+        }
+        let expected = BillingAddress(
+            firstName: nil,
+            lastName: nil,
+            lineOne: nil,
+            lineTwo: nil,
+            city: nil,
+            country: "US",
+            postalCode: "94043",
+            region: nil
+        )
+        XCTAssertEqual(expected, billingAddress)
+    }
+
+    func test_initFromPKContact_shouldReturnExpectedResult_whenPostalAddressAndPersonArePresent() {
+        let contact = PKContact()
+        let cnAddress = CNMutablePostalAddress()
+        cnAddress.isoCountryCode = "US"
+        cnAddress.postalCode = "94043"
+        contact.name = pkPerson
+        contact.postalAddress = cnAddress
+        guard let billingAddress = BillingAddress(pkContact: contact) else {
+            XCTFail("expected non-nil billingAddress from PKContact \(contact)")
+            return
+        }
+        let expected = BillingAddress(
+            firstName: pkPerson.givenName,
+            lastName: pkPerson.familyName,
+            lineOne: nil,
+            lineTwo: nil,
+            city: nil,
+            country: "US",
+            postalCode: "94043",
+            region: nil
+        )
+        XCTAssertEqual(expected, billingAddress)
+    }
+
+    func test_toRyftBillingAddress_shouldReturnExpectedResult_whenPostalAddressContainsAllFields() {
+        let contact = PKContact()
+        let cnAddress = CNMutablePostalAddress()
+        cnAddress.street = "c/o Google LLC"
+        cnAddress.isoCountryCode = "US"
+        cnAddress.postalCode = "94043"
+        cnAddress.city = "Libertalia"
+        cnAddress.state = "CA"
+        contact.name = pkPerson
+        contact.postalAddress = cnAddress
+        guard let billingAddress = BillingAddress(pkContact: contact) else {
+            XCTFail("expected non-nil billingAddress from PKContact \(contact)")
+            return
+        }
+        let expected = BillingAddress(
+            firstName: "Nathan",
+            lastName: "Drake",
+            lineOne: "c/o Google LLC",
+            lineTwo: nil,
+            city: "Libertalia",
+            country: "US",
+            postalCode: "94043",
+            region: "CA"
+        )
+        XCTAssertEqual(expected, billingAddress)
+    }
 
     func test_toJson_shouldReturnExpectedValue_whenNilFieldsAreMissing() {
         let billingAddress = TestFixtures.billingAddress()

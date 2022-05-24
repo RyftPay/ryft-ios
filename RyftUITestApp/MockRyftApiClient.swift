@@ -2,12 +2,36 @@ import RyftCore
 
 final class MockRyftApiClient: RyftApiClient {
 
+    var getPaymentSessionResult: Result<PaymentSession, HttpError> = .success(PaymentSession(
+        id: "ps_01FCTS1XMKH9FF43CAFA4CXT3P",
+        amount: 350,
+        currency: "GBP",
+        status: .pendingPayment,
+        customerEmail: "support@ryftpay.com",
+        lastError: nil,
+        requiredAction: nil,
+        returnUrl: "https://ryftpay.com",
+        createdTimestamp: 123
+    ))
+
+    var attemptPaymentResult: Result<PaymentSession, HttpError> = .success(PaymentSession(
+        id: "ps_01FCTS1XMKH9FF43CAFA4CXT3P",
+        amount: 350,
+        currency: "GBP",
+        status: .approved,
+        customerEmail: "support@ryftpay.com",
+        lastError: nil,
+        requiredAction: nil,
+        returnUrl: "https://ryftpay.com",
+        createdTimestamp: 123
+    ))
+
     func attemptPayment(
         request: AttemptPaymentRequest,
         accountId: String?,
         completion: @escaping PaymentSessionResponse
     ) {
-        completion(.failure(HttpError.general(message: "API response [attempt-payment]")))
+        completion(attemptPaymentResult)
     }
 
     func getPaymentSession(
@@ -16,6 +40,6 @@ final class MockRyftApiClient: RyftApiClient {
         accountId: String?,
         completion: @escaping PaymentSessionResponse
     ) {
-        completion(.failure(HttpError.general(message: "API response [get-payment]")))
+        completion(getPaymentSessionResult)
     }
 }

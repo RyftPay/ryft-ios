@@ -83,12 +83,18 @@ type_body_length:
   - 400 # error
 
 file_length:
-  warning: 500
+  warning: 550
   error: 600
+
+function_body_length:
+  warning: 45
 
 large_tuple:
   warning: 4
   error: 5
+
+cyclomatic_complexity:
+  ignores_case_statements: true
 
 function_parameter_count:
   - 5
