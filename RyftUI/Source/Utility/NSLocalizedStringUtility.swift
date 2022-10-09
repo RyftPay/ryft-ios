@@ -13,6 +13,7 @@ final class NSLocalizedStringUtility {
     static let oopsWord = getString(forKey: "oops")
     static let retryWord = getString(forKey: "retry")
     static let applePayPresentError = getString(forKey: "apple_pay_present_error")
+    static let saveCardOptInMessage = getString(forKey: "save_card_opt_in_message")
 
     static func getString(forKey: String) -> String {
         #if SWIFT_PACKAGE

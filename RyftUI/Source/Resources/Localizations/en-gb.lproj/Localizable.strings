@@ -18,3 +18,4 @@
 "oops" = "Oops!";
 "retry" = "Retry";
 "apple_pay_present_error" = "There was an unexpected issue displaying Apple Pay";
+"save_card_opt_in_message" = "Save card for future payments";

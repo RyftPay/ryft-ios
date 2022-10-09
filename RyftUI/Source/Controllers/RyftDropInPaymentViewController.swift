@@ -20,6 +20,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
     private var containerViewHeightConstraint: NSLayoutConstraint?
     private var containerViewBottomConstraint: NSLayoutConstraint?
 
+    private var saveCard = false
     private var cardDetails = RyftDropInCardDetails.incomplete
     private var transitionHandler: SlidingTransitioningHandler?
     private var applePayComponent: RyftApplePayComponent?
@@ -89,6 +90,14 @@ public final class RyftDropInPaymentViewController: UIViewController {
         let view = UIView()
         view.backgroundColor = theme.separatorLineColor
         view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    private lazy var saveCardView: RyftSaveCardToggleView = {
+        let view = DropInViewFactory.createSaveCardToggleView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.delegate = self
+        view.theme = theme
         return view
     }()
 
@@ -210,7 +219,8 @@ public final class RyftDropInPaymentViewController: UIViewController {
                 number: cardDetails.cardNumber,
                 expiryMonth: cardDetails.expirationMonth,
                 expiryYear: cardDetails.expirationYear,
-                cvc: cardDetails.cvc
+                cvc: cardDetails.cvc,
+                store: saveCard
             ),
             accountId: config.accountId
         ) { result in
@@ -279,7 +289,12 @@ public final class RyftDropInPaymentViewController: UIViewController {
     // swiftlint:disable function_body_length
     private func setupConstraints() {
         view.addSubview(containerView)
-        [titleSeparatorView, containerStackView, paySeparatorView, buttonStackView].forEach {
+        [titleSeparatorView,
+         containerStackView,
+         paySeparatorView,
+         saveCardView,
+         buttonStackView
+        ].forEach {
             containerView.addSubview($0)
         }
 
@@ -342,14 +357,27 @@ public final class RyftDropInPaymentViewController: UIViewController {
                 equalTo: containerView.trailingAnchor,
                 constant: -20
             ),
-            paySeparatorView.heightAnchor.constraint(equalToConstant: 1),
-            paySeparatorView.topAnchor.constraint(
+//            paySeparatorView.heightAnchor.constraint(equalToConstant: 1),
+//            paySeparatorView.topAnchor.constraint(
+//                equalTo: containerStackView.bottomAnchor,
+//                constant: 24
+//            ),
+//            paySeparatorView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+//            paySeparatorView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+//            saveCardStackView.heightAnchor.constraint(equalToConstant: 30),
+            saveCardView.topAnchor.constraint(
                 equalTo: containerStackView.bottomAnchor,
                 constant: 24
             ),
-            paySeparatorView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            paySeparatorView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            buttonStackView.topAnchor.constraint(equalTo: paySeparatorView.bottomAnchor, constant: 24),
+            saveCardView.trailingAnchor.constraint(
+                equalTo: containerView.trailingAnchor,
+                constant: -20
+            ),
+            saveCardView.leadingAnchor.constraint(
+                equalTo: containerView.leadingAnchor,
+                constant: 20
+            ),
+            buttonStackView.topAnchor.constraint(equalTo: saveCardView.bottomAnchor, constant: 24),
             buttonStackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
             buttonStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
             buttonStackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -40),
@@ -466,7 +494,8 @@ extension RyftDropInPaymentViewController: RyftApplePayComponentDelegate {
 
 extension RyftDropInPaymentViewController: RyftCardNumberInputProtocol,
     RyftCardExpirationInputProtocol,
-    RyftCardCvcInputProtocol {
+    RyftCardCvcInputProtocol,
+    SaveCardToggleProtocol {
 
     func onCardNumberChanged(
         cardNumber: String,
@@ -503,6 +532,10 @@ extension RyftDropInPaymentViewController: RyftCardNumberInputProtocol,
     ) {
         cardDetails = cardDetails.with(cvc: cvc, and: state)
         updatePayButton(cardIsValid: cardDetails.isValid())
+    }
+
+    func onSaveCardToggleClicked(isSelected: Bool) {
+        self.saveCard = isSelected
     }
 
     private func updatePayButton(cardIsValid: Bool) {

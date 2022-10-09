@@ -40,6 +40,22 @@ final class DropInViewFactory {
         return label
     }
 
+    static func createSaveCardLabel() -> UILabel {
+        let label = UILabel()
+        label.text = NSLocalizedStringUtility.saveCardOptInMessage
+        label.textAlignment = .center
+        label.font = .systemFont(ofSize: 14)
+        label.textColor = .saveCardOptInTextColor
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }
+
+    static func createSaveCardToggleView() -> RyftSaveCardToggleView {
+        let view = RyftSaveCardToggleView()
+        view.accessibilityIdentifier = "RyftSaveCardToggleView"
+        return view
+    }
+
     static func createPayButton(
         customTitle: String?,
         buttonTap: @escaping () -> Void
