@@ -66,14 +66,23 @@ final class AttemptPaymentRequestTest: XCTestCase {
             cvc: "100"
         ).toJson()
         XCTAssertNotNil(result["clientSecret"])
+        XCTAssertNotNil(result["threeDsRequestDetails"])
         XCTAssertNotNil(result["cardDetails"])
         XCTAssertNil(result["walletDetails"])
         guard let clientSecret = result["clientSecret"] as? String else {
             XCTFail("serialized JSON clientSecret field was not expected type")
             return
         }
+        guard let threeDsRequestDetails = result["threeDsRequestDetails"] as? [String: Any] else {
+            XCTFail("serialized JSON threeDsRequestDetails field was not expected type")
+            return
+        }
         guard let cardDetails = result["cardDetails"] as? [String: Any] else {
             XCTFail("serialized JSON cardDetails field was not expected type")
+            return
+        }
+        guard let deviceChannel = threeDsRequestDetails["deviceChannel"] as? String else {
+            XCTFail("serialized JSON threeDsRequestDetails did not contain the expected fields")
             return
         }
         guard
@@ -86,6 +95,7 @@ final class AttemptPaymentRequestTest: XCTestCase {
             return
         }
         XCTAssertEqual("secret", clientSecret)
+        XCTAssertEqual("Application", deviceChannel)
         XCTAssertEqual("4242424242424242", cardNumber)
         XCTAssertEqual("10", cardExpiryMonth)
         XCTAssertEqual("2028", cardExpiryYear)

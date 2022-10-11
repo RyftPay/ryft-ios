@@ -2,6 +2,7 @@ import UIKit
 import RyftCore
 import RyftCard
 import PassKit
+import Checkout3DS
 
 public protocol RyftDropInPaymentDelegate: AnyObject {
     func onPaymentResult(result: RyftPaymentResult)
@@ -23,6 +24,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
     private var cardDetails = RyftDropInCardDetails.incomplete
     private var transitionHandler: SlidingTransitioningHandler?
     private var applePayComponent: RyftApplePayComponent?
+    private let threeDsSdk: Checkout3DSService = initialiseThreeDsService()
 
     private lazy var estimatedHeight: CGFloat = {
         return defaultHeight + (showApplePay ? 40 : 0)
@@ -186,12 +188,52 @@ public final class RyftDropInPaymentViewController: UIViewController {
         returnUrl: String,
         _ action: PaymentSessionRequiredAction
     ) {
+        if let identify = action.identify {
+            let params = AuthenticationParameters(
+                sessionID: identify.sessionId,
+                sessionSecret: identify.sessionSecret,
+                scheme: identify.scheme
+            )
+            threeDsSdk.authenticate(authenticationParameters: params) { maybeError in
+                if let error = maybeError {
+                    print("error performing 3ds authentication \(error.localizedDescription)")
+                } else {
+                    self.payClicked()
+                }
+                self.threeDsSdk.cleanup()
+            }
+            return
+        }
+        //TODO: handle nil url on required action
         let threeDsView = RyftThreeDSecureViewController(
             returnUrl: URL(string: returnUrl)!,
-            authUrl: URL(string: action.url)!,
+            authUrl: URL(string: action.url!)!,
             delegate: self
         )
         present(threeDsView, animated: true, completion: nil)
+    }
+
+    private static func initialiseThreeDsService() -> Checkout3DSService {
+        Checkout3DSService(
+            environment: .sandbox,
+            locale: Locale(identifier: "en_GB"),
+            uiCustomization: DefaultUICustomization(
+                toolbarCustomization: DefaultToolbarCustomization(),
+                labelCustomization: DefaultLabelCustomization(),
+                entrySelectionCustomization: DefaultEntrySelectionCustomization(),
+                buttonCustomizations: DefaultButtonCustomizations(),
+                footerCustomization: DefaultFooterCustomization(
+                    backgroundColor: .clear,
+                    font: .systemFont(ofSize: 0),
+                    textColor: .clear,
+                    labelFont: .italicSystemFont(ofSize: 0),
+                    labelTextColor: .clear,
+                    expandIndicatorColor: .clear
+               ),
+                whitelistCustomization: DefaultWhitelistCustomization()
+            ),
+            appURL: nil
+        )
     }
 
     @objc

@@ -103,7 +103,10 @@ public struct AttemptPaymentRequest {
 
     func toJson() -> [String: Any] {
         var json: [String: Any] = [
-            "clientSecret": clientSecret
+            "clientSecret": clientSecret,
+            "threeDsRequestDetails": [
+                "deviceChannel": "Application"
+            ]
         ]
         if let card = cardDetails {
             json["cardDetails"] = card.toJson() as Any
