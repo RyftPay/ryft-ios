@@ -295,11 +295,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
         let saveCardView = dropInUsage == .setupCard
             ? saveCardConsentLabel
             : saveCardView
-        [titleSeparatorView,
-         containerStackView,
-         saveCardView,
-         buttonStackView
-        ].forEach {
+        [titleSeparatorView, containerStackView, saveCardView, buttonStackView].forEach {
             containerView.addSubview($0)
         }
 
