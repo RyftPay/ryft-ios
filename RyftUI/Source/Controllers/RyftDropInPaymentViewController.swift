@@ -20,10 +20,13 @@ public final class RyftDropInPaymentViewController: UIViewController {
     private var containerViewHeightConstraint: NSLayoutConstraint?
     private var containerViewBottomConstraint: NSLayoutConstraint?
 
-    private var saveCard = false
     private var cardDetails = RyftDropInCardDetails.incomplete
     private var transitionHandler: SlidingTransitioningHandler?
     private var applePayComponent: RyftApplePayComponent?
+
+    private lazy var saveCard: Bool = {
+        return config.display?.usage == .setupCard
+    }()
 
     private lazy var estimatedHeight: CGFloat = {
         return defaultHeight + (showApplePay ? 40 : 0)
