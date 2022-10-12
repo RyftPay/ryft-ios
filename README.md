@@ -227,6 +227,32 @@ public func applePayPayment(
 }
 ```
 
+### Using the drop-in for setting up cards for future use
+
+A common use-case for some businesses is setting up and storing cards without charging the customer.
+This is also known as zero-value authorization or account verification.
+
+<img src="images/drop-in-setup-card.png" width=30% height=30%>
+
+The drop-in currently has 2 usages:
+ - `payment` (your customer is actively checking out and completing a purchase)
+ - `setupCard` (your customer wants to save their card for future use without incurring any charges)
+
+By default we will use `payment`, however to customise the view simply pass the `displayConfig` flag when initialising the drop-in:
+
+```swift
+RyftDropInConfiguration(
+    clientSecret: "<the client secret of the payment-session>",
+    accountId: "nil | <the Id of the sub-account you are taking payments for>",
+    displayConfig: RyftDropInConfiguration.RyftDropInDisplayConfig(
+        payButtonTitle: nil,
+        usage: .setupCard
+    )
+    applePay: nil // we recommend leaving this nil to hide Apple Pay
+)
+```
+
+
 ### Customising the drop-in
 
 You can customise the appearance the drop-in by passing in your own `RyftUITheme` instance.
