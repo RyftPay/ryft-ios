@@ -243,7 +243,7 @@ By default we will use `payment`, however to customise the view simply pass the 
 ```swift
 RyftDropInConfiguration(
     clientSecret: "<the client secret of the payment-session>",
-    accountId: "nil | <the Id of the sub-account you are taking payments for>",
+    accountId: nil, // account verifications must be done via the standard account holder.
     displayConfig: RyftDropInConfiguration.RyftDropInDisplayConfig(
         payButtonTitle: nil,
         usage: .setupCard
