@@ -124,4 +124,16 @@ extension UIColor {
         }
         return defaultColor
     }
+
+    static var saveCardOptInTextColor: UIColor {
+        let defaultColor = UIColor(netHex: 0x808080)
+        if #available(iOS 13.0, *) {
+            return UIColor(dynamicProvider: { trait in
+                return trait.userInterfaceStyle == .dark
+                    ? UIColor(netHex: 0xEEEEEE)
+                    : defaultColor
+            })
+        }
+        return defaultColor
+    }
 }

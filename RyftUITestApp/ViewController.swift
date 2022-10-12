@@ -68,6 +68,24 @@ final class ViewController: UIViewController {
         return stackView
     }()
 
+    lazy var dropInUsageControl: UISegmentedControl = {
+        let toggle = UISegmentedControl(items: ["Payment", "SetupCard"])
+        toggle.accessibilityIdentifier = "DropInUsageControl"
+        return toggle
+    }()
+
+    lazy var dropInUsageControlStackView: UIStackView = {
+        let label = UILabel()
+        label.text = "Drop In Usage"
+        let stackView = UIStackView(arrangedSubviews: [
+            label,
+            dropInUsageControl,
+        ])
+        stackView.axis = .vertical
+        stackView.spacing = 5.0
+        return stackView
+    }()
+
     lazy var checkoutButton: UIButton = {
         let button = UIButton()
         button.setTitle("ShowDropIn", for: .normal)
@@ -86,6 +104,7 @@ final class ViewController: UIViewController {
             applePayToggleStackView,
             getPaymentSessionErrorToggleStackView,
             failPaymentControlStackView,
+            dropInUsageControlStackView,
             checkoutButton
         ])
         stackView.axis = .vertical
@@ -174,6 +193,10 @@ final class ViewController: UIViewController {
             config: RyftDropInConfiguration(
                 clientSecret: "ps_123",
                 accountId: nil,
+                display: RyftDropInConfiguration.RyftDropInDisplayConfig(
+                    payButtonTitle: nil,
+                    usage: dropInUsageControl.selectedSegmentIndex > 0 ? .setupCard : .payment
+                ),
                 applePay: applyPayToggle.isOn
                     ? RyftApplePayConfig(
                         merchantIdentifier: "Id",

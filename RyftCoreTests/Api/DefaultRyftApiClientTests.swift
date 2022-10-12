@@ -210,7 +210,8 @@ class DefaultRyftApiClientTests: XCTestCase {
             number: "4242424242424242",
             expiryMonth: "10",
             expiryYear: "2028",
-            cvc: "100"
+            cvc: "100",
+            store: false
         )
     }
 

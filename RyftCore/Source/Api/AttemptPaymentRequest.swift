@@ -7,13 +7,16 @@ public struct AttemptPaymentRequest {
     let walletDetails: PaymentRequestWalletDetails?
     let billingAddress: BillingAddress?
     let customerDetails: PaymentRequestCustomerDetails?
+    let threeDsRequestDetails: PaymentRequestThreeDsDetails
+    let paymentMethodOptions: PaymentRequestPaymentMethodOptions?
 
     public static func fromCard(
         clientSecret: String,
         number: String,
         expiryMonth: String,
         expiryYear: String,
-        cvc: String
+        cvc: String,
+        store: Bool
     ) -> AttemptPaymentRequest {
         return AttemptPaymentRequest(
             clientSecret: clientSecret,
@@ -25,7 +28,9 @@ public struct AttemptPaymentRequest {
             ),
             walletDetails: nil,
             billingAddress: nil,
-            customerDetails: nil
+            customerDetails: nil,
+            threeDsRequestDetails: PaymentRequestThreeDsDetails.defaultValue,
+            paymentMethodOptions: PaymentRequestPaymentMethodOptions(store: store)
         )
     }
 
@@ -43,7 +48,9 @@ public struct AttemptPaymentRequest {
                 applePayToken: applePayToken
             ),
             billingAddress: billingAddress,
-            customerDetails: customerDetails
+            customerDetails: customerDetails,
+            threeDsRequestDetails: PaymentRequestThreeDsDetails.defaultValue,
+            paymentMethodOptions: nil
         )
     }
 
@@ -70,7 +77,10 @@ public struct AttemptPaymentRequest {
             hasher.combine(cvc)
         }
 
-        public static func == (lhs: PaymentRequestCardDetails, rhs: PaymentRequestCardDetails) -> Bool {
+        public static func == (
+            lhs: PaymentRequestCardDetails,
+            rhs: PaymentRequestCardDetails
+        ) -> Bool {
             return lhs.number == rhs.number
                 && lhs.expiryMonth == rhs.expiryMonth
                 && lhs.expiryYear == rhs.expiryYear
@@ -95,15 +105,45 @@ public struct AttemptPaymentRequest {
             hasher.combine(applePayToken)
         }
 
-        public static func == (lhs: PaymentRequestWalletDetails, rhs: PaymentRequestWalletDetails) -> Bool {
+        public static func == (
+            lhs: PaymentRequestWalletDetails,
+            rhs: PaymentRequestWalletDetails
+        ) -> Bool {
             return lhs.type == rhs.type
                 && lhs.applePayToken == rhs.applePayToken
         }
     }
 
+    public struct PaymentRequestThreeDsDetails: Equatable, Hashable {
+
+        let deviceChannel: String
+
+        func toJson() -> [String: Any] {
+            [
+                "deviceChannel": deviceChannel
+            ]
+        }
+
+        public func hash(into hasher: inout Hasher) {
+            hasher.combine(deviceChannel)
+        }
+
+        public static func == (
+            lhs: PaymentRequestThreeDsDetails,
+            rhs: PaymentRequestThreeDsDetails
+        ) -> Bool {
+            return lhs.deviceChannel == rhs.deviceChannel
+        }
+
+        public static let defaultValue = PaymentRequestThreeDsDetails(
+            deviceChannel: "Application"
+        )
+    }
+
     func toJson() -> [String: Any] {
         var json: [String: Any] = [
-            "clientSecret": clientSecret
+            "clientSecret": clientSecret,
+            "threeDsRequestDetails": threeDsRequestDetails.toJson() as Any
         ]
         if let card = cardDetails {
             json["cardDetails"] = card.toJson() as Any
@@ -116,6 +156,9 @@ public struct AttemptPaymentRequest {
         }
         if let customerDetails = customerDetails {
             json["customerDetails"] = customerDetails.toJson() as Any
+        }
+        if let paymentMethodOptions = paymentMethodOptions {
+            json["paymentMethodOptions"] = paymentMethodOptions.toJson() as Any
         }
         return json
     }

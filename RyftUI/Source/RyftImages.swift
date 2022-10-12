@@ -9,6 +9,9 @@ public final class RyftImages {
     public static let cvcIcon = getImage(named: "cvc_icon")
     public static let unknownCardIcon = getImage(named: "unknown_card_icon")
 
+    static let checkboxUnselected = getImage(named: "checkbox_unselected")
+    static let checkboxSelected = getImage(named: "checkbox_selected")
+
     static func imageFor(cardScheme: CardScheme) -> UIImage? {
         switch cardScheme {
         case .visa:
