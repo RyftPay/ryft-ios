@@ -33,6 +33,10 @@ public final class RyftDropInPaymentViewController: UIViewController {
         RyftUI.supportsApplePay() && config.applePay != nil
     }()
 
+    private lazy var dropInUsage: RyftUI.DropInUsage = {
+        config.display?.usage ?? .payment
+    }()
+
     private lazy var containerView: UIView = {
         return DropInViewFactory.createContainerView(theme: theme)
     }()
@@ -44,7 +48,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
     }()
 
     private lazy var titleLabel: UILabel = {
-        return DropInViewFactory.createTitleLabel()
+        return DropInViewFactory.createTitleLabel(usage: dropInUsage)
     }()
 
     private lazy var titleSeparatorView: UIView = {
@@ -86,11 +90,9 @@ public final class RyftDropInPaymentViewController: UIViewController {
         return stackView
     }()
 
-    private lazy var paySeparatorView: UIView = {
-        let view = UIView()
-        view.backgroundColor = theme.separatorLineColor
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
+    private lazy var saveCardConsentLabel: UILabel = {
+        let label = DropInViewFactory.createSaveCardConsentLabel()
+        return label
     }()
 
     private lazy var saveCardView: RyftSaveCardToggleView = {
@@ -103,7 +105,8 @@ public final class RyftDropInPaymentViewController: UIViewController {
 
     private lazy var payButton: RyftConfirmButton = {
         return DropInViewFactory.createPayButton(
-            customTitle: config.display?.payButtonTitle ?? NSLocalizedStringUtility.payNow,
+            customTitle: config.display?.payButtonTitle,
+            usage: dropInUsage,
             buttonTap: payClicked
         )
     }()
@@ -289,9 +292,11 @@ public final class RyftDropInPaymentViewController: UIViewController {
     // swiftlint:disable function_body_length
     private func setupConstraints() {
         view.addSubview(containerView)
+        let saveCardView = dropInUsage == .setupCard
+            ? saveCardConsentLabel
+            : saveCardView
         [titleSeparatorView,
          containerStackView,
-         paySeparatorView,
          saveCardView,
          buttonStackView
         ].forEach {
@@ -320,7 +325,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
         } else {
             containerView.addSubview(titleLabel)
             NSLayoutConstraint.activate([
-                titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 5),
+                titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 12),
                 titleLabel.heightAnchor.constraint(equalToConstant: 30),
                 titleLabel.leadingAnchor.constraint(
                     equalTo: containerView.leadingAnchor,
@@ -357,14 +362,6 @@ public final class RyftDropInPaymentViewController: UIViewController {
                 equalTo: containerView.trailingAnchor,
                 constant: -20
             ),
-//            paySeparatorView.heightAnchor.constraint(equalToConstant: 1),
-//            paySeparatorView.topAnchor.constraint(
-//                equalTo: containerStackView.bottomAnchor,
-//                constant: 24
-//            ),
-//            paySeparatorView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-//            paySeparatorView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-//            saveCardStackView.heightAnchor.constraint(equalToConstant: 30),
             saveCardView.topAnchor.constraint(
                 equalTo: containerStackView.bottomAnchor,
                 constant: 24

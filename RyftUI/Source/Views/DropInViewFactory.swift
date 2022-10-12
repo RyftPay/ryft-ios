@@ -22,9 +22,11 @@ final class DropInViewFactory {
         return view
     }
 
-    static func createTitleLabel() -> UILabel {
+    static func createTitleLabel(usage: RyftUI.DropInUsage) -> UILabel {
         let label = UILabel()
-        label.text = NSLocalizedStringUtility.cardDropInTitle
+        label.text = usage == .setupCard
+            ? NSLocalizedStringUtility.cardDropInAuthoriseTitle
+            : NSLocalizedStringUtility.cardDropInTitle
         label.font = .boldSystemFont(ofSize: 16)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.accessibilityIdentifier = "RyftTitleLabel"
@@ -50,6 +52,17 @@ final class DropInViewFactory {
         return label
     }
 
+    static func createSaveCardConsentLabel() -> UILabel {
+        let label = UILabel()
+        label.text = NSLocalizedStringUtility.saveCardConsentMessage
+        label.textAlignment = .left
+        label.font = .systemFont(ofSize: 14)
+        label.textColor = .saveCardOptInTextColor
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }
+
     static func createSaveCardToggleView() -> RyftSaveCardToggleView {
         let view = RyftSaveCardToggleView()
         view.accessibilityIdentifier = "RyftSaveCardToggleView"
@@ -58,10 +71,16 @@ final class DropInViewFactory {
 
     static func createPayButton(
         customTitle: String?,
+        usage: RyftUI.DropInUsage,
         buttonTap: @escaping () -> Void
     ) -> RyftConfirmButton {
+        let title = customTitle ?? (
+            usage == .setupCard
+                ? NSLocalizedStringUtility.saveCard
+                : NSLocalizedStringUtility.payNow
+        )
         let button = RyftConfirmButton(
-            title: customTitle ?? NSLocalizedStringUtility.payNow,
+            title: title,
             buttonTap: buttonTap
         )
         button.accessibilityIdentifier = "RyftConfirmButton-Pay"

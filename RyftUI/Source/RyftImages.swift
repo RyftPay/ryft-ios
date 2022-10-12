@@ -11,7 +11,7 @@ public final class RyftImages {
 
     static let checkboxUnselected = getImage(named: "checkbox_unselected")
     static let checkboxSelected = getImage(named: "checkbox_selected")
-    
+
     static func imageFor(cardScheme: CardScheme) -> UIImage? {
         switch cardScheme {
         case .visa:

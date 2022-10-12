@@ -1,4 +1,5 @@
 "card_drop_in_title" = "Credit / Debit Card";
+"card_drop_in_authorise_title" = "Authorise Card";
 "card_drop_in_or" = "or";
 "card_number_placeholder" = "Card Number";
 "cvc_placeholder" = "CVC";
@@ -19,3 +20,5 @@
 "retry" = "Retry";
 "apple_pay_present_error" = "There was an unexpected issue displaying Apple Pay";
 "save_card_opt_in_message" = "Save card for future payments";
+"save_card" = "Save card";
+"save_card_consent_message" = "By authorising your card, you consent to your details being stored securely for future payments";

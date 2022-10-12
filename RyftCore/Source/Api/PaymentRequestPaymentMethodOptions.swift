@@ -7,9 +7,7 @@ public struct PaymentRequestPaymentMethodOptions: Equatable, Hashable {
     }
 
     func toJson() -> [String: Any] {
-        [
-            "store": store
-        ]
+        ["store": store]
     }
 
     public func hash(into hasher: inout Hasher) {

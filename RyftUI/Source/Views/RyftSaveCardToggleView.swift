@@ -10,7 +10,7 @@ final class RyftSaveCardToggleView: UIView {
 
     weak var delegate: SaveCardToggleProtocol?
 
-    private var isSelected: Bool = false
+    private var isSelected = false
 
     private lazy var checkbox: UIImageView = {
         let imageView = UIImageView()
@@ -20,7 +20,9 @@ final class RyftSaveCardToggleView: UIView {
     }()
 
     private lazy var optInLabel: UILabel = {
-        return DropInViewFactory.createSaveCardLabel()
+        let label = DropInViewFactory.createSaveCardLabel()
+        label.isUserInteractionEnabled = true
+        return label
     }()
 
     init() {
@@ -60,11 +62,13 @@ final class RyftSaveCardToggleView: UIView {
     }
 
     private func addCheckboxTap() {
-        let tapGuesture = UITapGestureRecognizer(
-            target: self,
-            action: #selector(checkboxClicked(_:))
-        )
-        checkbox.addGestureRecognizer(tapGuesture)
+        [checkbox, optInLabel].forEach { view in
+            let tapGuesture = UITapGestureRecognizer(
+                target: self,
+                action: #selector(checkboxClicked(_:))
+            )
+            view.addGestureRecognizer(tapGuesture)
+        }
     }
 
     private func updateCheckboxImage() {
@@ -72,8 +76,9 @@ final class RyftSaveCardToggleView: UIView {
         checkbox.image = image
     }
 
-    @objc private func checkboxClicked(_ tap: UIGestureRecognizer) {
-        isSelected = !isSelected
+    @objc
+    private func checkboxClicked(_ tap: UIGestureRecognizer) {
+        isSelected.toggle()
         updateCheckboxImage()
         delegate?.onSaveCardToggleClicked(isSelected: isSelected)
     }

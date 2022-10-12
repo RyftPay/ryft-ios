@@ -115,7 +115,7 @@ public struct AttemptPaymentRequest {
     }
 
     public struct PaymentRequestThreeDsDetails: Equatable, Hashable {
-        
+
         let deviceChannel: String
 
         func toJson() -> [String: Any] {
@@ -135,7 +135,7 @@ public struct AttemptPaymentRequest {
             return lhs.deviceChannel == rhs.deviceChannel
         }
 
-        public static let defaultValue: PaymentRequestThreeDsDetails = PaymentRequestThreeDsDetails(
+        public static let defaultValue = PaymentRequestThreeDsDetails(
             deviceChannel: "Application"
         )
     }

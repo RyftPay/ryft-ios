@@ -3,6 +3,11 @@ import RyftCore
 
 public final class RyftUI {
 
+    public enum DropInUsage {
+        case payment
+        case setupCard
+    }
+
     public static let supportedNetworks: [PKPaymentNetwork] = [.visa, .masterCard]
 
     public static func supportsApplePay() -> Bool {

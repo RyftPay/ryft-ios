@@ -4,6 +4,7 @@ import Foundation
 final class NSLocalizedStringUtility {
 
     static let cardDropInTitle = getString(forKey: "card_drop_in_title")
+    static let cardDropInAuthoriseTitle = getString(forKey: "card_drop_in_authorise_title")
     static let orWord = getString(forKey: "card_drop_in_or")
     static let cardNumberPlaceholder = getString(forKey: "card_number_placeholder")
     static let cvcPlaceholder = getString(forKey: "cvc_placeholder")
@@ -13,7 +14,9 @@ final class NSLocalizedStringUtility {
     static let oopsWord = getString(forKey: "oops")
     static let retryWord = getString(forKey: "retry")
     static let applePayPresentError = getString(forKey: "apple_pay_present_error")
+    static let saveCard = getString(forKey: "save_card")
     static let saveCardOptInMessage = getString(forKey: "save_card_opt_in_message")
+    static let saveCardConsentMessage = getString(forKey: "save_card_consent_message")
 
     static func getString(forKey: String) -> String {
         #if SWIFT_PACKAGE

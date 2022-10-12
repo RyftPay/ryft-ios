@@ -34,6 +34,18 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         XCTAssertFalse(app.staticTexts["RyftSeparatorMiddleLabel"].exists)
     }
 
+    func test_dropIn_shouldAllowToggleToSaveCard() {
+        openDropIn()
+        toggleSaveCard()
+    }
+
+    func test_dropIn_shouldNotShowSaveCardToggle_whenUsageIsSetupCard() {
+        app.segmentedControls["DropInUsageControl"].buttons.element(boundBy: 1).forceTap()
+        openDropIn()
+        let saveCardToggle = app.otherElements["RyftSaveCardToggleView"]
+        XCTAssertFalse(saveCardToggle.waitForExistence(timeout: 3))
+    }
+
     func test_dropIn_shouldDisplayAlert_whenApplePayPresentationFails_dueToFailureToFetchPayment() {
         app.switches["ApplePayToggle"].forceTap()
         app.switches["GetPaymentSessionErrorToggle"].forceTap()
@@ -223,6 +235,13 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         cardNumberInput.textFields.element.typeText(cardNumber)
         expirationInput.textFields.element.typeText(expiration)
         cvcInput.textFields.element.typeText(cvc)
+    }
+
+    private func toggleSaveCard() {
+        let saveCardToggle = app.otherElements["RyftSaveCardToggleView"]
+        XCTAssertTrue(saveCardToggle.waitForExistence(timeout: 3))
+
+        saveCardToggle.images.element.tap()
     }
 
     private func payWithApplePay(customerEmail: String? = nil) -> XCUIApplication {
