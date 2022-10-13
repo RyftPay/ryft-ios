@@ -22,9 +22,14 @@ public struct RyftDropInConfiguration {
     public struct RyftDropInDisplayConfig {
 
         public let payButtonTitle: String?
+        public let usage: RyftUI.DropInUsage?
 
-        public init(payButtonTitle: String?) {
+        public init(
+            payButtonTitle: String?,
+            usage: RyftUI.DropInUsage?
+        ) {
             self.payButtonTitle = payButtonTitle
+            self.usage = usage
         }
     }
 }

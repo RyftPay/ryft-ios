@@ -41,17 +41,13 @@ let package = Package(
             name: "RyftCore",
             path: "RyftCore/Source",
             exclude: ["Tests", "Info.plist"],
-            resources: [
-                .process("Resources")
-            ]
+            resources: []
         ),
         .target(
             name: "RyftCard",
             path: "RyftCard/Source",
             exclude: ["Tests", "Info.plist"],
-            resources: [
-                .process("Resources")
-            ]
+            resources: []
         ),
         .target(
             name: "RyftUI",

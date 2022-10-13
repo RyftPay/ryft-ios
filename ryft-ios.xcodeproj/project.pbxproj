@@ -3,10 +3,20 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B27890828F5BD8F006E21F6 /* PaymentRequestPaymentMethodOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B27890728F5BD8F006E21F6 /* PaymentRequestPaymentMethodOptions.swift */; };
+		0B27890A28F5BED0006E21F6 /* RyftSaveCardToggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B27890928F5BED0006E21F6 /* RyftSaveCardToggleView.swift */; };
+		0B27890C28F5DD18006E21F6 /* PaymentRequestPaymentMethodOptionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B27890B28F5DD18006E21F6 /* PaymentRequestPaymentMethodOptionsTests.swift */; };
+		0B27891228F730AC006E21F6 /* Checkout3DS.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B27890F28F730AC006E21F6 /* Checkout3DS.xcframework */; };
+		0B27891328F730AC006E21F6 /* Checkout3DS.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0B27890F28F730AC006E21F6 /* Checkout3DS.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		0B27891628F730AC006E21F6 /* CheckoutEventLoggerKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B27891128F730AC006E21F6 /* CheckoutEventLoggerKit.xcframework */; };
+		0B27891728F730AC006E21F6 /* CheckoutEventLoggerKit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0B27891128F730AC006E21F6 /* CheckoutEventLoggerKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		0B27891B28F81146006E21F6 /* RequiredActionIdentifyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B27891A28F81146006E21F6 /* RequiredActionIdentifyApp.swift */; };
+		0B27892328F81E30006E21F6 /* JOSESwift.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B27891028F730AC006E21F6 /* JOSESwift.xcframework */; };
+		0B27892428F81E30006E21F6 /* JOSESwift.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0B27891028F730AC006E21F6 /* JOSESwift.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D868925C27A2A3E8003DBFAA /* RyftCard.h in Headers */ = {isa = PBXBuildFile; fileRef = D868924E27A2A3E8003DBFAA /* RyftCard.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D868926D27A2A4D7003DBFAA /* RyftCore.h in Headers */ = {isa = PBXBuildFile; fileRef = D868926B27A2A4D7003DBFAA /* RyftCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D868927A27A2A4E7003DBFAA /* RyftUI.h in Headers */ = {isa = PBXBuildFile; fileRef = D868927827A2A4E7003DBFAA /* RyftUI.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -173,7 +183,10 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				0B27891728F730AC006E21F6 /* CheckoutEventLoggerKit.xcframework in Embed Frameworks */,
+				0B27892428F81E30006E21F6 /* JOSESwift.xcframework in Embed Frameworks */,
 				D86892B327A2ABFC003DBFAA /* RyftCore.framework in Embed Frameworks */,
+				0B27891328F730AC006E21F6 /* Checkout3DS.xcframework in Embed Frameworks */,
 				D86892B827A2AC0A003DBFAA /* RyftCard.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -193,6 +206,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0B27890728F5BD8F006E21F6 /* PaymentRequestPaymentMethodOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentRequestPaymentMethodOptions.swift; sourceTree = "<group>"; };
+		0B27890928F5BED0006E21F6 /* RyftSaveCardToggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftSaveCardToggleView.swift; sourceTree = "<group>"; };
+		0B27890B28F5DD18006E21F6 /* PaymentRequestPaymentMethodOptionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentRequestPaymentMethodOptionsTests.swift; sourceTree = "<group>"; };
+		0B27890F28F730AC006E21F6 /* Checkout3DS.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Checkout3DS.xcframework; path = frameworks/Checkout3DS.xcframework; sourceTree = "<group>"; };
+		0B27891028F730AC006E21F6 /* JOSESwift.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = JOSESwift.xcframework; path = frameworks/JOSESwift.xcframework; sourceTree = "<group>"; };
+		0B27891128F730AC006E21F6 /* CheckoutEventLoggerKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = CheckoutEventLoggerKit.xcframework; path = frameworks/CheckoutEventLoggerKit.xcframework; sourceTree = "<group>"; };
+		0B27891A28F81146006E21F6 /* RequiredActionIdentifyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequiredActionIdentifyApp.swift; sourceTree = "<group>"; };
 		D868924C27A2A3E8003DBFAA /* RyftCard.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RyftCard.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D868924E27A2A3E8003DBFAA /* RyftCard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RyftCard.h; sourceTree = "<group>"; };
 		D868924F27A2A3E8003DBFAA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -327,7 +347,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B27891628F730AC006E21F6 /* CheckoutEventLoggerKit.xcframework in Frameworks */,
+				0B27892328F81E30006E21F6 /* JOSESwift.xcframework in Frameworks */,
 				D86892B227A2ABFC003DBFAA /* RyftCore.framework in Frameworks */,
+				0B27891228F730AC006E21F6 /* Checkout3DS.xcframework in Frameworks */,
 				D86892B727A2AC0A003DBFAA /* RyftCard.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -501,6 +524,7 @@
 				D868929727A2A8AA003DBFAA /* PaymentSessionStatus.swift */,
 				D8AB659B28367393009EF72C /* Currency.swift */,
 				D8AB65AB283674FE009EF72C /* Money.swift */,
+				0B27891A28F81146006E21F6 /* RequiredActionIdentifyApp.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -519,6 +543,7 @@
 				D86892AA27A2A98C003DBFAA /* RyftHttpClient.swift */,
 				D893849A283677E400F67926 /* BillingAddress.swift */,
 				D89384B6283BB1D000F67926 /* PaymentRequestCustomerDetails.swift */,
+				0B27890728F5BD8F006E21F6 /* PaymentRequestPaymentMethodOptions.swift */,
 			);
 			path = Api;
 			sourceTree = "<group>";
@@ -534,6 +559,9 @@
 		D86892B127A2ABFC003DBFAA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0B27890F28F730AC006E21F6 /* Checkout3DS.xcframework */,
+				0B27891128F730AC006E21F6 /* CheckoutEventLoggerKit.xcframework */,
+				0B27891028F730AC006E21F6 /* JOSESwift.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -568,6 +596,7 @@
 				D86892DE27A2AF5E003DBFAA /* RyftLoadingSpinnerView.swift */,
 				D8F163E627A3EE6D0076CC02 /* DropInViewFactory.swift */,
 				D8AB6597283641A5009EF72C /* RyftSeparatorView.swift */,
+				0B27890928F5BED0006E21F6 /* RyftSaveCardToggleView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -712,6 +741,7 @@
 				D8F1638827A2E7040076CC02 /* EndpointTest.swift */,
 				D893849C283679B200F67926 /* BillingAddressTests.swift */,
 				D89384B8283BB1F900F67926 /* PaymentRequestCustomerDetailsTests.swift */,
+				0B27890B28F5DD18006E21F6 /* PaymentRequestPaymentMethodOptionsTests.swift */,
 			);
 			path = Api;
 			sourceTree = "<group>";
@@ -864,6 +894,8 @@
 				D86892BA27A2AC0A003DBFAA /* PBXTargetDependency */,
 			);
 			name = RyftUI;
+			packageProductDependencies = (
+			);
 			productName = RyftUI;
 			productReference = D868927627A2A4E7003DBFAA /* RyftUI.framework */;
 			productType = "com.apple.product-type.framework";
@@ -1009,6 +1041,8 @@
 				"en-GB",
 			);
 			mainGroup = D868922227A2A383003DBFAA;
+			packageReferences = (
+			);
 			productRefGroup = D868922D27A2A383003DBFAA /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1116,6 +1150,7 @@
 				D868928D27A2A82E003DBFAA /* Constants.swift in Sources */,
 				D86892A327A2A938003DBFAA /* HttpError.swift in Sources */,
 				D868929F27A2A911003DBFAA /* Endpoint.swift in Sources */,
+				0B27891B28F81146006E21F6 /* RequiredActionIdentifyApp.swift in Sources */,
 				D86892A927A2A973003DBFAA /* RyftApiError.swift in Sources */,
 				D8AB659C28367393009EF72C /* Currency.swift in Sources */,
 				D8AB65AC283674FE009EF72C /* Money.swift in Sources */,
@@ -1128,6 +1163,7 @@
 				D868929227A2A86E003DBFAA /* PaymentSessionError.swift in Sources */,
 				D86892AB27A2A98C003DBFAA /* RyftHttpClient.swift in Sources */,
 				D868929627A2A894003DBFAA /* PaymentSessionRequiredAction.swift in Sources */,
+				0B27890828F5BD8F006E21F6 /* PaymentRequestPaymentMethodOptions.swift in Sources */,
 				D868929027A2A851003DBFAA /* PaymentSession.swift in Sources */,
 				D8AB659F283673BC009EF72C /* CurrencyUtility.swift in Sources */,
 			);
@@ -1159,6 +1195,7 @@
 				D86892C327A2AD4B003DBFAA /* RyftImages.swift in Sources */,
 				D86892D927A2AF1B003DBFAA /* RyftConfirmButton.swift in Sources */,
 				D86892EB27A2B026003DBFAA /* SlidingAnimator.swift in Sources */,
+				0B27890A28F5BED0006E21F6 /* RyftSaveCardToggleView.swift in Sources */,
 				D8AB65942834DF02009EF72C /* PaymentSession+Extension.swift in Sources */,
 				D8AB658C2834DB1F009EF72C /* RyftApplePayComponent.swift in Sources */,
 				D868928927A2A7CE003DBFAA /* RyftDropInCardDetails.swift in Sources */,
@@ -1185,6 +1222,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D8F1638727A2E6B50076CC02 /* MockHttpClient.swift in Sources */,
+				0B27890C28F5DD18006E21F6 /* PaymentRequestPaymentMethodOptionsTests.swift in Sources */,
 				D8F1638327A2E6700076CC02 /* AttemptPaymentRequestTest.swift in Sources */,
 				D893849D283679B200F67926 /* BillingAddressTests.swift in Sources */,
 				D8F1638927A2E7040076CC02 /* EndpointTest.swift in Sources */,
@@ -1314,6 +1352,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1378,6 +1417,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1541,6 +1581,7 @@
 		D868927C27A2A4E7003DBFAA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -1568,6 +1609,7 @@
 		D868927D27A2A4E7003DBFAA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
