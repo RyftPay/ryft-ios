@@ -212,9 +212,8 @@ public final class RyftDropInPaymentViewController: UIViewController {
             threeDsSdk.authenticate(authenticationParameters: params) { maybeError in
                 if let error = maybeError {
                     print("error performing 3ds authentication \(error.localizedDescription)")
-                } else {
-                    self.payClicked()
                 }
+                self.payClicked()
                 self.threeDsSdk.cleanup()
             }
             return
