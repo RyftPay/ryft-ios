@@ -15,7 +15,10 @@ public final class DefaultRyftApiClient: RyftApiClient {
         self.baseApiUrl = baseApiUrl
         self.publicApiKey = publicApiKey
         self.httpClient = httpClient
+        self.environment = .fromApiKey(publicKey: publicApiKey)
     }
+
+    public var environment: RyftEnvironment = .sandbox
 
     public convenience init(
         publicApiKey: String

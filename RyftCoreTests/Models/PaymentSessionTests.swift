@@ -46,8 +46,13 @@ class PaymentSessionTests: XCTestCase {
                 "returnUrl": "https://ryftpay.com",
                 "status": "PendingAction",
                 "requiredAction": {
-                    "type": "Redirect",
-                    "url": "https://ryftpay.com/3ds"
+                    "type": "Identify",
+                    "identify": {
+                        "sessionId": "123",
+                        "sessionSecret": "secret",
+                        "scheme": "mastercard",
+                        "paymentMethodId": "pmt_01G0EYVFR02KBBVE2YWQ8AKMGJ"
+                    }
                 },
                 "createdTimestamp": 1652790949
             }
@@ -62,8 +67,14 @@ class PaymentSessionTests: XCTestCase {
         XCTAssertEqual("GBP", result.currency)
         XCTAssertEqual("https://ryftpay.com", result.returnUrl)
         XCTAssertEqual(PaymentSessionStatus.pendingAction, result.status)
-        XCTAssertEqual("Redirect", result.requiredAction?.type)
-        XCTAssertEqual("https://ryftpay.com/3ds", result.requiredAction?.url)
+        XCTAssertEqual(.identify, result.requiredAction?.type)
+        XCTAssertEqual("123", result.requiredAction?.identify?.sessionId)
+        XCTAssertEqual("secret", result.requiredAction?.identify?.sessionSecret)
+        XCTAssertEqual("mastercard", result.requiredAction?.identify?.scheme)
+        XCTAssertEqual(
+            "pmt_01G0EYVFR02KBBVE2YWQ8AKMGJ",
+            result.requiredAction?.identify?.paymentMethodId
+        )
         XCTAssertEqual(1652790949, result.createdTimestamp)
     }
 }

@@ -2,6 +2,8 @@ import RyftCore
 
 final class MockRyftApiClient: RyftApiClient {
 
+    var environment: RyftEnvironment = .sandbox
+
     var paymentSession: PaymentSession?
     var didCallGetPaymentSession = false
 

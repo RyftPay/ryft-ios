@@ -9,6 +9,7 @@ public struct AttemptPaymentRequest {
     let customerDetails: PaymentRequestCustomerDetails?
     let threeDsRequestDetails: PaymentRequestThreeDsDetails
     let paymentMethodOptions: PaymentRequestPaymentMethodOptions?
+    let paymentMethod: PaymentRequestPaymentMethod?
 
     public static func fromCard(
         clientSecret: String,
@@ -30,7 +31,8 @@ public struct AttemptPaymentRequest {
             billingAddress: nil,
             customerDetails: nil,
             threeDsRequestDetails: PaymentRequestThreeDsDetails.defaultValue,
-            paymentMethodOptions: PaymentRequestPaymentMethodOptions(store: store)
+            paymentMethodOptions: PaymentRequestPaymentMethodOptions(store: store),
+            paymentMethod: nil
         )
     }
 
@@ -50,7 +52,28 @@ public struct AttemptPaymentRequest {
             billingAddress: billingAddress,
             customerDetails: customerDetails,
             threeDsRequestDetails: PaymentRequestThreeDsDetails.defaultValue,
-            paymentMethodOptions: nil
+            paymentMethodOptions: nil,
+            paymentMethod: nil
+        )
+    }
+
+    public static func fromPaymentMethod(
+        clientSecret: String,
+        paymentMethodId: String,
+        cvv: String? = nil
+    ) -> AttemptPaymentRequest {
+        AttemptPaymentRequest(
+            clientSecret: clientSecret,
+            cardDetails: nil,
+            walletDetails: nil,
+            billingAddress: nil,
+            customerDetails: nil,
+            threeDsRequestDetails: PaymentRequestThreeDsDetails.defaultValue,
+            paymentMethodOptions: nil,
+            paymentMethod: PaymentRequestPaymentMethod(
+                id: paymentMethodId,
+                cvv: cvv
+            )
         )
     }
 
@@ -159,6 +182,9 @@ public struct AttemptPaymentRequest {
         }
         if let paymentMethodOptions = paymentMethodOptions {
             json["paymentMethodOptions"] = paymentMethodOptions.toJson() as Any
+        }
+        if let paymentMethod = paymentMethod {
+            json["paymentMethod"] = paymentMethod.toJson() as Any
         }
         return json
     }

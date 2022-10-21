@@ -34,9 +34,11 @@ struct Endpoint {
     }
 
     static func determineApiBaseUrl(from publicKey: String) -> String {
-        if publicKey.starts(with: "pk_sandbox") {
+        switch RyftEnvironment.fromApiKey(publicKey: publicKey) {
+        case .production:
+            return Endpoint.productionApiUrl
+        default:
             return Endpoint.sandboxApiUrl
         }
-        return Endpoint.productionApiUrl
     }
 }

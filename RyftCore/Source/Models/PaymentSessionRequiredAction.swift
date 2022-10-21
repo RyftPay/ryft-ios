@@ -1,6 +1,6 @@
 public struct PaymentSessionRequiredAction: Codable {
 
-    public let type: String
+    public let type: PaymentSessionActionType
     public let url: String?
     public let identify: RequiredActionIdentifyApp?
 

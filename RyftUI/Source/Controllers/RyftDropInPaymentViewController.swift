@@ -2,7 +2,6 @@ import UIKit
 import RyftCore
 import RyftCard
 import PassKit
-import Checkout3DS
 
 public protocol RyftDropInPaymentDelegate: AnyObject {
     func onPaymentResult(result: RyftPaymentResult)
@@ -15,6 +14,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
     private weak var delegate: RyftDropInPaymentDelegate?
     private let config: RyftDropInConfiguration
     private let apiClient: RyftApiClient
+    private let requiredActionComponent: RyftRequiredActionComponent
 
     private let defaultHeight: CGFloat = 310
 
@@ -24,7 +24,6 @@ public final class RyftDropInPaymentViewController: UIViewController {
     private var cardDetails = RyftDropInCardDetails.incomplete
     private var transitionHandler: SlidingTransitioningHandler?
     private var applePayComponent: RyftApplePayComponent?
-    private let threeDsSdk: Checkout3DSService = initialiseThreeDsService()
 
     private lazy var saveCard: Bool = {
         return config.display?.usage == .setupCard
@@ -154,6 +153,13 @@ public final class RyftDropInPaymentViewController: UIViewController {
         self.config = config
         self.delegate = delegate
         self.apiClient = DefaultRyftApiClient(publicApiKey: publicApiKey)
+        self.requiredActionComponent = RyftRequiredActionComponent(
+            config: RyftRequiredActionComponent.Configuration(
+                clientSecret: config.clientSecret,
+                accountId: config.accountId
+            ),
+            apiClient: apiClient
+        )
         super.init(nibName: nil, bundle: nil)
         self.transitionHandler = SlidingTransitioningHandler(
             presentedViewController: self,
@@ -171,6 +177,13 @@ public final class RyftDropInPaymentViewController: UIViewController {
         self.config = config
         self.apiClient = apiClient
         self.delegate = delegate
+        self.requiredActionComponent = RyftRequiredActionComponent(
+            config: RyftRequiredActionComponent.Configuration(
+                clientSecret: config.clientSecret,
+                accountId: config.accountId
+            ),
+            apiClient: apiClient
+        )
         super.init(nibName: nil, bundle: nil)
         self.transitionHandler = SlidingTransitioningHandler(
             presentedViewController: self,
@@ -203,50 +216,10 @@ public final class RyftDropInPaymentViewController: UIViewController {
         returnUrl: String,
         _ action: PaymentSessionRequiredAction
     ) {
-        if let identify = action.identify {
-            let params = AuthenticationParameters(
-                sessionID: identify.sessionId,
-                sessionSecret: identify.sessionSecret,
-                scheme: identify.scheme
-            )
-            threeDsSdk.authenticate(authenticationParameters: params) { maybeError in
-                if let error = maybeError {
-                    print("error performing 3ds authentication \(error.localizedDescription)")
-                }
-                self.payClicked()
-                self.threeDsSdk.cleanup()
-            }
-            return
-        }
-        //TODO: handle nil url on required action
-        let threeDsView = RyftThreeDSecureViewController(
-            returnUrl: URL(string: returnUrl)!,
-            authUrl: URL(string: action.url!)!,
-            delegate: self
-        )
-        present(threeDsView, animated: true, completion: nil)
-    }
-
-    private static func initialiseThreeDsService() -> Checkout3DSService {
-        Checkout3DSService(
-            environment: .sandbox,
-            locale: Locale(identifier: "en_GB"),
-            uiCustomization: DefaultUICustomization(
-                toolbarCustomization: DefaultToolbarCustomization(),
-                labelCustomization: DefaultLabelCustomization(),
-                entrySelectionCustomization: DefaultEntrySelectionCustomization(),
-                buttonCustomizations: DefaultButtonCustomizations(),
-                footerCustomization: DefaultFooterCustomization(
-                    backgroundColor: .clear,
-                    font: .systemFont(ofSize: 0),
-                    textColor: .clear,
-                    labelFont: .italicSystemFont(ofSize: 0),
-                    labelTextColor: .clear,
-                    expandIndicatorColor: .clear
-               ),
-                whitelistCustomization: DefaultWhitelistCustomization()
-            ),
-            appURL: nil
+        requiredActionComponent.delegate = self
+        requiredActionComponent.handle(
+            returnUrl: returnUrl,
+            action: action
         )
     }
 
@@ -272,12 +245,14 @@ public final class RyftDropInPaymentViewController: UIViewController {
             accountId: config.accountId
         ) { result in
             DispatchQueue.main.async {
-                self.handlePaymentResult(result)
+                self.handlePaymentResult(result.flatMapError { httpError in
+                    .failure(httpError)
+                })
             }
         }
     }
 
-    private func handlePaymentResult(_ result: Result<PaymentSession, HttpError>) {
+    private func handlePaymentResult(_ result: Result<PaymentSession, Error>) {
         var paymentResult = RyftPaymentResult.failed(
             error: RyftPaymentError(paymentSessionError: .unknown)
         )
@@ -580,21 +555,15 @@ extension RyftDropInPaymentViewController: RyftCardNumberInputProtocol,
     }
 }
 
-extension RyftDropInPaymentViewController: RyftThreeDSecureWebDelegate {
+extension RyftDropInPaymentViewController: RyftRequiredActionDelegate {
 
-    func onThreeDsCompleted(
-        paymentSessionId: String,
-        queryParams: [String: String]
-    ) {
+    public func onRequiredActionInProgress() {
         updateButtonStates(state: .loading)
-        apiClient.getPaymentSession(
-            id: paymentSessionId,
-            clientSecret: config.clientSecret,
-            accountId: config.accountId
-        ) { result in
-            DispatchQueue.main.async {
-                self.handlePaymentResult(result)
-            }
+    }
+    
+    public func onRequiredActionHandled(result: Result<PaymentSession, Error>) {
+        DispatchQueue.main.async {
+            self.handlePaymentResult(result)
         }
     }
 }
