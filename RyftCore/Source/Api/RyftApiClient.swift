@@ -3,7 +3,7 @@ import Foundation
 public protocol RyftApiClient {
 
     typealias PaymentSessionResponse = (Result<PaymentSession, HttpError>) -> Void
-    
+
     var environment: RyftEnvironment { get set }
 
     func attemptPayment(

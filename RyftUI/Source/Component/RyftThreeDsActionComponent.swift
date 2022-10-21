@@ -9,10 +9,10 @@ protocol RyftThreeDsActionHandler {
     )
 }
 
-final internal class DefaultRyftThreeDsActionHandler : RyftThreeDsActionHandler {
+internal final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
 
     private let threeDsSdk: Checkout3DSService
-    
+
     init(threeDsSdk: Checkout3DSService) {
         self.threeDsSdk = threeDsSdk
     }

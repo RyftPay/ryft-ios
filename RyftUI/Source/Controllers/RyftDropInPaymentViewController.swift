@@ -560,7 +560,7 @@ extension RyftDropInPaymentViewController: RyftRequiredActionDelegate {
     public func onRequiredActionInProgress() {
         updateButtonStates(state: .loading)
     }
-    
+
     public func onRequiredActionHandled(result: Result<PaymentSession, Error>) {
         DispatchQueue.main.async {
             self.handlePaymentResult(result)

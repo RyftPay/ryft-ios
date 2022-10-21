@@ -8,7 +8,7 @@ public protocol RyftRequiredActionDelegate: AnyObject {
     func onRequiredActionHandled(result: Result<PaymentSession, Error>)
 }
 
-final public class RyftRequiredActionComponent {
+public final class RyftRequiredActionComponent {
 
     public struct Configuration {
 
@@ -27,7 +27,7 @@ final public class RyftRequiredActionComponent {
     private let config: Configuration
     private let apiClient: RyftApiClient
     private let threeDsActionHandler: RyftThreeDsActionHandler
-    
+
     public var delegate: RyftRequiredActionDelegate?
 
     public init(
@@ -66,7 +66,7 @@ final public class RyftRequiredActionComponent {
     }
 
     private func handle(action: RequiredActionIdentifyApp) {
-        threeDsActionHandler.handle(action: action, completion: { maybeError in
+        threeDsActionHandler.handle(action: action, completion: { _ in
             self.delegate?.onRequiredActionInProgress()
             self.apiClient.attemptPayment(
                 request: AttemptPaymentRequest.fromPaymentMethod(
