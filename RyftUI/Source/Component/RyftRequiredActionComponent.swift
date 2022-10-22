@@ -14,13 +14,16 @@ public final class RyftRequiredActionComponent {
 
         public let clientSecret: String
         public let accountId: String?
+        public let returnUrl: URL?
 
         public init(
             clientSecret: String,
-            accountId: String? = nil
+            accountId: String? = nil,
+            returnUrl: URL? = nil
         ) {
             self.clientSecret = clientSecret
             self.accountId = accountId
+            self.returnUrl = returnUrl
         }
     }
 
@@ -51,10 +54,7 @@ public final class RyftRequiredActionComponent {
         self.threeDsActionHandler = threeDsActionHandler
     }
 
-    public func handle(
-        returnUrl: String,
-        action: PaymentSessionRequiredAction
-    ) {
+    public func handle(action: PaymentSessionRequiredAction) {
         switch action.type {
         case .identify:
             handle(action: action.identify!)

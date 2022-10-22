@@ -1,7 +1,7 @@
 import RyftCore
 import Checkout3DS
 
-protocol RyftThreeDsActionHandler {
+public protocol RyftThreeDsActionHandler {
 
     func handle(
         action: RequiredActionIdentifyApp,
@@ -9,7 +9,7 @@ protocol RyftThreeDsActionHandler {
     )
 }
 
-internal final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
+public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
 
     private let threeDsSdk: Checkout3DSService
 
@@ -23,7 +23,7 @@ internal final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
         )
     }
 
-    func handle(
+    public func handle(
         action: RequiredActionIdentifyApp,
         completion: @escaping (Error?) -> Void
     ) {

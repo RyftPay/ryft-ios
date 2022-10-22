@@ -14,7 +14,6 @@ public final class RyftDropInPaymentViewController: UIViewController {
     private weak var delegate: RyftDropInPaymentDelegate?
     private let config: RyftDropInConfiguration
     private let apiClient: RyftApiClient
-    private let requiredActionComponent: RyftRequiredActionComponent
 
     private let defaultHeight: CGFloat = 310
 
@@ -23,6 +22,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
 
     private var cardDetails = RyftDropInCardDetails.incomplete
     private var transitionHandler: SlidingTransitioningHandler?
+    private var requiredActionComponent: RyftRequiredActionComponent?
     private var applePayComponent: RyftApplePayComponent?
 
     private lazy var saveCard: Bool = {
@@ -153,13 +153,6 @@ public final class RyftDropInPaymentViewController: UIViewController {
         self.config = config
         self.delegate = delegate
         self.apiClient = DefaultRyftApiClient(publicApiKey: publicApiKey)
-        self.requiredActionComponent = RyftRequiredActionComponent(
-            config: RyftRequiredActionComponent.Configuration(
-                clientSecret: config.clientSecret,
-                accountId: config.accountId
-            ),
-            apiClient: apiClient
-        )
         super.init(nibName: nil, bundle: nil)
         self.transitionHandler = SlidingTransitioningHandler(
             presentedViewController: self,
@@ -177,13 +170,6 @@ public final class RyftDropInPaymentViewController: UIViewController {
         self.config = config
         self.apiClient = apiClient
         self.delegate = delegate
-        self.requiredActionComponent = RyftRequiredActionComponent(
-            config: RyftRequiredActionComponent.Configuration(
-                clientSecret: config.clientSecret,
-                accountId: config.accountId
-            ),
-            apiClient: apiClient
-        )
         super.init(nibName: nil, bundle: nil)
         self.transitionHandler = SlidingTransitioningHandler(
             presentedViewController: self,
@@ -216,10 +202,19 @@ public final class RyftDropInPaymentViewController: UIViewController {
         returnUrl: String,
         _ action: PaymentSessionRequiredAction
     ) {
-        requiredActionComponent.delegate = self
-        requiredActionComponent.handle(
-            returnUrl: returnUrl,
-            action: action
+        self.requiredActionComponent = createRequiredActionComponent(returnUrl: returnUrl)
+        requiredActionComponent?.delegate = self
+        requiredActionComponent?.handle(action: action)
+    }
+
+    private func createRequiredActionComponent(returnUrl: String) -> RyftRequiredActionComponent {
+        RyftRequiredActionComponent(
+            config: RyftRequiredActionComponent.Configuration(
+                clientSecret: config.clientSecret,
+                accountId: config.accountId,
+                returnUrl: URL(string: returnUrl)
+            ),
+            apiClient: apiClient
         )
     }
 

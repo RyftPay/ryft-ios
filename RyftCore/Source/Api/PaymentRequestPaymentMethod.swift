@@ -1,7 +1,7 @@
 public struct PaymentRequestPaymentMethod: Equatable, Hashable {
 
-    let id: String
-    let cvv: String?
+    public let id: String
+    public let cvv: String?
 
     public init(
         id: String,

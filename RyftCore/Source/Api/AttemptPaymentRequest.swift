@@ -2,14 +2,14 @@ import PassKit
 
 public struct AttemptPaymentRequest {
 
-    let clientSecret: String
-    let cardDetails: PaymentRequestCardDetails?
-    let walletDetails: PaymentRequestWalletDetails?
-    let billingAddress: BillingAddress?
-    let customerDetails: PaymentRequestCustomerDetails?
-    let threeDsRequestDetails: PaymentRequestThreeDsDetails
-    let paymentMethodOptions: PaymentRequestPaymentMethodOptions?
-    let paymentMethod: PaymentRequestPaymentMethod?
+    public let clientSecret: String
+    public let cardDetails: PaymentRequestCardDetails?
+    public let walletDetails: PaymentRequestWalletDetails?
+    public let billingAddress: BillingAddress?
+    public let customerDetails: PaymentRequestCustomerDetails?
+    public let threeDsRequestDetails: PaymentRequestThreeDsDetails
+    public let paymentMethodOptions: PaymentRequestPaymentMethodOptions?
+    public let paymentMethod: PaymentRequestPaymentMethod?
 
     public static func fromCard(
         clientSecret: String,
