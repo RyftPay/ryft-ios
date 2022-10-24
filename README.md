@@ -83,7 +83,7 @@ func onPaymentResult(result: RyftPaymentResult) {
     case .pendingAction(let paymentSession, let requiredAction):
         // instruct the drop-in to handle the action
         ryftDropIn?.handleRequiredAction(
-            returnUrl: paymentSession.returnUrl,
+            returnUrl: URL(string: paymentSession.returnUrl),
             requiredAction
         )
     // payment failed, show an alert to the customer
@@ -250,6 +250,65 @@ RyftDropInConfiguration(
     )
     applePay: nil // we recommend leaving this nil to hide Apple Pay
 )
+```
+
+### Handling Required Actions
+
+Some payments will need additional steps after the initial payment attempt in order to be successfully authorized/settled (for example 3DS).
+Our drop-in payment controller will handle these steps automatically for you, however you may wish or need to handle any required actions outside of checkout or by yourself if using your own UI.
+
+A common use-case would be a MIT payment in which the bank still mandates that 3DS be performed to authorize the payment.
+In this case you will need to bring your customer back online in your app/website and have them complete the necessary step.
+
+You can use our `RyftRequiredActionComponent` by itself (without the drop-in controller) if you wish to facilitate this.
+
+#### Initialise the component
+
+Similarly to the drop-in controller, pass the payment session client secret and optional accountId (required for sub account payments) to your app:
+
+```swift
+private func initialiseRyftRequiredActionComponent() {
+    let action = ... // fetch from your backend
+    let config = RyftRequiredActionComponent.Configuration(
+        clientSecret: config.clientSecret,
+        accountId: "nil | <the Id of the sub-account you are taking payments for>"
+    )
+    // create a fresh instance each time
+    let component = RyftRequiredActionComponent(
+        config: config,
+        apiClient: DefaultRyftApiClient(publicApiKey: "your public API key")
+    )
+    component.delegate = self
+    component.handle(action: action)
+}
+```
+
+#### Implementing the RyftRequiredActionComponentDelegate
+
+Once you've called `handle`, the component will trigger any necessary actions against the Ryft API to complete it.
+
+To handle the process in full, the following methods of `RyftRequiredActionComponentDelegate` need to be implemented:
+
+```swift
+public func onRequiredActionInProgress() {
+    /*
+    * (optional) 
+    * the component is performing some asynchronous task
+    * show your loading indicator/screen
+    */
+}
+
+public func onRequiredActionHandled(result: Result<PaymentSession, Error>) {
+    /*
+    * The action has completed with either the updated PaymentSession, or an Error
+    */
+    switch result:
+    case success(let updatedPaymentSession):
+        // inspect the status to determine the next step
+    case failure(let error):
+        // handle the error (try again/show an alert)
+        print("error handling required action \(error)")
+}
 ```
 
 

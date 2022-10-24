@@ -2,13 +2,14 @@ import PassKit
 
 public struct AttemptPaymentRequest {
 
-    let clientSecret: String
-    let cardDetails: PaymentRequestCardDetails?
-    let walletDetails: PaymentRequestWalletDetails?
-    let billingAddress: BillingAddress?
-    let customerDetails: PaymentRequestCustomerDetails?
-    let threeDsRequestDetails: PaymentRequestThreeDsDetails
-    let paymentMethodOptions: PaymentRequestPaymentMethodOptions?
+    public let clientSecret: String
+    public let cardDetails: PaymentRequestCardDetails?
+    public let walletDetails: PaymentRequestWalletDetails?
+    public let billingAddress: BillingAddress?
+    public let customerDetails: PaymentRequestCustomerDetails?
+    public let threeDsRequestDetails: PaymentRequestThreeDsDetails
+    public let paymentMethodOptions: PaymentRequestPaymentMethodOptions?
+    public let paymentMethod: PaymentRequestPaymentMethod?
 
     public static func fromCard(
         clientSecret: String,
@@ -30,7 +31,8 @@ public struct AttemptPaymentRequest {
             billingAddress: nil,
             customerDetails: nil,
             threeDsRequestDetails: PaymentRequestThreeDsDetails.defaultValue,
-            paymentMethodOptions: PaymentRequestPaymentMethodOptions(store: store)
+            paymentMethodOptions: PaymentRequestPaymentMethodOptions(store: store),
+            paymentMethod: nil
         )
     }
 
@@ -50,7 +52,28 @@ public struct AttemptPaymentRequest {
             billingAddress: billingAddress,
             customerDetails: customerDetails,
             threeDsRequestDetails: PaymentRequestThreeDsDetails.defaultValue,
-            paymentMethodOptions: nil
+            paymentMethodOptions: nil,
+            paymentMethod: nil
+        )
+    }
+
+    public static func fromPaymentMethod(
+        clientSecret: String,
+        paymentMethodId: String,
+        cvc: String? = nil
+    ) -> AttemptPaymentRequest {
+        AttemptPaymentRequest(
+            clientSecret: clientSecret,
+            cardDetails: nil,
+            walletDetails: nil,
+            billingAddress: nil,
+            customerDetails: nil,
+            threeDsRequestDetails: PaymentRequestThreeDsDetails.defaultValue,
+            paymentMethodOptions: nil,
+            paymentMethod: PaymentRequestPaymentMethod(
+                id: paymentMethodId,
+                cvc: cvc
+            )
         )
     }
 
@@ -159,6 +182,9 @@ public struct AttemptPaymentRequest {
         }
         if let paymentMethodOptions = paymentMethodOptions {
             json["paymentMethodOptions"] = paymentMethodOptions.toJson() as Any
+        }
+        if let paymentMethod = paymentMethod {
+            json["paymentMethod"] = paymentMethod.toJson() as Any
         }
         return json
     }

@@ -60,6 +60,23 @@ final class AttemptPaymentRequestTest: XCTestCase {
         XCTAssertNil(value.cardDetails)
     }
 
+    func test_fromPaymentMethod_shouldReturnExpectedValue() {
+        let value = AttemptPaymentRequest.fromPaymentMethod(
+            clientSecret: "secret",
+            paymentMethodId: "pmt_01G0EYVFR02KBBVE2YWQ8AKMGJ",
+            cvc: "100"
+        )
+        let expectedPaymentMethod = PaymentRequestPaymentMethod(
+            id: "pmt_01G0EYVFR02KBBVE2YWQ8AKMGJ",
+            cvc: "100"
+        )
+        XCTAssertTrue(value.clientSecret == "secret")
+        XCTAssertTrue(value.paymentMethod == expectedPaymentMethod)
+        XCTAssertNil(value.cardDetails)
+        XCTAssertNil(value.walletDetails)
+    }
+
+    // swiftlint:disable function_body_length
     func test_toJson_shouldReturnExpectedValue_forCardPayment() {
         let result = AttemptPaymentRequest.fromCard(
             clientSecret: "secret",
@@ -70,15 +87,25 @@ final class AttemptPaymentRequestTest: XCTestCase {
             store: false
         ).toJson()
         XCTAssertNotNil(result["clientSecret"])
+        XCTAssertNotNil(result["threeDsRequestDetails"])
         XCTAssertNotNil(result["cardDetails"])
         XCTAssertNotNil(result["paymentMethodOptions"])
         XCTAssertNil(result["walletDetails"])
+        XCTAssertNil(result["paymentMethod"])
         guard let clientSecret = result["clientSecret"] as? String else {
             XCTFail("serialized JSON clientSecret field was not expected type")
             return
         }
+        guard let threeDsRequestDetails = result["threeDsRequestDetails"] as? [String: Any] else {
+            XCTFail("serialized JSON threeDsRequestDetails field was not expected type")
+            return
+        }
         guard let cardDetails = result["cardDetails"] as? [String: Any] else {
             XCTFail("serialized JSON cardDetails field was not expected type")
+            return
+        }
+        guard let deviceChannel = threeDsRequestDetails["deviceChannel"] as? String else {
+            XCTFail("serialized JSON threeDsRequestDetails did not contain the expected fields")
             return
         }
         guard let paymentMethodOptions = result["paymentMethodOptions"] as? [String: Any] else {
@@ -104,8 +131,11 @@ final class AttemptPaymentRequestTest: XCTestCase {
         XCTAssertEqual("2028", cardExpiryYear)
         XCTAssertEqual("100", cardCvc)
         XCTAssertFalse(storeFlag)
+        XCTAssertEqual("Application", deviceChannel)
     }
+    // swiftlint:enable function_body_length
 
+    // swiftlint:disable function_body_length
     func test_toJson_shouldReturnExpectedValue_forCardPayment_WithStoreFlagEnabled() {
         let result = AttemptPaymentRequest.fromCard(
             clientSecret: "secret",
@@ -119,12 +149,21 @@ final class AttemptPaymentRequestTest: XCTestCase {
         XCTAssertNotNil(result["cardDetails"])
         XCTAssertNotNil(result["paymentMethodOptions"])
         XCTAssertNil(result["walletDetails"])
+        XCTAssertNil(result["paymentMethod"])
         guard let clientSecret = result["clientSecret"] as? String else {
             XCTFail("serialized JSON clientSecret field was not expected type")
             return
         }
         guard let cardDetails = result["cardDetails"] as? [String: Any] else {
             XCTFail("serialized JSON cardDetails field was not expected type")
+            return
+        }
+        guard let threeDsRequestDetails = result["threeDsRequestDetails"] as? [String: Any] else {
+            XCTFail("serialized JSON threeDsRequestDetails field was not expected type")
+            return
+        }
+        guard let deviceChannel = threeDsRequestDetails["deviceChannel"] as? String else {
+            XCTFail("serialized JSON threeDsRequestDetails did not contain the expected fields")
             return
         }
         guard let paymentMethodOptions = result["paymentMethodOptions"] as? [String: Any] else {
@@ -145,12 +184,14 @@ final class AttemptPaymentRequestTest: XCTestCase {
             return
         }
         XCTAssertEqual("secret", clientSecret)
+        XCTAssertEqual("Application", deviceChannel)
         XCTAssertEqual("4242424242424242", cardNumber)
         XCTAssertEqual("10", cardExpiryMonth)
         XCTAssertEqual("2028", cardExpiryYear)
         XCTAssertEqual("100", cardCvc)
         XCTAssertTrue(storeFlag)
     }
+    // swiftlint:enable function_body_length
 
     func test_toJson_shouldReturnExpectedValue_forApplePayPayment() {
         let result = AttemptPaymentRequest.fromApplePay(
@@ -180,6 +221,36 @@ final class AttemptPaymentRequestTest: XCTestCase {
         XCTAssertEqual("secret", clientSecret)
         XCTAssertEqual("ApplePay", walletType)
         XCTAssertEqual("base64-encoded-apple-pay-token", applePayToken)
+    }
+
+    func test_toJson_shouldReturnExpectedValue_forPaymentMethodPayment() {
+        let result = AttemptPaymentRequest.fromPaymentMethod(
+            clientSecret: "secret",
+            paymentMethodId: "pmt_01G0EYVFR02KBBVE2YWQ8AKMGJ",
+            cvc: "100"
+        ).toJson()
+        XCTAssertNotNil(result["clientSecret"])
+        XCTAssertNotNil(result["paymentMethod"])
+        XCTAssertNil(result["cardDetails"])
+        XCTAssertNil(result["walletDetails"])
+        guard let clientSecret = result["clientSecret"] as? String else {
+            XCTFail("serialized JSON clientSecret field was not expected type")
+            return
+        }
+        guard let paymentMethod = result["paymentMethod"] as? [String: Any] else {
+            XCTFail("serialized JSON paymentMethod field was not expected type")
+            return
+        }
+        guard
+            let paymentMethodId = paymentMethod["id"] as? String,
+            let cvc = paymentMethod["cvc"] as? String
+        else {
+            XCTFail("serialized JSON paymentMethod did not contain the expected fields")
+            return
+        }
+        XCTAssertEqual("secret", clientSecret)
+        XCTAssertEqual("pmt_01G0EYVFR02KBBVE2YWQ8AKMGJ", paymentMethodId)
+        XCTAssertEqual("100", cvc)
     }
 
     func test_toJson_shouldIncludeBillingAddress_whenItIsPresent() {

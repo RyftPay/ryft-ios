@@ -2,6 +2,8 @@ import RyftCore
 
 final class MockRyftApiClient: RyftApiClient {
 
+    var environment: RyftEnvironment = .sandbox
+
     var getPaymentSessionResult: Result<PaymentSession, HttpError> = .success(PaymentSession(
         id: "ps_01FCTS1XMKH9FF43CAFA4CXT3P",
         amount: 350,

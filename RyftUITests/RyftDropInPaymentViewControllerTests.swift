@@ -217,6 +217,34 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         XCTAssertTrue(app.alerts.element.staticTexts["Payment Success"].waitForExistence(timeout: 5))
     }
 
+    func test_dropIn_shouldDisplayThreeDs_whenCardPaymentMovesToRequiredActionIdentify() {
+        app.switches["AttemptPayment3DSToggle"].forceTap()
+        openDropIn()
+        typeCardDetails(
+            cardNumber: "5169750000001111",
+            expiration: "1032",
+            cvc: "257"
+        )
+        let payButton = app.otherElements["RyftConfirmButton-Pay"]
+        payButton.buttons.element.tap()
+        XCTAssertTrue(app.alerts.element.staticTexts["3DS Challenge"].waitForExistence(timeout: 3))
+    }
+
+    func test_dropIn_shouldDisplaySuccessAfterThreeds_whenIdentifyChallengeIsHandledSuccessfully() {
+        app.switches["AttemptPayment3DSToggle"].forceTap()
+        openDropIn()
+        typeCardDetails(
+            cardNumber: "5169750000001111",
+            expiration: "1032",
+            cvc: "257"
+        )
+        let payButton = app.otherElements["RyftConfirmButton-Pay"]
+        payButton.buttons.element.tap()
+        XCTAssertTrue(app.alerts.element.staticTexts["3DS Challenge"].waitForExistence(timeout: 3))
+        app.alerts.buttons["Pass"].forceTap()
+        XCTAssertTrue(app.alerts.element.staticTexts["Payment Success"].waitForExistence(timeout: 5))
+    }
+
     private func openDropIn() {
         app.buttons["ShowDropInButton"].tap()
     }

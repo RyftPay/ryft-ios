@@ -1,10 +1,18 @@
 public struct PaymentSessionRequiredAction: Codable {
 
-    public let type: String
-    public let url: String
+    public let type: PaymentSessionActionType
+    public let identify: RequiredActionIdentifyApp?
+
+    public init(
+        type: PaymentSessionActionType,
+        identify: RequiredActionIdentifyApp?
+    ) {
+        self.type = type
+        self.identify = identify
+    }
 
     enum CodingKeys: String, CodingKey {
         case type
-        case url
+        case identify
     }
 }

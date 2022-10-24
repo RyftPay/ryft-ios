@@ -25,6 +25,18 @@ let package = Package(
     ],
     dependencies: [],
     targets: [
+        .binaryTarget(
+            name: "JOSESwift",
+            path: "frameworks/JOSESwift.xcframework/"
+        ),
+        .binaryTarget(
+            name: "CheckoutEventLoggerKit",
+            path: "frameworks/CheckoutEventLoggerKit.xcframework/"
+        ),
+        .binaryTarget(
+            name: "Checkout3DS",
+            path: "frameworks/Checkout3DS.xcframework/"
+        ),
         .target(
             name: "RyftCore",
             path: "RyftCore/Source",
@@ -39,7 +51,13 @@ let package = Package(
         ),
         .target(
             name: "RyftUI",
-            dependencies: ["RyftCore", "RyftCard"],
+            dependencies: [
+                "RyftCore",
+                "RyftCard",
+                "JOSESwift",
+                "CheckoutEventLoggerKit",
+                "Checkout3DS"
+            ],
             path: "RyftUI/Source",
             exclude: ["Tests", "Info.plist"],
             resources: [

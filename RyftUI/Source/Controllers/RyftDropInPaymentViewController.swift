@@ -24,6 +24,12 @@ public final class RyftDropInPaymentViewController: UIViewController {
     private var transitionHandler: SlidingTransitioningHandler?
     private var applePayComponent: RyftApplePayComponent?
 
+    internal lazy var requiredActionComponent: RyftRequiredActionComponent = {
+       let component = createRequiredActionComponent()
+        component.delegate = self
+        return component
+    }()
+
     private lazy var saveCard: Bool = {
         return config.display?.usage == .setupCard
     }()
@@ -198,15 +204,21 @@ public final class RyftDropInPaymentViewController: UIViewController {
     }
 
     public func handleRequiredAction(
-        returnUrl: String,
+        returnUrl: URL?,
         _ action: PaymentSessionRequiredAction
     ) {
-        let threeDsView = RyftThreeDSecureViewController(
-            returnUrl: URL(string: returnUrl)!,
-            authUrl: URL(string: action.url)!,
-            delegate: self
+        requiredActionComponent.handle(action: action)
+    }
+
+    private func createRequiredActionComponent() -> RyftRequiredActionComponent {
+        RyftRequiredActionComponent(
+            config: RyftRequiredActionComponent.Configuration(
+                clientSecret: config.clientSecret,
+                accountId: config.accountId,
+                returnUrl: nil
+            ),
+            apiClient: apiClient
         )
-        present(threeDsView, animated: true, completion: nil)
     }
 
     @objc
@@ -231,12 +243,14 @@ public final class RyftDropInPaymentViewController: UIViewController {
             accountId: config.accountId
         ) { result in
             DispatchQueue.main.async {
-                self.handlePaymentResult(result)
+                self.handlePaymentResult(result.flatMapError { httpError in
+                    .failure(httpError)
+                })
             }
         }
     }
 
-    private func handlePaymentResult(_ result: Result<PaymentSession, HttpError>) {
+    private func handlePaymentResult(_ result: Result<PaymentSession, Error>) {
         var paymentResult = RyftPaymentResult.failed(
             error: RyftPaymentError(paymentSessionError: .unknown)
         )
@@ -539,21 +553,15 @@ extension RyftDropInPaymentViewController: RyftCardNumberInputProtocol,
     }
 }
 
-extension RyftDropInPaymentViewController: RyftThreeDSecureWebDelegate {
+extension RyftDropInPaymentViewController: RyftRequiredActionDelegate {
 
-    func onThreeDsCompleted(
-        paymentSessionId: String,
-        queryParams: [String: String]
-    ) {
+    public func onRequiredActionInProgress() {
         updateButtonStates(state: .loading)
-        apiClient.getPaymentSession(
-            id: paymentSessionId,
-            clientSecret: config.clientSecret,
-            accountId: config.accountId
-        ) { result in
-            DispatchQueue.main.async {
-                self.handlePaymentResult(result)
-            }
+    }
+
+    public func onRequiredActionHandled(result: Result<PaymentSession, Error>) {
+        DispatchQueue.main.async {
+            self.handlePaymentResult(result)
         }
     }
 }
