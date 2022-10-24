@@ -22,8 +22,13 @@ public final class RyftDropInPaymentViewController: UIViewController {
 
     private var cardDetails = RyftDropInCardDetails.incomplete
     private var transitionHandler: SlidingTransitioningHandler?
-    private var requiredActionComponent: RyftRequiredActionComponent?
     private var applePayComponent: RyftApplePayComponent?
+
+    internal lazy var requiredActionComponent: RyftRequiredActionComponent = {
+       let component = createRequiredActionComponent(returnUrl: nil)
+        component.delegate = self
+        return component
+    }()
 
     private lazy var saveCard: Bool = {
         return config.display?.usage == .setupCard
@@ -199,20 +204,18 @@ public final class RyftDropInPaymentViewController: UIViewController {
     }
 
     public func handleRequiredAction(
-        returnUrl: String,
+        returnUrl: URL?,
         _ action: PaymentSessionRequiredAction
     ) {
-        self.requiredActionComponent = createRequiredActionComponent(returnUrl: returnUrl)
-        requiredActionComponent?.delegate = self
-        requiredActionComponent?.handle(action: action)
+        requiredActionComponent.handle(action: action)
     }
 
-    private func createRequiredActionComponent(returnUrl: String) -> RyftRequiredActionComponent {
+    private func createRequiredActionComponent(returnUrl: URL?) -> RyftRequiredActionComponent {
         RyftRequiredActionComponent(
             config: RyftRequiredActionComponent.Configuration(
                 clientSecret: config.clientSecret,
                 accountId: config.accountId,
-                returnUrl: URL(string: returnUrl)
+                returnUrl: returnUrl
             ),
             apiClient: apiClient
         )

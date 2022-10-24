@@ -27,6 +27,7 @@
 		0B2789352902D64D006E21F6 /* RyftRequiredActionComponentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2789342902D64D006E21F6 /* RyftRequiredActionComponentTests.swift */; };
 		0B2789372902D9D2006E21F6 /* MockRyftThreeDsActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2789362902D9D2006E21F6 /* MockRyftThreeDsActionHandler.swift */; };
 		0B2789392902E24B006E21F6 /* RyftRequiredActionDelegateTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2789382902E24B006E21F6 /* RyftRequiredActionDelegateTester.swift */; };
+		0BB02A9F2905522B00667CF0 /* MockRyftThreeDsActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB02A9E2905522B00667CF0 /* MockRyftThreeDsActionHandler.swift */; };
 		D868925C27A2A3E8003DBFAA /* RyftCard.h in Headers */ = {isa = PBXBuildFile; fileRef = D868924E27A2A3E8003DBFAA /* RyftCard.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D868926D27A2A4D7003DBFAA /* RyftCore.h in Headers */ = {isa = PBXBuildFile; fileRef = D868926B27A2A4D7003DBFAA /* RyftCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D868927A27A2A4E7003DBFAA /* RyftUI.h in Headers */ = {isa = PBXBuildFile; fileRef = D868927827A2A4E7003DBFAA /* RyftUI.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -232,6 +233,7 @@
 		0B2789342902D64D006E21F6 /* RyftRequiredActionComponentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftRequiredActionComponentTests.swift; sourceTree = "<group>"; };
 		0B2789362902D9D2006E21F6 /* MockRyftThreeDsActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRyftThreeDsActionHandler.swift; sourceTree = "<group>"; };
 		0B2789382902E24B006E21F6 /* RyftRequiredActionDelegateTester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftRequiredActionDelegateTester.swift; sourceTree = "<group>"; };
+		0BB02A9E2905522B00667CF0 /* MockRyftThreeDsActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRyftThreeDsActionHandler.swift; sourceTree = "<group>"; };
 		D868924C27A2A3E8003DBFAA /* RyftCard.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RyftCard.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D868924E27A2A3E8003DBFAA /* RyftCard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RyftCard.h; sourceTree = "<group>"; };
 		D868924F27A2A3E8003DBFAA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -678,6 +680,7 @@
 		D89384A92837E2B800F67926 /* Component */ = {
 			isa = PBXGroup;
 			children = (
+				0B2789362902D9D2006E21F6 /* MockRyftThreeDsActionHandler.swift */,
 				D89384AA2837E36A00F67926 /* RyftApplePayComponentTests.swift */,
 				D89384B02838F92C00F67926 /* ApplePayComponentDelegateTester.swift */,
 				0B2789342902D64D006E21F6 /* RyftRequiredActionComponentTests.swift */,
@@ -783,7 +786,6 @@
 				D8F163E327A3E8C10076CC02 /* MockRyftApiClient.swift */,
 				D89384A22837908B00F67926 /* RyftUITests.swift */,
 				D89384B4283B817500F67926 /* TestFixtures.swift */,
-				0B2789362902D9D2006E21F6 /* MockRyftThreeDsActionHandler.swift */,
 			);
 			path = RyftUIUnitTests;
 			sourceTree = "<group>";
@@ -824,6 +826,7 @@
 				D8F163C327A31E5B0076CC02 /* LaunchScreen.storyboard */,
 				D8F163C627A31E5B0076CC02 /* Info.plist */,
 				D8F163DF27A34E780076CC02 /* MockRyftApiClient.swift */,
+				0BB02A9E2905522B00667CF0 /* MockRyftThreeDsActionHandler.swift */,
 			);
 			path = RyftUITestApp;
 			sourceTree = "<group>";
@@ -1295,6 +1298,7 @@
 				D8F163BD27A31E560076CC02 /* ViewController.swift in Sources */,
 				D8F163B927A31E560076CC02 /* AppDelegate.swift in Sources */,
 				D8F163E027A34E780076CC02 /* MockRyftApiClient.swift in Sources */,
+				0BB02A9F2905522B00667CF0 /* MockRyftThreeDsActionHandler.swift in Sources */,
 				D8F163BB27A31E560076CC02 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

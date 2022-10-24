@@ -2,6 +2,8 @@ import UIKit
 import RyftUI
 import RyftCore
 
+@testable import RyftUI
+
 final class ViewController: UIViewController {
 
     lazy var titleLabel: UILabel = {
@@ -44,6 +46,25 @@ final class ViewController: UIViewController {
         let stackView = UIStackView(arrangedSubviews: [
             label,
             getPaymentSessionErrorToggle,
+        ])
+        stackView.axis = .horizontal
+        stackView.spacing = 5.0
+        return stackView
+    }()
+
+    lazy var attemptPayment3dsToggle: UISwitch = {
+        let toggle = UISwitch()
+        toggle.setOn(false, animated: true)
+        toggle.accessibilityIdentifier = "AttemptPayment3DSToggle"
+        return toggle
+    }()
+
+    lazy var attemptPayment3dsToggleStackView: UIStackView = {
+        let label = UILabel()
+        label.text = "Attempt Payment 3DS required"
+        let stackView = UIStackView(arrangedSubviews: [
+            label,
+            attemptPayment3dsToggle,
         ])
         stackView.axis = .horizontal
         stackView.spacing = 5.0
@@ -103,6 +124,7 @@ final class ViewController: UIViewController {
             titleLabel,
             applePayToggleStackView,
             getPaymentSessionErrorToggleStackView,
+            attemptPayment3dsToggleStackView,
             failPaymentControlStackView,
             dropInUsageControlStackView,
             checkoutButton
@@ -112,6 +134,7 @@ final class ViewController: UIViewController {
         return stackView
     }()
 
+    private var apiClient: MockRyftApiClient?
     private var ryftDropIn: RyftDropInPaymentViewController?
 
     override func viewDidLoad() {
@@ -139,15 +162,15 @@ final class ViewController: UIViewController {
     }
 
     @objc private func showDropIn() {
-        let apiClient = MockRyftApiClient()
+        apiClient = MockRyftApiClient()
         if getPaymentSessionErrorToggle.isOn {
-            apiClient.getPaymentSessionResult = .failure(.general(message: "boom!"))
+            apiClient?.getPaymentSessionResult = .failure(.general(message: "boom!"))
         }
         if failPaymentControl.selectedSegmentIndex == 0 {
-            apiClient.attemptPaymentResult = .failure(.general(message: "uh oh"))
+            apiClient?.attemptPaymentResult = .failure(.general(message: "uh oh"))
         }
         if failPaymentControl.selectedSegmentIndex == 1 {
-            apiClient.attemptPaymentResult = .failure(.badResponse(detail: HttpError.HttpErrorDetail(
+            apiClient?.attemptPaymentResult = .failure(.badResponse(detail: HttpError.HttpErrorDetail(
                 statusCode: 400,
                 body: RyftApiError(
                     requestId: UUID().uuidString.lowercased(),
@@ -173,8 +196,8 @@ final class ViewController: UIViewController {
                 returnUrl: "https://ryftpay.com",
                 createdTimestamp: 123
             )
-            apiClient.getPaymentSessionResult = .success(paymentSessionRequiringEmail)
-            apiClient.attemptPaymentResult = .failure(.badResponse(detail: HttpError.HttpErrorDetail(
+            apiClient?.getPaymentSessionResult = .success(paymentSessionRequiringEmail)
+            apiClient?.attemptPaymentResult = .failure(.badResponse(detail: HttpError.HttpErrorDetail(
                 statusCode: 400,
                 body: RyftApiError(
                     requestId: UUID().uuidString.lowercased(),
@@ -187,6 +210,28 @@ final class ViewController: UIViewController {
                     ]
                 )
             )))
+        }
+        if attemptPayment3dsToggle.isOn {
+            let paymentSessionRequiringThreeDs = PaymentSession(
+                id: "ps_01FCTS1XMKH9FF43CAFA4CXT3P",
+                amount: 350,
+                currency: "GBP",
+                status: .pendingAction,
+                customerEmail: nil,
+                lastError: nil,
+                requiredAction: PaymentSessionRequiredAction(
+                    type: .identify,
+                    identify: RequiredActionIdentifyApp(
+                        sessionId: "session_123",
+                        sessionSecret: "secret",
+                        scheme: "mastercard",
+                        paymentMethodId: "pmt_01FCTS1XMKH9FF43CAFA4CXT3P"
+                    )
+                ),
+                returnUrl: "https://ryftpay.com",
+                createdTimestamp: 123
+            )
+            apiClient?.attemptPaymentResult = .success(paymentSessionRequiringThreeDs)
         }
         let myTheme = RyftUITheme.defaultTheme
         ryftDropIn = RyftDropInPaymentViewController(
@@ -204,9 +249,18 @@ final class ViewController: UIViewController {
                         merchantName: "Ryft"
                     ) : nil
             ),
-            apiClient: apiClient,
+            apiClient: apiClient!,
             delegate: self
         )
+        let threeDsHandler = MockRyftThreeDsActionHandler()
+        threeDsHandler.viewController = ryftDropIn
+        let requiredActionComponent = RyftRequiredActionComponent(
+            config: RyftRequiredActionComponent.Configuration(clientSecret: "secret"),
+            apiClient: apiClient!,
+            threeDsActionHandler: threeDsHandler
+        )
+        requiredActionComponent.delegate = ryftDropIn
+        ryftDropIn?.requiredActionComponent = requiredActionComponent
         ryftDropIn?.theme = myTheme
         present(ryftDropIn!, animated: true, completion: nil)
     }
@@ -223,14 +277,27 @@ extension ViewController: RyftDropInPaymentDelegate {
         case .success(let paymentSession):
             title = "Payment Success"
             message = paymentSession.id
-        default:
-            break
+        case .pendingAction(_, let requiredAction):
+            apiClient?.attemptPaymentResult = .success(PaymentSession(
+                id: "ps_01FCTS1XMKH9FF43CAFA4CXT3P",
+                amount: 350,
+                currency: "GBP",
+                status: .approved,
+                customerEmail: "support@ryftpay.com",
+                lastError: nil,
+                requiredAction: nil,
+                returnUrl: "https://ryftpay.com",
+                createdTimestamp: 123
+            ))
+            ryftDropIn?.handleRequiredAction(returnUrl: nil, requiredAction)
+            return
         }
         let alert = UIAlertController(
             title: title,
             message: message,
             preferredStyle: .alert
         )
+        alert.addAction(UIAlertAction(title: "dismiss", style: .cancel))
         present(alert, animated: true, completion: nil)
     }
 }

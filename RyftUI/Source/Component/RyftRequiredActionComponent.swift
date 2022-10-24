@@ -44,7 +44,7 @@ public final class RyftRequiredActionComponent {
         )
     }
 
-    init(
+    internal init(
         config: Configuration,
         apiClient: RyftApiClient,
         threeDsActionHandler: RyftThreeDsActionHandler

@@ -19,7 +19,6 @@ final class TestFixtures {
     static func identifyAction() -> PaymentSessionRequiredAction {
         PaymentSessionRequiredAction(
             type: .identify,
-            url: nil,
             identify: RequiredActionIdentifyApp(
                 sessionId: "session_123",
                 sessionSecret: "secret",
