@@ -1,33 +1,33 @@
 public struct PaymentRequestPaymentMethod: Equatable, Hashable {
 
     public let id: String
-    public let cvv: String?
+    public let cvc: String?
 
     public init(
         id: String,
-        cvv: String? = nil
+        cvc: String? = nil
     ) {
         self.id = id
-        self.cvv = cvv
+        self.cvc = cvc
     }
 
     func toJson() -> [String: Any] {
         var json = ["id": id]
-        if let cvv = cvv {
-            json["cvv"] = cvv
+        if let cvc = cvc {
+            json["cvc"] = cvc
         }
         return json
     }
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
-        hasher.combine(cvv)
+        hasher.combine(cvc)
     }
 
     public static func == (
         lhs: PaymentRequestPaymentMethod,
         rhs: PaymentRequestPaymentMethod
     ) -> Bool {
-        lhs.id == rhs.id && lhs.cvv == rhs.cvv
+        lhs.id == rhs.id && lhs.cvc == rhs.cvc
     }
 }

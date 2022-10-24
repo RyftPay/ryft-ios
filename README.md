@@ -83,7 +83,7 @@ func onPaymentResult(result: RyftPaymentResult) {
     case .pendingAction(let paymentSession, let requiredAction):
         // instruct the drop-in to handle the action
         ryftDropIn?.handleRequiredAction(
-            returnUrl: paymentSession.returnUrl,
+            returnUrl: URL(string: paymentSession.returnUrl),
             requiredAction
         )
     // payment failed, show an alert to the customer

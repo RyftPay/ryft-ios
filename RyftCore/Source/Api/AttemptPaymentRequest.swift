@@ -60,7 +60,7 @@ public struct AttemptPaymentRequest {
     public static func fromPaymentMethod(
         clientSecret: String,
         paymentMethodId: String,
-        cvv: String? = nil
+        cvc: String? = nil
     ) -> AttemptPaymentRequest {
         AttemptPaymentRequest(
             clientSecret: clientSecret,
@@ -72,7 +72,7 @@ public struct AttemptPaymentRequest {
             paymentMethodOptions: nil,
             paymentMethod: PaymentRequestPaymentMethod(
                 id: paymentMethodId,
-                cvv: cvv
+                cvc: cvc
             )
         )
     }

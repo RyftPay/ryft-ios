@@ -64,11 +64,11 @@ final class AttemptPaymentRequestTest: XCTestCase {
         let value = AttemptPaymentRequest.fromPaymentMethod(
             clientSecret: "secret",
             paymentMethodId: "pmt_01G0EYVFR02KBBVE2YWQ8AKMGJ",
-            cvv: "100"
+            cvc: "100"
         )
         let expectedPaymentMethod = PaymentRequestPaymentMethod(
             id: "pmt_01G0EYVFR02KBBVE2YWQ8AKMGJ",
-            cvv: "100"
+            cvc: "100"
         )
         XCTAssertTrue(value.clientSecret == "secret")
         XCTAssertTrue(value.paymentMethod == expectedPaymentMethod)
@@ -227,7 +227,7 @@ final class AttemptPaymentRequestTest: XCTestCase {
         let result = AttemptPaymentRequest.fromPaymentMethod(
             clientSecret: "secret",
             paymentMethodId: "pmt_01G0EYVFR02KBBVE2YWQ8AKMGJ",
-            cvv: "100"
+            cvc: "100"
         ).toJson()
         XCTAssertNotNil(result["clientSecret"])
         XCTAssertNotNil(result["paymentMethod"])
@@ -243,14 +243,14 @@ final class AttemptPaymentRequestTest: XCTestCase {
         }
         guard
             let paymentMethodId = paymentMethod["id"] as? String,
-            let cvv = paymentMethod["cvv"] as? String
+            let cvc = paymentMethod["cvc"] as? String
         else {
             XCTFail("serialized JSON paymentMethod did not contain the expected fields")
             return
         }
         XCTAssertEqual("secret", clientSecret)
         XCTAssertEqual("pmt_01G0EYVFR02KBBVE2YWQ8AKMGJ", paymentMethodId)
-        XCTAssertEqual("100", cvv)
+        XCTAssertEqual("100", cvc)
     }
 
     func test_toJson_shouldIncludeBillingAddress_whenItIsPresent() {
