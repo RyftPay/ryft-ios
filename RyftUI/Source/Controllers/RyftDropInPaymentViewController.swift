@@ -25,7 +25,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
     private var applePayComponent: RyftApplePayComponent?
 
     internal lazy var requiredActionComponent: RyftRequiredActionComponent = {
-       let component = createRequiredActionComponent(returnUrl: nil)
+       let component = createRequiredActionComponent()
         component.delegate = self
         return component
     }()
@@ -210,12 +210,12 @@ public final class RyftDropInPaymentViewController: UIViewController {
         requiredActionComponent.handle(action: action)
     }
 
-    private func createRequiredActionComponent(returnUrl: URL?) -> RyftRequiredActionComponent {
+    private func createRequiredActionComponent() -> RyftRequiredActionComponent {
         RyftRequiredActionComponent(
             config: RyftRequiredActionComponent.Configuration(
                 clientSecret: config.clientSecret,
                 accountId: config.accountId,
-                returnUrl: returnUrl
+                returnUrl: nil
             ),
             apiClient: apiClient
         )
