@@ -32,7 +32,9 @@ jobs:
           gem install xcpretty
 
       - name: Lint
-        run: bundle exec fastlane lint
+        run: |
+          swiftlint --version
+          bundle exec fastlane lint
 
       - name: Test
         run: bundle exec fastlane tests
