@@ -142,7 +142,6 @@ class BillingAddressTests: XCTestCase {
         XCTAssertEqual("94043", postalCode)
     }
 
-    // swiftlint:disable function_body_length
     func test_toJson_shouldReturnExpectedValue_whenNilFieldsArePresent() {
         let billingAddress = BillingAddress(
             firstName: "John",
@@ -202,5 +201,4 @@ class BillingAddressTests: XCTestCase {
         XCTAssertEqual("94043", postalCode)
         XCTAssertEqual("CA", region)
     }
-    // swiftlint:enable function_body_length
 }

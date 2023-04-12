@@ -76,7 +76,6 @@ final class AttemptPaymentRequestTest: XCTestCase {
         XCTAssertNil(value.walletDetails)
     }
 
-    // swiftlint:disable function_body_length
     func test_toJson_shouldReturnExpectedValue_forCardPayment() {
         let result = AttemptPaymentRequest.fromCard(
             clientSecret: "secret",
@@ -133,9 +132,7 @@ final class AttemptPaymentRequestTest: XCTestCase {
         XCTAssertFalse(storeFlag)
         XCTAssertEqual("Application", deviceChannel)
     }
-    // swiftlint:enable function_body_length
 
-    // swiftlint:disable function_body_length
     func test_toJson_shouldReturnExpectedValue_forCardPayment_WithStoreFlagEnabled() {
         let result = AttemptPaymentRequest.fromCard(
             clientSecret: "secret",
@@ -191,7 +188,6 @@ final class AttemptPaymentRequestTest: XCTestCase {
         XCTAssertEqual("100", cardCvc)
         XCTAssertTrue(storeFlag)
     }
-    // swiftlint:enable function_body_length
 
     func test_toJson_shouldReturnExpectedValue_forApplePayPayment() {
         let result = AttemptPaymentRequest.fromApplePay(
