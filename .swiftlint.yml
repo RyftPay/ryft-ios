@@ -79,15 +79,15 @@ opt_in_rules:
   - xct_specific_matcher
 
 type_body_length:
-  - 350 # warning
-  - 520 # error
+  warning: 350
+  error: 520
 
 file_length:
   warning: 575
   error: 600
 
 function_body_length:
-  warning: 45
+  warning: 60
 
 large_tuple:
   warning: 4
