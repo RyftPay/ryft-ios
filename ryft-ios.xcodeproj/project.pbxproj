@@ -28,6 +28,7 @@
 		0B2789372902D9D2006E21F6 /* MockRyftThreeDsActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2789362902D9D2006E21F6 /* MockRyftThreeDsActionHandler.swift */; };
 		0B2789392902E24B006E21F6 /* RyftRequiredActionDelegateTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2789382902E24B006E21F6 /* RyftRequiredActionDelegateTester.swift */; };
 		0BB02A9F2905522B00667CF0 /* MockRyftThreeDsActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB02A9E2905522B00667CF0 /* MockRyftThreeDsActionHandler.swift */; };
+		0BE1A02D29E7077400682697 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0BE1A02B29E7077400682697 /* Localizable.strings */; };
 		D868925C27A2A3E8003DBFAA /* RyftCard.h in Headers */ = {isa = PBXBuildFile; fileRef = D868924E27A2A3E8003DBFAA /* RyftCard.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D868926D27A2A4D7003DBFAA /* RyftCore.h in Headers */ = {isa = PBXBuildFile; fileRef = D868926B27A2A4D7003DBFAA /* RyftCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D868927A27A2A4E7003DBFAA /* RyftUI.h in Headers */ = {isa = PBXBuildFile; fileRef = D868927827A2A4E7003DBFAA /* RyftUI.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -234,6 +235,7 @@
 		0B2789362902D9D2006E21F6 /* MockRyftThreeDsActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRyftThreeDsActionHandler.swift; sourceTree = "<group>"; };
 		0B2789382902E24B006E21F6 /* RyftRequiredActionDelegateTester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftRequiredActionDelegateTester.swift; sourceTree = "<group>"; };
 		0BB02A9E2905522B00667CF0 /* MockRyftThreeDsActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRyftThreeDsActionHandler.swift; sourceTree = "<group>"; };
+		0BE1A02C29E7077400682697 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = Localizable.strings; sourceTree = "<group>"; };
 		D868924C27A2A3E8003DBFAA /* RyftCard.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RyftCard.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D868924E27A2A3E8003DBFAA /* RyftCard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RyftCard.h; sourceTree = "<group>"; };
 		D868924F27A2A3E8003DBFAA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -417,6 +419,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0BE1A02A29E7075800682697 /* es.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				0BE1A02B29E7077400682697 /* Localizable.strings */,
+			);
+			path = es.lproj;
+			sourceTree = "<group>";
+		};
 		D868922227A2A383003DBFAA = {
 			isa = PBXGroup;
 			children = (
@@ -655,6 +665,7 @@
 		D868930327A2BF07003DBFAA /* Localizations */ = {
 			isa = PBXGroup;
 			children = (
+				0BE1A02A29E7075800682697 /* es.lproj */,
 				D868930A27A2BF68003DBFAA /* en-gb.lproj */,
 				D868930627A2BF40003DBFAA /* en.lproj */,
 			);
@@ -1069,6 +1080,7 @@
 				Base,
 				"en-gb",
 				"en-GB",
+				es,
 			);
 			mainGroup = D868922227A2A383003DBFAA;
 			packageReferences = (
@@ -1109,6 +1121,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D868930227A2BE76003DBFAA /* Images.xcassets in Resources */,
+				0BE1A02D29E7077400682697 /* Localizable.strings in Resources */,
 				D868930D27A2BF7B003DBFAA /* Localizable.strings in Resources */,
 				D868930927A2BF5C003DBFAA /* Localizable.strings in Resources */,
 			);
@@ -1353,6 +1366,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		0BE1A02B29E7077400682697 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0BE1A02C29E7077400682697 /* es */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		D868930727A2BF5C003DBFAA /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
