@@ -17,7 +17,7 @@ final class RyftUITests: XCTestCase {
     }
 
     func test_pkPaymentErrors_shouldReturnEmptyResult_whenGivenNonHttpError() {
-        let result = RyftUI.pkPaymentErrors(NSError())
+        let result = RyftUI.pkPaymentErrors(NSError(domain: "test", code: 0))
         XCTAssertEqual(0, result.count)
     }
 

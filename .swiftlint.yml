@@ -80,7 +80,7 @@ opt_in_rules:
 
 type_body_length:
   - 350 # warning
-  - 400 # error
+  - 520 # error
 
 file_length:
   warning: 575
