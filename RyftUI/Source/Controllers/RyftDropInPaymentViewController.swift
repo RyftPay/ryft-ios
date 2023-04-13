@@ -159,10 +159,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
         self.delegate = delegate
         self.apiClient = DefaultRyftApiClient(publicApiKey: publicApiKey)
         super.init(nibName: nil, bundle: nil)
-        self.transitionHandler = SlidingTransitioningHandler(
-            presentedViewController: self,
-            height: estimatedHeight
-        )
+        self.transitionHandler = initTransitionHandler()
         transitioningDelegate = self.transitionHandler
         modalPresentationStyle = .custom
     }
@@ -180,8 +177,21 @@ public final class RyftDropInPaymentViewController: UIViewController {
             presentedViewController: self,
             height: estimatedHeight
         )
+        self.transitionHandler = initTransitionHandler()
         transitioningDelegate = self.transitionHandler
         modalPresentationStyle = .custom
+    }
+
+    private func initTransitionHandler() -> SlidingTransitioningHandler {
+        SlidingTransitioningHandler(
+            presentedViewController: self,
+            height: estimatedHeight,
+            dismissTransition: SlidingAnimator.dismissAnimator(
+                onComplete: {
+                    self.invokeDelegate(with: .cancelled, shouldDismiss: false)
+                }
+            )
+        )
     }
 
     deinit {

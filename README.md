@@ -77,7 +77,7 @@ This method is invoked once the customer has entered their payment method detail
 func onPaymentResult(result: RyftPaymentResult) {
     switch result {
     // payment approved, send the customer to your receipt/success view
-    case .success:
+    case .success(let paymentSession):
         showSuccessView()
     // payment requires an additional action in order to be approved (e.g. 3ds)
     case .pendingAction(let paymentSession, let requiredAction):
@@ -100,6 +100,9 @@ func onPaymentResult(result: RyftPaymentResult) {
         })
         present(alert, animated: true, completion: nil)
     }
+    // drop in was cancelled prior to attempting payment
+    case .cancelled:
+        // you may want to log that the payment was cancelled here
 }
 ```
 
