@@ -2,8 +2,8 @@ import UIKit
 
 final class SlidingTransitioningHandler: NSObject, UIViewControllerTransitioningDelegate {
 
-    private let presenterTransition = SlidingAnimator(duration: 0.4, animationType: .presenting)
-    private let dismissTransition = SlidingAnimator(duration: 0.4, animationType: .dismissing)
+    private var presenterTransition = SlidingAnimator.presentingAnimator()
+    private var dismissTransition = SlidingAnimator.dismissAnimator()
     private weak var presentedViewController: UIViewController?
 
     var height: CGFloat {
@@ -30,6 +30,17 @@ final class SlidingTransitioningHandler: NSObject, UIViewControllerTransitioning
         self.height = height
         self.userInteractionEnabled = true
         self.presentedViewController = presentedViewController
+    }
+
+    init(
+        presentedViewController: UIViewController,
+        height: CGFloat,
+        dismissTransition: SlidingAnimator
+    ) {
+        self.height = height
+        self.userInteractionEnabled = true
+        self.presentedViewController = presentedViewController
+        self.dismissTransition = dismissTransition
     }
 
     func presentationController(

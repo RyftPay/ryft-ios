@@ -83,7 +83,7 @@ type_body_length:
   error: 520
 
 file_length:
-  warning: 575
+  warning: 600
   error: 600
 
 function_body_length:

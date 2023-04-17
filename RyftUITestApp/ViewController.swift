@@ -272,6 +272,8 @@ extension ViewController: RyftDropInPaymentDelegate {
         var title = "Payment Failed"
         var message = "failure"
         switch result {
+        case .cancelled:
+            title = "Payment Cancelled"
         case .failed(let error):
             message = error.displayError
         case .success(let paymentSession):

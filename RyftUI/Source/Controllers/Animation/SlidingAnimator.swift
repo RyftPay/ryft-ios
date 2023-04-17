@@ -7,13 +7,21 @@ final class SlidingAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         case dismissing
     }
 
-    private var duration: CGFloat = 0.4
+    private static let defaultDuration: CGFloat = 0.4
+
+    private var duration: CGFloat = defaultDuration
     private var animationType = AnimationType.presenting
+    private var onComplete: (() -> Void)?
     private var originFrame = CGRect.zero
 
-    init(duration: CGFloat, animationType: AnimationType) {
+    init(
+        duration: CGFloat,
+        animationType: AnimationType,
+        onComplete: (() -> Void)? = nil
+    ) {
         self.duration = duration
         self.animationType = animationType
+        self.onComplete = onComplete
     }
 
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
@@ -67,7 +75,20 @@ final class SlidingAnimator: NSObject, UIViewControllerAnimatedTransitioning {
             },
             completion: { _ in
                 transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+                self.onComplete?()
             }
+        )
+    }
+
+    static func presentingAnimator() -> SlidingAnimator {
+        SlidingAnimator(duration: defaultDuration, animationType: .presenting)
+    }
+
+    static func dismissAnimator(onComplete: (() -> Void)? = nil) -> SlidingAnimator {
+        SlidingAnimator(
+            duration: defaultDuration,
+            animationType: .dismissing,
+            onComplete: onComplete
         )
     }
 }
