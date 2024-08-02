@@ -153,15 +153,15 @@ We recommend using `.auto`. This ensures that the financials displayed to the cu
         merchantCountryCode: "GB",
         merchantName: "<your merchant name to display on the Apple Pay sheet>"
     )
-    // create a fresh instance each time you want to display the ApplePay sheet
-    let applePayComponent = RyftApplePayComponent(
+    // assign a fresh instance each time you want to display the ApplePay sheet
+    self.applePayComponent = RyftApplePayComponent(
         publicApiKey: "<your public API key>",
         clientSecret: config.clientSecret,
         accountId: "nil | <the Id of the sub-account you are taking payments for>",
         config: .auto(config: config),
         delegate: self
     )
-    applePayComponent?.present { presented in
+    self.applePayComponent?.present { presented in
         if !presented {
             /*
             * something went wrong with presenting the ApplePay sheet
