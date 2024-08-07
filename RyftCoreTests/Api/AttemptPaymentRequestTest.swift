@@ -20,9 +20,9 @@ final class AttemptPaymentRequestTest: XCTestCase {
             cvc: "100"
         )
         let expectedPaymentMethodOptions = PaymentRequestPaymentMethodOptions(store: true)
-        XCTAssertTrue(value.clientSecret == "secret")
-        XCTAssertTrue(value.cardDetails == expectedCardDetails)
-        XCTAssertTrue(value.paymentMethodOptions == expectedPaymentMethodOptions)
+        XCTAssertEqual("secret", value.clientSecret)
+        XCTAssertEqual(expectedCardDetails, value.cardDetails)
+        XCTAssertEqual(expectedPaymentMethodOptions, value.paymentMethodOptions)
         XCTAssertNil(value.walletDetails)
     }
 
@@ -37,8 +37,8 @@ final class AttemptPaymentRequestTest: XCTestCase {
             type: "ApplePay",
             applePayToken: "base64-encoded-apple-pay-token"
         )
-        XCTAssertTrue(value.clientSecret == "secret")
-        XCTAssertTrue(value.walletDetails == expectedWalletDetails)
+        XCTAssertEqual("secret", value.clientSecret)
+        XCTAssertEqual(expectedWalletDetails, value.walletDetails)
         XCTAssertNil(value.cardDetails)
     }
 
@@ -54,9 +54,9 @@ final class AttemptPaymentRequestTest: XCTestCase {
             applePayToken: "base64-encoded-apple-pay-token"
         )
         let expectedCustomerDetails = PaymentRequestCustomerDetails(email: "support@ryftpay.com")
-        XCTAssertTrue(value.clientSecret == "secret")
-        XCTAssertTrue(value.walletDetails == expectedWalletDetails)
-        XCTAssertTrue(value.customerDetails == expectedCustomerDetails)
+        XCTAssertEqual("secret", value.clientSecret)
+        XCTAssertEqual(expectedWalletDetails, value.walletDetails)
+        XCTAssertEqual(expectedCustomerDetails, value.customerDetails)
         XCTAssertNil(value.cardDetails)
     }
 
@@ -70,8 +70,8 @@ final class AttemptPaymentRequestTest: XCTestCase {
             id: "pmt_01G0EYVFR02KBBVE2YWQ8AKMGJ",
             cvc: "100"
         )
-        XCTAssertTrue(value.clientSecret == "secret")
-        XCTAssertTrue(value.paymentMethod == expectedPaymentMethod)
+        XCTAssertEqual("secret", value.clientSecret)
+        XCTAssertEqual(expectedPaymentMethod, value.paymentMethod)
         XCTAssertNil(value.cardDetails)
         XCTAssertNil(value.walletDetails)
     }

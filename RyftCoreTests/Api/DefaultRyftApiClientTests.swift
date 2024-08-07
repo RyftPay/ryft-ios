@@ -99,7 +99,7 @@ class DefaultRyftApiClientTests: XCTestCase {
         apiClient.attemptPayment(request: attemptPaymentRequest(), accountId: subAccountId) { result in
             switch result {
             case .success(let response):
-                XCTAssertTrue(response.id == responseBody.id)
+                XCTAssertEqual(response.id, responseBody.id)
             case .failure(let httpError):
                 self.assertResponseHttpError(httpError)
             }
@@ -197,7 +197,7 @@ class DefaultRyftApiClientTests: XCTestCase {
         ) { result in
             switch result {
             case .success(let response):
-                XCTAssertTrue(response.id == responseBody.id)
+                XCTAssertEqual(response.id, responseBody.id)
             case .failure(let httpError):
                 self.assertResponseHttpError(httpError)
             }

@@ -5,7 +5,7 @@ public struct Currency: Equatable, Hashable {
     public let code: String
     public let minorUnits: Int
 
-    init(code: String, minorUnits: Int) {
+    public init(code: String, minorUnits: Int) {
         self.code = code
         self.minorUnits = minorUnits
     }
