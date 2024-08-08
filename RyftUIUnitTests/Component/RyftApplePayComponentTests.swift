@@ -91,7 +91,7 @@ final class RyftApplePayComponentTests: XCTestCase {
         config: RyftApplePayComponent.RyftApplePayComponentConfig
     ) -> RyftApplePayComponent? {
         RyftApplePayComponent(
-            clientSecret: "secret",
+            clientSecret: "ps_01FCTS1XMKH9FF43CAFA4CXT3P_secret_b83f2653-06d7-44a9-a548-5825e8186004",
             accountId: nil,
             config: config,
             delegate: delegate,
