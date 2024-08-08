@@ -24,7 +24,7 @@ platform :ios do
     run_tests(
       workspace: "ryft-ios.xcodeproj/project.xcworkspace",
       scheme: "RyftCard",
-      devices: ["iPhone 12"]
+      devices: ["iPhone 15"]
     )
   end
 
@@ -32,7 +32,7 @@ platform :ios do
     run_tests(
       workspace: "ryft-ios.xcodeproj/project.xcworkspace",
       scheme: "RyftCore",
-      devices: ["iPhone 12"]
+      devices: ["iPhone 15"]
     )
   end
 
@@ -40,7 +40,7 @@ platform :ios do
     run_tests(
       workspace: "ryft-ios.xcodeproj/project.xcworkspace",
       scheme: "RyftUI",
-      devices: ["iPhone 12"]
+      devices: ["iPhone 15"]
     )
   end
 
@@ -48,7 +48,7 @@ platform :ios do
     run_tests(
       workspace: "ryft-ios.xcodeproj/project.xcworkspace",
       scheme: "RyftUITestApp",
-      devices: ["iPhone 12"],
+      devices: ["iPhone 15"],
       derived_data_path: "scan_derived_data"
     )
   end

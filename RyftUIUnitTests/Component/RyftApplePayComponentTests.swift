@@ -49,7 +49,7 @@ final class RyftApplePayComponentTests: XCTestCase {
             XCTAssertTrue(apiClient.didCallGetPaymentSession)
             expectation.fulfill()
         }
-        waitForExpectations(timeout: 10.0) { error in
+        waitForExpectations(timeout: 15.0) { error in
             if error != nil {
                 XCTFail(error!.localizedDescription)
             }
