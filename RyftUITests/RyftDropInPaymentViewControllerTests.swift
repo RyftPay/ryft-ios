@@ -340,7 +340,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         ).element
         _ = addBillingAddress.waitForExistence(timeout: 15)
         if addBillingAddress.exists {
-            applePay.buttons["Add Billing Address"].forceTap()
+            addBillingAddress.forceTap()
             let firstNameCell = applePay.textFields["First Name"]
             let lastNameCell = applePay.textFields["Last Name"]
             let streetCell = applePay.textFields["Street"]
