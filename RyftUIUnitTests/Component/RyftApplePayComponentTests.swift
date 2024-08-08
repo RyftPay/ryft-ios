@@ -7,10 +7,11 @@ import RyftCore
 final class RyftApplePayComponentTests: XCTestCase {
 
     func test_present_shouldCompleteWithFailure_whenApiReturnsNoPaymentSession() {
+        let delegate = ApplePayComponentDelegateTester()
         let apiClient = MockRyftApiClient()
         let component = createComponent(
             apiClient: apiClient,
-            delegate: ApplePayComponentDelegateTester(),
+            delegate: delegate,
             config: .auto(config: RyftApplePayConfig(
                 merchantIdentifier: "id",
                 merchantCountryCode: "GB",
@@ -31,9 +32,10 @@ final class RyftApplePayComponentTests: XCTestCase {
     }
 
     func test_present_shouldCompleteWithSuccess_whenApiReturnsPaymentSession() {
+        let paymentSession = TestFixtures.paymentSession()
         let delegate = ApplePayComponentDelegateTester()
         let apiClient = MockRyftApiClient()
-        apiClient.paymentSession = TestFixtures.paymentSession()
+        apiClient.paymentSession = paymentSession
         let component = createComponent(
             apiClient: apiClient,
             delegate: delegate,
