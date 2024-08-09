@@ -58,15 +58,38 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
 
     func test_dropIn_hasExpectedInputFields() throws {
         openDropIn()
+        let cardholderNameInputField = app.otherElements["RyftCardholderNameInputField"]
         let cardInputField = app.otherElements["RyftCardNumberInputField"]
         let expirationInputField = app.otherElements["RyftExpirationInputField"]
         let cvcInputField = app.otherElements["RyftCvcInputField"]
+        XCTAssertFalse(cardholderNameInputField.waitForExistence(timeout: 3))
         XCTAssertTrue(cardInputField.waitForExistence(timeout: 3))
         XCTAssertTrue(expirationInputField.exists)
         XCTAssertTrue(cvcInputField.exists)
         let cardNumberTextField = cardInputField.textFields.element
         let expirationTextField = expirationInputField.textFields.element
         let cvcTextField = cvcInputField.textFields.element
+        XCTAssertEqual("Card Number", cardNumberTextField.placeholderValue)
+        XCTAssertEqual("MM/YY", expirationTextField.placeholderValue)
+        XCTAssertEqual("CVC", cvcTextField.placeholderValue)
+    }
+
+    func test_dropIn_hasExpectedInputFields_whenAlsoCollectingCardholderName() throws {
+        collectCardholderName()
+        openDropIn()
+        let cardholderNameInputField = app.otherElements["RyftCardholderNameInputField"]
+        let cardInputField = app.otherElements["RyftCardNumberInputField"]
+        let expirationInputField = app.otherElements["RyftExpirationInputField"]
+        let cvcInputField = app.otherElements["RyftCvcInputField"]
+        XCTAssertTrue(cardholderNameInputField.waitForExistence(timeout: 3))
+        XCTAssertTrue(cardInputField.waitForExistence(timeout: 3))
+        XCTAssertTrue(expirationInputField.exists)
+        XCTAssertTrue(cvcInputField.exists)
+        let cardholderNameTextField = cardholderNameInputField.textFields.element
+        let cardNumberTextField = cardInputField.textFields.element
+        let expirationTextField = expirationInputField.textFields.element
+        let cvcTextField = cvcInputField.textFields.element
+        XCTAssertEqual("Name on card", cardholderNameTextField.placeholderValue)
         XCTAssertEqual("Card Number", cardNumberTextField.placeholderValue)
         XCTAssertEqual("MM/YY", expirationTextField.placeholderValue)
         XCTAssertEqual("CVC", cvcTextField.placeholderValue)
@@ -137,6 +160,31 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
             cardNumber: "4242424242424242",
             expiration: "1032",
             cvc: "100"
+        )
+        let payButton = app.otherElements["RyftConfirmButton-Pay"]
+        XCTAssertTrue(payButton.buttons.element.isEnabled)
+    }
+
+    func test_payButton_isDisabled_whenCollectingCardholderName_andNotYetValid() {
+        collectCardholderName()
+        openDropIn()
+        typeCardDetails(
+            cardNumber: "4242424242424242",
+            expiration: "1032",
+            cvc: "100"
+        )
+        let payButton = app.otherElements["RyftConfirmButton-Pay"]
+        XCTAssertFalse(payButton.buttons.element.isEnabled)
+    }
+
+    func test_payButton_isDisabled_whenCollectingCardholderName_andAllInputsAreValid() {
+        collectCardholderName()
+        openDropIn()
+        typeCardDetails(
+            cardNumber: "4242424242424242",
+            expiration: "1032",
+            cvc: "100",
+            name: "MR TEST"
         )
         let payButton = app.otherElements["RyftConfirmButton-Pay"]
         XCTAssertTrue(payButton.buttons.element.isEnabled)
@@ -259,8 +307,14 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
     private func typeCardDetails(
         cardNumber: String,
         expiration: String,
-        cvc: String
+        cvc: String,
+        name: String? = nil
     ) {
+        if let name = name {
+            let cardholderNameInput = app.otherElements["RyftCardholderNameInputField"]
+            cardholderNameInput.textFields.element.tap()
+            cardholderNameInput.textFields.element.typeText(name)
+        }
         let cardNumberInput = app.otherElements["RyftCardNumberInputField"]
         let expirationInput = app.otherElements["RyftExpirationInputField"]
         let cvcInput = app.otherElements["RyftCvcInputField"]
@@ -351,5 +405,9 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
                 .element
                 .forceTap()
         }
+    }
+
+    private func collectCardholderName() {
+        app.switches["CollectCardholderNameToggle"].tap()
     }
 }

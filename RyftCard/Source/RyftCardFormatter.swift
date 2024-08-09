@@ -35,4 +35,8 @@ public final class RyftCardFormatter {
         }
     }
     // swiftlint:enable reduce_into
+
+    public static func sanitisedName(value: String) -> String {
+        value.trimmingCharacters(in: .whitespaces)
+    }
 }

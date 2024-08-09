@@ -46,6 +46,23 @@ final class RyftCardFormatterTests: XCTestCase {
         XCTAssertEqual("204", result.year)
     }
 
+    func test_sanitisedName_ShouldReturnExpectedValue() {
+        let testCases = [
+            ["MR CAL KESTIS", "MR CAL KESTIS"],
+            [" MR CAL KESTIS", "MR CAL KESTIS"],
+            ["MR CAL KESTIS ", "MR CAL KESTIS"],
+            [" MR CAL KESTIS ", "MR CAL KESTIS"],
+            ["  MR CAL KESTIS  ", "MR CAL KESTIS"],
+            [" CAL KESTIS", "CAL KESTIS"],
+        ]
+        testCases.forEach {
+            XCTAssertEqual(
+                $0[1],
+                RyftCardFormatter.sanitisedName(value: $0[0])
+            )
+        }
+    }
+
     func test_formatVisaCardNumbers_shouldReturnExpectedValue() {
         let testCases = [
             ["4242424242424242", "4242 4242 4242 4242"],

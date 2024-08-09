@@ -17,7 +17,8 @@ public struct AttemptPaymentRequest {
         expiryMonth: String,
         expiryYear: String,
         cvc: String,
-        store: Bool
+        store: Bool,
+        name: String? = nil
     ) -> AttemptPaymentRequest {
         return AttemptPaymentRequest(
             clientSecret: clientSecret,
@@ -25,7 +26,8 @@ public struct AttemptPaymentRequest {
                 number: number,
                 expiryMonth: expiryMonth,
                 expiryYear: expiryYear,
-                cvc: cvc
+                cvc: cvc,
+                name: name
             ),
             walletDetails: nil,
             billingAddress: nil,
@@ -83,14 +85,19 @@ public struct AttemptPaymentRequest {
         let expiryMonth: String
         let expiryYear: String
         let cvc: String
+        let name: String?
 
         func toJson() -> [String: Any] {
-            [
+            var json: [String: Any] = [
                 "number": number,
                 "expiryMonth": expiryMonth,
                 "expiryYear": expiryYear,
                 "cvc": cvc
             ]
+            if let name = name {
+                json["name"] = name
+            }
+            return json
         }
 
         public func hash(into hasher: inout Hasher) {
@@ -98,6 +105,7 @@ public struct AttemptPaymentRequest {
             hasher.combine(expiryMonth)
             hasher.combine(expiryYear)
             hasher.combine(cvc)
+            hasher.combine(name)
         }
 
         public static func == (
@@ -108,6 +116,7 @@ public struct AttemptPaymentRequest {
                 && lhs.expiryMonth == rhs.expiryMonth
                 && lhs.expiryYear == rhs.expiryYear
                 && lhs.cvc == rhs.cvc
+                && lhs.name == rhs.name
         }
     }
 

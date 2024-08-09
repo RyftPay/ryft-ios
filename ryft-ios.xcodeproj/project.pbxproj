@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B0AD4592C661BD300556EA6 /* RyftCardholderNameInputField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0AD4582C661BD300556EA6 /* RyftCardholderNameInputField.swift */; };
 		0B27890828F5BD8F006E21F6 /* PaymentRequestPaymentMethodOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B27890728F5BD8F006E21F6 /* PaymentRequestPaymentMethodOptions.swift */; };
 		0B27890A28F5BED0006E21F6 /* RyftSaveCardToggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B27890928F5BED0006E21F6 /* RyftSaveCardToggleView.swift */; };
 		0B27890C28F5DD18006E21F6 /* PaymentRequestPaymentMethodOptionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B27890B28F5DD18006E21F6 /* PaymentRequestPaymentMethodOptionsTests.swift */; };
@@ -217,6 +218,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0B0AD4582C661BD300556EA6 /* RyftCardholderNameInputField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftCardholderNameInputField.swift; sourceTree = "<group>"; };
 		0B27890728F5BD8F006E21F6 /* PaymentRequestPaymentMethodOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentRequestPaymentMethodOptions.swift; sourceTree = "<group>"; };
 		0B27890928F5BED0006E21F6 /* RyftSaveCardToggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftSaveCardToggleView.swift; sourceTree = "<group>"; };
 		0B27890B28F5DD18006E21F6 /* PaymentRequestPaymentMethodOptionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentRequestPaymentMethodOptionsTests.swift; sourceTree = "<group>"; };
@@ -630,6 +632,7 @@
 				D8F163E627A3EE6D0076CC02 /* DropInViewFactory.swift */,
 				D8AB6597283641A5009EF72C /* RyftSeparatorView.swift */,
 				0B27890928F5BED0006E21F6 /* RyftSaveCardToggleView.swift */,
+				0B0AD4582C661BD300556EA6 /* RyftCardholderNameInputField.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1242,6 +1245,7 @@
 				D86892D927A2AF1B003DBFAA /* RyftConfirmButton.swift in Sources */,
 				D86892EB27A2B026003DBFAA /* SlidingAnimator.swift in Sources */,
 				0B27890A28F5BED0006E21F6 /* RyftSaveCardToggleView.swift in Sources */,
+				0B0AD4592C661BD300556EA6 /* RyftCardholderNameInputField.swift in Sources */,
 				0B27892A290065B7006E21F6 /* RyftThreeDsActionComponent.swift in Sources */,
 				D8AB65942834DF02009EF72C /* PaymentSession+Extension.swift in Sources */,
 				D8AB658C2834DB1F009EF72C /* RyftApplePayComponent.swift in Sources */,
