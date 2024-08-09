@@ -203,8 +203,6 @@ public final class RyftApplePayComponent: NSObject, PKPaymentAuthorizationContro
     ) {
         self.paymentAuthController = PKPaymentAuthorizationController(paymentRequest: paymentRequest)
         paymentAuthController?.delegate = self
-        paymentAuthController?.present { presented in
-            completion?(presented)
-        }
+        paymentAuthController?.present(completion: completion)
     }
 }

@@ -323,8 +323,8 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         let addEmailButton = applePay.buttons["Add Email Address"]
         _ = addEmailButton.waitForExistence(timeout: 15)
         if addEmailButton.exists {
-            addEmailButton.forceTap()
-            applePay.collectionViews.buttons["Add Email Address"].forceTap()
+            applePay.buttons["Add Email Address"].forceTap()
+            applePay.tables.cells["Add Email Address"].forceTap()
             applePay.textFields.containing(NSPredicate(format: "placeholderValue contains 'Email'"))
                 .element
                 .typeText(email)
@@ -340,14 +340,11 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         ).element
         _ = addBillingAddress.waitForExistence(timeout: 15)
         if addBillingAddress.exists {
-            addBillingAddress.forceTap()
-            let firstNameCell = applePay.textFields["First Name"]
-            let lastNameCell = applePay.textFields["Last Name"]
-            let streetCell = applePay.textFields["Street"]
+            applePay.tables.cells["Add Billing Address"].forceTap()
+            let firstNameCell = applePay.tables.cells["First Name"]
+            let streetCell = applePay.tables.cells["Street, Search Contact or Address"]
             firstNameCell.forceTap()
             firstNameCell.typeText("Nathan")
-            lastNameCell.forceTap()
-            lastNameCell.typeText("Test")
             streetCell.forceTap()
             streetCell.typeText("c/o Google LLC")
             applePay.buttons.containing(NSPredicate(format: "label contains 'Done'"))
