@@ -274,7 +274,6 @@ final class AttemptPaymentRequestTest: XCTestCase {
         XCTAssertEqual("Application", deviceChannel)
     }
 
-
     func test_toJson_shouldReturnExpectedValue_forApplePayPayment() {
         let result = AttemptPaymentRequest.fromApplePay(
             clientSecret: "secret",

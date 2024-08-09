@@ -53,7 +53,7 @@ final class RyftCardFormatterTests: XCTestCase {
             ["MR CAL KESTIS ", "MR CAL KESTIS"],
             [" MR CAL KESTIS ", "MR CAL KESTIS"],
             ["  MR CAL KESTIS  ", "MR CAL KESTIS"],
-            [" CAL KESTIS", "CAL KESTIS"],
+            [" CAL KESTIS", "CAL KESTIS"]
         ]
         testCases.forEach {
             XCTAssertEqual(
