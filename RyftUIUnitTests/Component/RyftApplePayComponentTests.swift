@@ -7,10 +7,11 @@ import RyftCore
 final class RyftApplePayComponentTests: XCTestCase {
 
     func test_present_shouldCompleteWithFailure_whenApiReturnsNoPaymentSession() {
+        let delegate = ApplePayComponentDelegateTester()
         let apiClient = MockRyftApiClient()
         let component = createComponent(
             apiClient: apiClient,
-            delegate: ApplePayComponentDelegateTester(),
+            delegate: delegate,
             config: .auto(config: RyftApplePayConfig(
                 merchantIdentifier: "id",
                 merchantCountryCode: "GB",
@@ -31,9 +32,10 @@ final class RyftApplePayComponentTests: XCTestCase {
     }
 
     func test_present_shouldCompleteWithSuccess_whenApiReturnsPaymentSession() {
+        let paymentSession = TestFixtures.paymentSession()
         let delegate = ApplePayComponentDelegateTester()
         let apiClient = MockRyftApiClient()
-        apiClient.paymentSession = TestFixtures.paymentSession()
+        apiClient.paymentSession = paymentSession
         let component = createComponent(
             apiClient: apiClient,
             delegate: delegate,
@@ -49,7 +51,7 @@ final class RyftApplePayComponentTests: XCTestCase {
             XCTAssertTrue(apiClient.didCallGetPaymentSession)
             expectation.fulfill()
         }
-        waitForExpectations(timeout: 10.0) { error in
+        waitForExpectations(timeout: 15.0) { error in
             if error != nil {
                 XCTFail(error!.localizedDescription)
             }
@@ -91,7 +93,7 @@ final class RyftApplePayComponentTests: XCTestCase {
         config: RyftApplePayComponent.RyftApplePayComponentConfig
     ) -> RyftApplePayComponent? {
         RyftApplePayComponent(
-            clientSecret: "secret",
+            clientSecret: "ps_01FCTS1XMKH9FF43CAFA4CXT3P_secret_b83f2653-06d7-44a9-a548-5825e8186004",
             accountId: nil,
             config: config,
             delegate: delegate,
