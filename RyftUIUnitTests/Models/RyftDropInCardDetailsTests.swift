@@ -23,22 +23,22 @@ final class RyftDropInCardDetailsTest: XCTestCase {
 
     func test_isValid_shouldReturnFalse_forIncompleteCardDetails() {
         let cardDetails = RyftDropInCardDetails.incomplete
-        XCTAssertFalse(cardDetails.isValid())
+        XCTAssertFalse(cardDetails.isValid(nameRequired: false))
     }
 
     func test_isValid_shouldReturnFalse_whenCardNumberIsInvalid() {
         let cardDetails = cardWithStates(cardNumberState: .invalid)
-        XCTAssertFalse(cardDetails.isValid())
+        XCTAssertFalse(cardDetails.isValid(nameRequired: false))
     }
 
     func test_isValid_shouldReturnFalse_whenExpirationIsInvalid() {
         let cardDetails = cardWithStates(expirationState: .invalid)
-        XCTAssertFalse(cardDetails.isValid())
+        XCTAssertFalse(cardDetails.isValid(nameRequired: false))
     }
 
     func test_isValid_shouldReturnFalse_whenCvcIsInvalid() {
         let cardDetails = cardWithStates(cvcState: .invalid)
-        XCTAssertFalse(cardDetails.isValid())
+        XCTAssertFalse(cardDetails.isValid(nameRequired: false))
     }
 
     func test_isValid_shouldReturnTrue_whenAllStatesAreValid() {
@@ -48,7 +48,7 @@ final class RyftDropInCardDetailsTest: XCTestCase {
             cvcState: .valid,
             nameState: .valid
         )
-        XCTAssertTrue(cardDetails.isValid())
+        XCTAssertTrue(cardDetails.isValid(nameRequired: true))
     }
 
     func test_isValid_shouldReturnTrue_whenAllStatesMinusNameValid_nameNotRequired() {
@@ -58,7 +58,7 @@ final class RyftDropInCardDetailsTest: XCTestCase {
             cvcState: .valid,
             nameState: .incomplete
         )
-        XCTAssertTrue(cardDetails.isValid())
+        XCTAssertTrue(cardDetails.isValid(nameRequired: false))
     }
 
     func test_isValid_shouldReturnFalse_whenAllStatesMinusNameValid_nameRequired() {
@@ -68,7 +68,7 @@ final class RyftDropInCardDetailsTest: XCTestCase {
             cvcState: .valid,
             nameState: .incomplete
         ).with(name: "incomplete", and: .incomplete)
-        XCTAssertFalse(cardDetails.isValid())
+        XCTAssertFalse(cardDetails.isValid(nameRequired: true))
     }
 
     func test_withCardNumber_shouldReturnExpectedUpdatedValue() {
