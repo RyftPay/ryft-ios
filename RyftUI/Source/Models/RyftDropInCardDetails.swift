@@ -6,26 +6,31 @@ struct RyftDropInCardDetails: Equatable, Hashable {
      let expirationMonth: String
      let expirationYear: String
      let cvc: String
+     let name: String?
      let cardNumberState: RyftInputValidationState
      let expirationState: RyftInputValidationState
      let cvcState: RyftInputValidationState
+     let nameState: RyftInputValidationState
 
-     func isValid() -> Bool {
-        return [cardNumberState, expirationState, cvcState].allSatisfy { $0 == .valid }
+    func isValid(nameRequired: Bool) -> Bool {
+        let appliedNameState: RyftInputValidationState = nameRequired ? nameState : .valid
+        return [cardNumberState, expirationState, cvcState, appliedNameState].allSatisfy { $0 == .valid }
     }
 
      func with(
         cardNumber: String,
         and state: RyftInputValidationState
     ) -> RyftDropInCardDetails {
-        return RyftDropInCardDetails(
+        RyftDropInCardDetails(
             cardNumber: cardNumber,
             expirationMonth: expirationMonth,
             expirationYear: expirationYear,
             cvc: cvc,
+            name: name,
             cardNumberState: state,
             expirationState: expirationState,
-            cvcState: cvcState
+            cvcState: cvcState,
+            nameState: nameState
         )
     }
 
@@ -34,14 +39,16 @@ struct RyftDropInCardDetails: Equatable, Hashable {
         expirationYear: String,
         and state: RyftInputValidationState
     ) -> RyftDropInCardDetails {
-        return RyftDropInCardDetails(
+        RyftDropInCardDetails(
             cardNumber: cardNumber,
             expirationMonth: expirationMonth,
             expirationYear: "20\(expirationYear)",
             cvc: cvc,
+            name: name,
             cardNumberState: cardNumberState,
             expirationState: state,
-            cvcState: cvcState
+            cvcState: cvcState,
+            nameState: nameState
         )
     }
 
@@ -49,14 +56,33 @@ struct RyftDropInCardDetails: Equatable, Hashable {
         cvc: String,
         and state: RyftInputValidationState
     ) -> RyftDropInCardDetails {
-        return RyftDropInCardDetails(
+        RyftDropInCardDetails(
             cardNumber: cardNumber,
             expirationMonth: expirationMonth,
             expirationYear: expirationYear,
             cvc: cvc,
+            name: name,
             cardNumberState: cardNumberState,
             expirationState: expirationState,
-            cvcState: state
+            cvcState: state,
+            nameState: nameState
+        )
+    }
+
+    func with(
+        name: String,
+        and state: RyftInputValidationState
+    ) -> RyftDropInCardDetails {
+        RyftDropInCardDetails(
+            cardNumber: cardNumber,
+            expirationMonth: expirationMonth,
+            expirationYear: expirationYear,
+            cvc: cvc,
+            name: name,
+            cardNumberState: cardNumberState,
+            expirationState: expirationState,
+            cvcState: cvcState,
+            nameState: state
         )
     }
 
@@ -65,8 +91,10 @@ struct RyftDropInCardDetails: Equatable, Hashable {
         expirationMonth: "",
         expirationYear: "",
         cvc: "",
+        name: nil,
         cardNumberState: .incomplete,
         expirationState: .incomplete,
-        cvcState: .incomplete
+        cvcState: .incomplete,
+        nameState: .incomplete
     )
 }

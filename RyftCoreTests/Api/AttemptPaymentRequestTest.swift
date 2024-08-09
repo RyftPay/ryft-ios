@@ -17,7 +17,32 @@ final class AttemptPaymentRequestTest: XCTestCase {
             number: "4242424242424242",
             expiryMonth: "10",
             expiryYear: "2028",
-            cvc: "100"
+            cvc: "100",
+            name: nil
+        )
+        let expectedPaymentMethodOptions = PaymentRequestPaymentMethodOptions(store: true)
+        XCTAssertEqual("secret", value.clientSecret)
+        XCTAssertEqual(expectedCardDetails, value.cardDetails)
+        XCTAssertEqual(expectedPaymentMethodOptions, value.paymentMethodOptions)
+        XCTAssertNil(value.walletDetails)
+    }
+
+    func test_fromCard_shouldReturnExpectedValue_whenCardholderNameAlsoProvided() {
+        let value = AttemptPaymentRequest.fromCard(
+            clientSecret: "secret",
+            number: "4242424242424242",
+            expiryMonth: "10",
+            expiryYear: "2028",
+            cvc: "100",
+            store: true,
+            name: "MR CAL KESTIS"
+        )
+        let expectedCardDetails = AttemptPaymentRequest.PaymentRequestCardDetails(
+            number: "4242424242424242",
+            expiryMonth: "10",
+            expiryYear: "2028",
+            cvc: "100",
+            name: "MR CAL KESTIS"
         )
         let expectedPaymentMethodOptions = PaymentRequestPaymentMethodOptions(store: true)
         XCTAssertEqual("secret", value.clientSecret)
@@ -187,6 +212,66 @@ final class AttemptPaymentRequestTest: XCTestCase {
         XCTAssertEqual("2028", cardExpiryYear)
         XCTAssertEqual("100", cardCvc)
         XCTAssertTrue(storeFlag)
+    }
+
+    func test_toJson_shouldReturnExpectedValue_forCardPayment_withCardholderName() {
+        let result = AttemptPaymentRequest.fromCard(
+            clientSecret: "secret",
+            number: "4242424242424242",
+            expiryMonth: "10",
+            expiryYear: "2028",
+            cvc: "100",
+            store: false,
+            name: "MR CAL KESTIS"
+        ).toJson()
+        XCTAssertNotNil(result["clientSecret"])
+        XCTAssertNotNil(result["threeDsRequestDetails"])
+        XCTAssertNotNil(result["cardDetails"])
+        XCTAssertNotNil(result["paymentMethodOptions"])
+        XCTAssertNil(result["walletDetails"])
+        XCTAssertNil(result["paymentMethod"])
+        guard let clientSecret = result["clientSecret"] as? String else {
+            XCTFail("serialized JSON clientSecret field was not expected type")
+            return
+        }
+        guard let threeDsRequestDetails = result["threeDsRequestDetails"] as? [String: Any] else {
+            XCTFail("serialized JSON threeDsRequestDetails field was not expected type")
+            return
+        }
+        guard let cardDetails = result["cardDetails"] as? [String: Any] else {
+            XCTFail("serialized JSON cardDetails field was not expected type")
+            return
+        }
+        guard let deviceChannel = threeDsRequestDetails["deviceChannel"] as? String else {
+            XCTFail("serialized JSON threeDsRequestDetails did not contain the expected fields")
+            return
+        }
+        guard let paymentMethodOptions = result["paymentMethodOptions"] as? [String: Any] else {
+            XCTFail("serialized JSON paymentMethodOptions field was not expected type")
+            return
+        }
+        guard
+            let cardNumber = cardDetails["number"] as? String,
+            let cardExpiryMonth = cardDetails["expiryMonth"] as? String,
+            let cardExpiryYear = cardDetails["expiryYear"] as? String,
+            let cardCvc = cardDetails["cvc"] as? String,
+            let cardholderName = cardDetails["name"] as? String
+        else {
+            XCTFail("serialized JSON cardDetails did not contain the expected fields")
+            return
+        }
+        guard let storeFlag = paymentMethodOptions["store"] as? Bool else {
+            XCTFail("serialized JSON paymentMethodOptions did not contain the expected fields")
+            return
+        }
+        XCTAssertEqual("secret", clientSecret)
+        XCTAssertEqual("4242424242424242", cardNumber)
+        XCTAssertEqual("10", cardExpiryMonth)
+        XCTAssertEqual("2028", cardExpiryYear)
+        XCTAssertEqual("100", cardCvc)
+        XCTAssertEqual("MR CAL KESTIS", cardholderName)
+        XCTAssertFalse(storeFlag)
+        XCTAssertEqual("Application", deviceChannel)
     }
 
     func test_toJson_shouldReturnExpectedValue_forApplePayPayment() {

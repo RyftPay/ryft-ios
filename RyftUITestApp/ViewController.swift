@@ -33,6 +33,25 @@ final class ViewController: UIViewController {
         return stackView
     }()
 
+    lazy var collectCardholderNameToggle: UISwitch = {
+        let toggle = UISwitch()
+        toggle.setOn(false, animated: false)
+        toggle.accessibilityIdentifier = "CollectCardholderNameToggle"
+        return toggle
+    }()
+
+    lazy var collectCardholderNameToggleStackView: UIStackView = {
+        let label = UILabel()
+        label.text = "Collect Cardholder Name"
+        let stackView = UIStackView(arrangedSubviews: [
+            label,
+            collectCardholderNameToggle,
+        ])
+        stackView.axis = .horizontal
+        stackView.spacing = 5.0
+        return stackView
+    }()
+
     lazy var getPaymentSessionErrorToggle: UISwitch = {
         let toggle = UISwitch()
         toggle.setOn(false, animated: true)
@@ -123,6 +142,7 @@ final class ViewController: UIViewController {
         let stackView = UIStackView(arrangedSubviews: [
             titleLabel,
             applePayToggleStackView,
+            collectCardholderNameToggleStackView,
             getPaymentSessionErrorToggleStackView,
             attemptPayment3dsToggleStackView,
             failPaymentControlStackView,
@@ -247,7 +267,10 @@ final class ViewController: UIViewController {
                         merchantIdentifier: "Id",
                         merchantCountryCode: "GB",
                         merchantName: "Ryft"
-                    ) : nil
+                    ) : nil,
+                fieldCollection: RyftDropInConfiguration.RyftDropInFieldCollectionConfig(
+                    nameOnCard: collectCardholderNameToggle.isOn
+                )
             ),
             apiClient: apiClient!,
             delegate: self

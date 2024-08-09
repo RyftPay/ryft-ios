@@ -50,6 +50,10 @@ final class RyftCardNumberInputField: UIView, UITextFieldDelegate {
         setupViews()
     }
 
+    override func becomeFirstResponder() -> Bool {
+        return cardNumberInput.becomeFirstResponder()
+    }
+
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         if #available(iOS 13.0, *),
            traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {

@@ -8,6 +8,7 @@ public final class RyftImages {
     public static let mastercardIcon = getImage(named: "mastercard_icon")
     public static let cvcIcon = getImage(named: "cvc_icon")
     public static let unknownCardIcon = getImage(named: "unknown_card_icon")
+    public static let cardholderNameIcon = getImage(named: "cardholder_name_icon")
 
     static let checkboxUnselected = getImage(named: "checkbox_unselected")
     static let checkboxSelected = getImage(named: "checkbox_selected")

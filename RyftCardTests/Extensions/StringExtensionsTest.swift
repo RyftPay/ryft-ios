@@ -38,4 +38,20 @@ final class StringExtensionsTest: XCTestCase {
             XCTAssertEqual($0[1], $0[0].numericsOnly())
         }
     }
+
+    func test_numberOfWords_shouldReturnExpectedValue() {
+        let testCases: [(String, Int)] = [
+            ("", 0),
+            (" ", 0),
+            ("   ", 0),
+            ("one", 1),
+            (" one", 1),
+            (" one  ", 1),
+            ("one two", 2),
+            ("one two  three", 3)
+        ]
+        testCases.forEach {
+            XCTAssertEqual($0.1, $0.0.numberOfWords())
+        }
+    }
 }

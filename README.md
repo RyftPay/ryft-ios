@@ -8,7 +8,7 @@ Ryft for iOS allows you to accept in-app payments securely and safely using our 
 
 ## Requirements
 
-- iOS 11.0+
+- iOS 12.0+
 - Xcode 11.0+
 - Swift 5+
 
@@ -58,6 +58,28 @@ private var ryftDropIn: RyftDropInPaymentViewController?
 ```
 
 Under the hood the drop-in will detect the appropriate environment based on your public API key.
+
+#### Optional: Collecting name on card
+
+The drop-in can be configured to also collect the name on the card the customer pays with.
+
+Note: This can help in reducing chargebacks and fraud. Additionally:
+ - can lead to increased approval rates
+ - can influence 3D-secure (more frequent frictionless flows)
+ 
+ To collect this field, supply the `fieldCollection` object with `nameOnCard: true` when initialising the `RyftDropInConfiguration`:
+ 
+ **Example:**
+
+```swift
+RyftDropInConfiguration(
+    clientSecret: "<the client secret of the payment-session>",
+    accountId: "nil | <the Id of the sub-account you are taking payments for>",
+    fieldCollection: RyftDropInConfiguration.RyftDropInFieldCollectionConfig(
+        nameOnCard: true
+    )
+)
+```
 
 ### Implementing the RyftDropInPaymentDelegate
 
@@ -313,7 +335,6 @@ public func onRequiredActionHandled(result: Result<PaymentSession, Error>) {
         print("error handling required action \(error)")
 }
 ```
-
 
 ### Customising the drop-in
 

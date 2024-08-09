@@ -297,4 +297,35 @@ final class RyftCardValidationTests: XCTestCase {
             )
         }
     }
+
+    func test_validateCardholderName_shouldReturnIncomplete_WhenNotEnoughWordsPresent() {
+        let testCases = ["", " ", "one", "one "]
+        testCases.forEach {
+            XCTAssertEqual(
+                RyftInputValidationState.incomplete,
+                RyftCardValidation.validate(cardholderName: $0)
+            )
+        }
+    }
+
+    func test_validateCardholderName_shouldReturnIncomplete_WhenValueIsTooLong() {
+        let testCases = [String(repeating: "A", count: 121)]
+        testCases.forEach {
+            XCTAssertEqual(
+                RyftInputValidationState.invalid,
+                RyftCardValidation.validate(cardholderName: $0)
+            )
+        }
+    }
+
+    func test_validateCardholderName_shouldReturnValid_WhenValueIsValid() {
+        let maxLengthCase = "MR " + String(repeating: "A", count: 117)
+        let testCases = [maxLengthCase, "MR A", "MR CAL KESTIS"]
+        testCases.forEach {
+            XCTAssertEqual(
+                RyftInputValidationState.valid,
+                RyftCardValidation.validate(cardholderName: $0)
+            )
+        }
+    }
 }
