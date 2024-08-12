@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		0B0AD4592C661BD300556EA6 /* RyftCardholderNameInputField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0AD4582C661BD300556EA6 /* RyftCardholderNameInputField.swift */; };
+		0B0AD45D2C6A132700556EA6 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 0B0AD45C2C6A132700556EA6 /* PrivacyInfo.xcprivacy */; };
+		0B0AD45E2C6A132700556EA6 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 0B0AD45C2C6A132700556EA6 /* PrivacyInfo.xcprivacy */; };
+		0B0AD45F2C6A132700556EA6 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 0B0AD45C2C6A132700556EA6 /* PrivacyInfo.xcprivacy */; };
 		0B27890828F5BD8F006E21F6 /* PaymentRequestPaymentMethodOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B27890728F5BD8F006E21F6 /* PaymentRequestPaymentMethodOptions.swift */; };
 		0B27890A28F5BED0006E21F6 /* RyftSaveCardToggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B27890928F5BED0006E21F6 /* RyftSaveCardToggleView.swift */; };
 		0B27890C28F5DD18006E21F6 /* PaymentRequestPaymentMethodOptionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B27890B28F5DD18006E21F6 /* PaymentRequestPaymentMethodOptionsTests.swift */; };
@@ -219,6 +222,7 @@
 
 /* Begin PBXFileReference section */
 		0B0AD4582C661BD300556EA6 /* RyftCardholderNameInputField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftCardholderNameInputField.swift; sourceTree = "<group>"; };
+		0B0AD45C2C6A132700556EA6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		0B27890728F5BD8F006E21F6 /* PaymentRequestPaymentMethodOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentRequestPaymentMethodOptions.swift; sourceTree = "<group>"; };
 		0B27890928F5BED0006E21F6 /* RyftSaveCardToggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftSaveCardToggleView.swift; sourceTree = "<group>"; };
 		0B27890B28F5DD18006E21F6 /* PaymentRequestPaymentMethodOptionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentRequestPaymentMethodOptionsTests.swift; sourceTree = "<group>"; };
@@ -432,6 +436,7 @@
 		D868922227A2A383003DBFAA = {
 			isa = PBXGroup;
 			children = (
+				0B0AD45C2C6A132700556EA6 /* PrivacyInfo.xcprivacy */,
 				D868928027A2A588003DBFAA /* Package.swift */,
 				D868924D27A2A3E8003DBFAA /* RyftCard */,
 				D868926A27A2A4D7003DBFAA /* RyftCore */,
@@ -1109,6 +1114,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B0AD45D2C6A132700556EA6 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1116,6 +1122,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B0AD45E2C6A132700556EA6 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1123,6 +1130,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0B0AD45F2C6A132700556EA6 /* PrivacyInfo.xcprivacy in Resources */,
 				D868930227A2BE76003DBFAA /* Images.xcassets in Resources */,
 				0BE1A02D29E7077400682697 /* Localizable.strings in Resources */,
 				D868930D27A2BF7B003DBFAA /* Localizable.strings in Resources */,
