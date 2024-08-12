@@ -35,11 +35,15 @@ public final class RyftDropInPaymentViewController: UIViewController {
     }()
 
     private lazy var estimatedHeight: CGFloat = {
-        return defaultHeight + (showApplePay ? 40 : 0)
+        return defaultHeight + (showApplePay ? 55 : 0) + (collectCardholderName ? 55 : 0)
     }()
 
     private lazy var showApplePay: Bool = {
         RyftUI.supportsApplePay() && config.applePay != nil
+    }()
+
+    private lazy var collectCardholderName: Bool = {
+        return config.fieldCollection?.nameOnCard == true
     }()
 
     private lazy var dropInUsage: RyftUI.DropInUsage = {
@@ -68,6 +72,13 @@ public final class RyftDropInPaymentViewController: UIViewController {
         view.theme = theme
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
+    }()
+
+    private lazy var cardholderNameInputField: RyftCardholderNameInputField = {
+        let field = RyftCardholderNameInputField()
+        field.delegate = self
+        field.theme = theme
+        return field
     }()
 
     private lazy var cardNumberInputField: RyftCardNumberInputField = {
@@ -137,7 +148,10 @@ public final class RyftDropInPaymentViewController: UIViewController {
     }()
 
     private lazy var containerStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [cardNumberInputField, cardExpirationCvcStackView])
+        let subViews = collectCardholderName
+            ? [cardholderNameInputField, cardNumberInputField, cardExpirationCvcStackView]
+            : [cardNumberInputField, cardExpirationCvcStackView]
+        let stackView = UIStackView(arrangedSubviews: subViews)
         stackView.axis = .vertical
         stackView.spacing = 16.0
         stackView.backgroundColor = theme.primaryBackgroundColor
@@ -248,7 +262,8 @@ public final class RyftDropInPaymentViewController: UIViewController {
                 expiryMonth: cardDetails.expirationMonth,
                 expiryYear: cardDetails.expirationYear,
                 cvc: cardDetails.cvc,
-                store: saveCard
+                store: saveCard,
+                name: cardDetails.name
             ),
             accountId: config.accountId
         ) { result in
@@ -307,7 +322,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
     }
 
     private func updateButtonStatesForApplePay(state: RyftConfirmButton.ButtonState) {
-        payButton.state = cardDetails.isValid() ? .enabled : payButton.state
+        payButton.state = cardDetails.isValid(nameRequired: collectCardholderName) ? .enabled : payButton.state
         cancelButton.isEnabled = state == .enabled
         transitionHandler?.userInteractionEnabled = state == .enabled
     }
@@ -414,6 +429,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
         containerViewBottomConstraint?.isActive = true
 
         NSLayoutConstraint.activate([
+            cardholderNameInputField.heightAnchor.constraint(equalToConstant: 45),
             cardNumberInputField.heightAnchor.constraint(equalToConstant: 45),
             cardExpirationCvcStackView.heightAnchor.constraint(equalToConstant: 45)
         ])
@@ -512,10 +528,23 @@ extension RyftDropInPaymentViewController: RyftApplePayComponentDelegate {
     }
 }
 
-extension RyftDropInPaymentViewController: RyftCardNumberInputProtocol,
+extension RyftDropInPaymentViewController: RyftCardholderNameInputProtocol,
+    RyftCardNumberInputProtocol,
     RyftCardExpirationInputProtocol,
     RyftCardCvcInputProtocol,
     SaveCardToggleProtocol {
+
+    func onCardholderNameReturnKeyPressed() {
+        _ = cardNumberInputField.becomeFirstResponder()
+    }
+
+    func onCardholderNameChanged(
+        value: String,
+        state: RyftInputValidationState
+    ) {
+        cardDetails = cardDetails.with(name: value, and: state)
+        updatePayButton(cardIsValid: cardDetails.isValid(nameRequired: collectCardholderName))
+    }
 
     func onCardNumberChanged(
         cardNumber: String,
@@ -524,7 +553,7 @@ extension RyftDropInPaymentViewController: RyftCardNumberInputProtocol,
     ) {
         cardCvcInputField.cardType = cardType
         cardDetails = cardDetails.with(cardNumber: cardNumber, and: state)
-        updatePayButton(cardIsValid: cardDetails.isValid())
+        updatePayButton(cardIsValid: cardDetails.isValid(nameRequired: collectCardholderName))
         if state == .valid && cardDetails.expirationState != .valid {
             _ = cardExpirationInputField.becomeFirstResponder()
         }
@@ -540,7 +569,7 @@ extension RyftDropInPaymentViewController: RyftCardNumberInputProtocol,
             expirationYear: expirationYear,
             and: state
         )
-        updatePayButton(cardIsValid: cardDetails.isValid())
+        updatePayButton(cardIsValid: cardDetails.isValid(nameRequired: collectCardholderName))
         if state == .valid && cardDetails.cvcState != .valid {
             _ = cardCvcInputField.becomeFirstResponder()
         }
@@ -551,7 +580,7 @@ extension RyftDropInPaymentViewController: RyftCardNumberInputProtocol,
         state: RyftInputValidationState
     ) {
         cardDetails = cardDetails.with(cvc: cvc, and: state)
-        updatePayButton(cardIsValid: cardDetails.isValid())
+        updatePayButton(cardIsValid: cardDetails.isValid(nameRequired: collectCardholderName))
     }
 
     func onSaveCardToggleClicked(isSelected: Bool) {

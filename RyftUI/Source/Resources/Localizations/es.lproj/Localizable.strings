@@ -1,6 +1,7 @@
 "card_drop_in_title" = "Tarjeta de crédito / débito";
 "card_drop_in_authorise_title" = "Autorizar Tarjeta";
 "card_drop_in_or" = "o";
+"cardholder_name_placeholder" = "Nombre en le tarjeta";
 "card_number_placeholder" = "Número de tarjeta";
 "cvc_placeholder" = "CVC";
 "expiration_placeholder" = "MM/AA";

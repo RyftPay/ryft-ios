@@ -2,6 +2,9 @@ import Foundation
 
 public final class RyftCardValidation {
 
+    private static let cardholderNameMaxLength = 120
+    private static let minimumNumberOfWordsInCardholderName = 2
+
     public static func determineCardType(cardNumber: String?) -> RyftCardType {
         guard let cardNumber = cardNumber else {
             return RyftCardType.unknown
@@ -128,6 +131,17 @@ public final class RyftCardValidation {
         default:
             return .invalid
         }
+    }
+
+    public static func validate(cardholderName: String) -> RyftInputValidationState {
+        let words = cardholderName.components(separatedBy: .whitespacesAndNewlines).filter { !$0.isEmpty }
+        if cardholderName.count > cardholderNameMaxLength {
+            return .invalid
+        }
+        if words.count < minimumNumberOfWordsInCardholderName {
+            return .incomplete
+        }
+        return .valid
     }
 
     public static func luhnCheck(cardNumber: String) -> Bool {

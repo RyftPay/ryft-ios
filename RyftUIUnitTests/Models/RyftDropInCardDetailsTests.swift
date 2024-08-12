@@ -12,40 +12,63 @@ final class RyftDropInCardDetailsTest: XCTestCase {
             expirationMonth: "",
             expirationYear: "",
             cvc: "",
+            name: nil,
             cardNumberState: .incomplete,
             expirationState: .incomplete,
-            cvcState: .incomplete
+            cvcState: .incomplete,
+            nameState: .incomplete
         )
         XCTAssertEqual(expected, cardDetails)
     }
 
     func test_isValid_shouldReturnFalse_forIncompleteCardDetails() {
         let cardDetails = RyftDropInCardDetails.incomplete
-        XCTAssertFalse(cardDetails.isValid())
+        XCTAssertFalse(cardDetails.isValid(nameRequired: false))
     }
 
     func test_isValid_shouldReturnFalse_whenCardNumberIsInvalid() {
         let cardDetails = cardWithStates(cardNumberState: .invalid)
-        XCTAssertFalse(cardDetails.isValid())
+        XCTAssertFalse(cardDetails.isValid(nameRequired: false))
     }
 
     func test_isValid_shouldReturnFalse_whenExpirationIsInvalid() {
         let cardDetails = cardWithStates(expirationState: .invalid)
-        XCTAssertFalse(cardDetails.isValid())
+        XCTAssertFalse(cardDetails.isValid(nameRequired: false))
     }
 
     func test_isValid_shouldReturnFalse_whenCvcIsInvalid() {
         let cardDetails = cardWithStates(cvcState: .invalid)
-        XCTAssertFalse(cardDetails.isValid())
+        XCTAssertFalse(cardDetails.isValid(nameRequired: false))
     }
 
     func test_isValid_shouldReturnTrue_whenAllStatesAreValid() {
         let cardDetails = cardWithStates(
             cardNumberState: .valid,
             expirationState: .valid,
-            cvcState: .valid
+            cvcState: .valid,
+            nameState: .valid
         )
-        XCTAssertTrue(cardDetails.isValid())
+        XCTAssertTrue(cardDetails.isValid(nameRequired: true))
+    }
+
+    func test_isValid_shouldReturnTrue_whenAllStatesMinusNameValid_nameNotRequired() {
+        let cardDetails = cardWithStates(
+            cardNumberState: .valid,
+            expirationState: .valid,
+            cvcState: .valid,
+            nameState: .incomplete
+        )
+        XCTAssertTrue(cardDetails.isValid(nameRequired: false))
+    }
+
+    func test_isValid_shouldReturnFalse_whenAllStatesMinusNameValid_nameRequired() {
+        let cardDetails = cardWithStates(
+            cardNumberState: .valid,
+            expirationState: .valid,
+            cvcState: .valid,
+            nameState: .incomplete
+        ).with(name: "incomplete", and: .incomplete)
+        XCTAssertFalse(cardDetails.isValid(nameRequired: true))
     }
 
     func test_withCardNumber_shouldReturnExpectedUpdatedValue() {
@@ -56,9 +79,11 @@ final class RyftDropInCardDetailsTest: XCTestCase {
             expirationMonth: "",
             expirationYear: "",
             cvc: "",
+            name: nil,
             cardNumberState: .valid,
             expirationState: .incomplete,
-            cvcState: .incomplete
+            cvcState: .incomplete,
+            nameState: .incomplete
         )
         XCTAssertEqual(expected, cardDetails)
     }
@@ -71,9 +96,11 @@ final class RyftDropInCardDetailsTest: XCTestCase {
             expirationMonth: "10",
             expirationYear: "2024",
             cvc: "",
+            name: nil,
             cardNumberState: .incomplete,
             expirationState: .valid,
-            cvcState: .incomplete
+            cvcState: .incomplete,
+            nameState: .incomplete
         )
         XCTAssertEqual(expected, cardDetails)
     }
@@ -86,9 +113,28 @@ final class RyftDropInCardDetailsTest: XCTestCase {
             expirationMonth: "",
             expirationYear: "",
             cvc: "100",
+            name: nil,
             cardNumberState: .incomplete,
             expirationState: .incomplete,
-            cvcState: .valid
+            cvcState: .valid,
+            nameState: .incomplete
+        )
+        XCTAssertEqual(expected, cardDetails)
+    }
+
+    func test_withName_shouldReturnExpectedUpdatedValue() {
+        let cardDetails = RyftDropInCardDetails.incomplete
+            .with(name: "MR CAL KESTIS", and: .valid)
+        let expected = RyftDropInCardDetails(
+            cardNumber: "",
+            expirationMonth: "",
+            expirationYear: "",
+            cvc: "",
+            name: "MR CAL KESTIS",
+            cardNumberState: .incomplete,
+            expirationState: .incomplete,
+            cvcState: .incomplete,
+            nameState: .valid
         )
         XCTAssertEqual(expected, cardDetails)
     }
@@ -96,16 +142,19 @@ final class RyftDropInCardDetailsTest: XCTestCase {
     private func cardWithStates(
         cardNumberState: RyftInputValidationState = .incomplete,
         expirationState: RyftInputValidationState = .incomplete,
-        cvcState: RyftInputValidationState = .incomplete
+        cvcState: RyftInputValidationState = .incomplete,
+        nameState: RyftInputValidationState = .incomplete
     ) -> RyftDropInCardDetails {
         return RyftDropInCardDetails(
             cardNumber: "",
             expirationMonth: "",
             expirationYear: "",
             cvc: "",
+            name: nil,
             cardNumberState: cardNumberState,
             expirationState: expirationState,
-            cvcState: cvcState
+            cvcState: cvcState,
+            nameState: nameState
         )
     }
 }
