@@ -7,7 +7,7 @@ let package = Package(
     name: "Ryft",
     defaultLocalization: "en-gb",
     platforms: [
-        .iOS(.v11)
+        .iOS(.v12)
     ],
     products: [
         .library(
@@ -41,13 +41,17 @@ let package = Package(
             name: "RyftCore",
             path: "RyftCore/Source",
             exclude: ["Tests", "Info.plist"],
-            resources: []
+            resources: [
+                .process("PrivacyInfo.xcprivacy")
+            ]
         ),
         .target(
             name: "RyftCard",
             path: "RyftCard/Source",
             exclude: ["Tests", "Info.plist"],
-            resources: []
+            resources: [
+                .process("PrivacyInfo.xcprivacy")
+            ]
         ),
         .target(
             name: "RyftUI",
@@ -61,7 +65,8 @@ let package = Package(
             path: "RyftUI/Source",
             exclude: ["Tests", "Info.plist"],
             resources: [
-                .process("Resources")
+                .process("Resources"),
+                .process("PrivacyInfo.xcprivacy")
             ]
         ),
     ]
