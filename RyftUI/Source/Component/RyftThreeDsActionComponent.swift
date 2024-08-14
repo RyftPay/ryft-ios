@@ -33,10 +33,15 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
             scheme: action.scheme
         )
         DispatchQueue.main.async {
-            self.threeDsSdk.authenticate(authenticationParameters: params) { maybeError in
-                completion(maybeError)
+            self.threeDsSdk.authenticate(authenticationParameters: params, completion: { result in
+                switch result {
+                case .success(_):
+                    completion(nil)
+                case .failure(let error):
+                    completion(error)
+                }
                 self.threeDsSdk.cleanup()
-            }
+            })
         }
     }
 

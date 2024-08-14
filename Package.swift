@@ -23,20 +23,10 @@ let package = Package(
             targets: ["RyftUI"]
         )
     ],
-    dependencies: [],
+    dependencies: [
+        .package(url: "https://github.com/checkout/checkout-3ds-sdk-ios", from: "3.2.4")
+    ],
     targets: [
-        .binaryTarget(
-            name: "JOSESwift",
-            path: "frameworks/JOSESwift.xcframework/"
-        ),
-        .binaryTarget(
-            name: "CheckoutEventLoggerKit",
-            path: "frameworks/CheckoutEventLoggerKit.xcframework/"
-        ),
-        .binaryTarget(
-            name: "Checkout3DS",
-            path: "frameworks/Checkout3DS.xcframework/"
-        ),
         .target(
             name: "RyftCore",
             path: "RyftCore/Source",
@@ -58,9 +48,7 @@ let package = Package(
             dependencies: [
                 "RyftCore",
                 "RyftCard",
-                "JOSESwift",
-                "CheckoutEventLoggerKit",
-                "Checkout3DS"
+                .product(name: "Checkout3DSPackages", package: "checkout-3ds-sdk-ios")
             ],
             path: "RyftUI/Source",
             exclude: ["Tests", "Info.plist"],
