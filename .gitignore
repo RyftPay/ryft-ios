@@ -65,6 +65,7 @@ playground.xcworkspace
 .build/
 
 .swiftpm/
+Package.resolved
 
 # CocoaPods
 #
