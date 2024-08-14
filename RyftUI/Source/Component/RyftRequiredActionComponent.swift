@@ -1,5 +1,5 @@
 import RyftCore
-import Checkout3DS
+import Foundation
 
 public protocol RyftRequiredActionDelegate: AnyObject {
 

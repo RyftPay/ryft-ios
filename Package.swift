@@ -48,7 +48,7 @@ let package = Package(
             dependencies: [
                 "RyftCore",
                 "RyftCard",
-                .product(name: "Checkout3DS", package: "checkout-3ds-sdk-ios")
+                .product(name: "Checkout3DSPackages", package: "checkout-3ds-sdk-ios")
             ],
             path: "RyftUI/Source",
             exclude: ["Tests", "Info.plist"],
