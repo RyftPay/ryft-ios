@@ -40,7 +40,6 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
                 case .failure(let error):
                     completion(error)
                 }
-                self.threeDsSdk.cleanup()
             })
         }
     }
