@@ -65,6 +65,8 @@ playground.xcworkspace
 .build/
 
 .swiftpm/
+Package.resolved
+ryft-ios.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
 
 # CocoaPods
 #
