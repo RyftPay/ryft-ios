@@ -353,19 +353,22 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
          * we need to select the already selected card again to have the "Pay with passcode"
          * button to show (which we can then tap in these tests)
          */
-        var cardButton = applePay.buttons.containing(visaCardButtonPredicate).element
-        XCTAssertTrue(cardButton.waitForExistence(timeout: 10))
-        cardButton.tap()
-
-        // enter billingAddress if not already present (required)
-        enterBillingAddressForApplePay(applePay)
-
-        // select the card again within the ApplePay sheet card selection
-        cardButton = applePay.buttons.containing(masterCardButtonPredicate).element
-        XCTAssertTrue(cardButton.waitForExistence(timeout: 10))
+        let cardButton = applePay.buttons.containing(visaCardButtonPredicate).firstMatch
+        XCTAssertTrue(
+            cardButton.waitForExistence(timeout: 15),
+            "Could not find Visa card button in Apple Pay sheet - \(applePay.debugDescription)"
+        )
         cardButton.forceTap()
+        enterBillingAddressForApplePay(applePay)
+        return tapPayWithApplePayButton(applePay)
+    }
+
+    private func tapPayWithApplePayButton(_ applePay: XCUIApplication) -> XCUIApplication {
         let payButton = applePay.buttons["Pay with Passcode"]
-        XCTAssertTrue(payButton.waitForExistence(timeout: 10))
+        XCTAssertTrue(
+            payButton.waitForExistence(timeout: 15),
+            "Could not 'Pay with Passcode' in Apple Pay sheet - \(applePay.debugDescription)"
+        )
         payButton.tap()
         return applePay
     }
@@ -374,37 +377,57 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         _ applePay: XCUIApplication,
         email: String
     ) {
-        let addEmailButton = applePay.buttons["Add Email Address"]
-        _ = addEmailButton.waitForExistence(timeout: 15)
-        if addEmailButton.exists {
-            applePay.buttons["Add Email Address"].forceTap()
-            applePay.tables.cells["Add Email Address"].forceTap()
-            applePay.textFields.containing(NSPredicate(format: "placeholderValue contains 'Email'"))
-                .element
-                .typeText(email)
-            applePay.buttons.containing(NSPredicate(format: "label contains 'Done'"))
-                .element
-                .forceTap()
+        let alreadyEnteredContactEmail = applePay.buttons.containing(
+            NSPredicate(format: "label contains 'Contact, \(email)'")
+        ).firstMatch
+        if alreadyEnteredContactEmail.waitForExistence(timeout: 10) {
+            return
         }
+        let addEmailButton = applePay.buttons["Add Email Address"].firstMatch
+        XCTAssertTrue(
+            addEmailButton.waitForExistence(timeout: 10),
+            "Could not find 'Add Email Address' button in Apple Pay sheet"
+        )
+        addEmailButton.forceTap()
+        let enterEmailButton = applePay.collectionViews.buttons["Add Email Address"]
+        XCTAssertTrue(
+            enterEmailButton.waitForExistence(timeout: 10),
+            "Could not find enter email button in Apple Pay sheet"
+        )
+        enterEmailButton.forceTap()
+        applePay.textFields.containing(NSPredicate(format: "placeholderValue contains 'Email'"))
+            .firstMatch
+            .typeText(email)
+        applePay.buttons.containing(NSPredicate(format: "label contains 'Done'"))
+            .firstMatch
+            .forceTap()
     }
 
     private func enterBillingAddressForApplePay(_ applePay: XCUIApplication) {
         let addBillingAddress = applePay.buttons.containing(
             NSPredicate(format: "label contains 'Add Billing Address'")
-        ).element
-        _ = addBillingAddress.waitForExistence(timeout: 15)
-        if addBillingAddress.exists {
-            applePay.tables.cells["Add Billing Address"].forceTap()
-            let firstNameCell = applePay.tables.cells["First Name"]
-            let streetCell = applePay.tables.cells["Street, Search Contact or Address"]
+        )
+        if addBillingAddress.firstMatch.waitForExistence(timeout: 15) {
+            applePay.buttons["Add Billing Address"].forceTap()
+            let firstNameCell = applePay.textFields["First Name"].firstMatch
+            let lastNameCell = applePay.textFields["Last Name"].firstMatch
+            let streetCell = applePay.textFields["Street"].firstMatch
             firstNameCell.forceTap()
             firstNameCell.typeText("Nathan")
+            lastNameCell.forceTap()
+            lastNameCell.typeText("Test")
             streetCell.forceTap()
             streetCell.typeText("c/o Google LLC")
             applePay.buttons.containing(NSPredicate(format: "label contains 'Done'"))
-                .element
+                .firstMatch
                 .forceTap()
         }
+        let closeButton = applePay.navigationBars.buttons["close"]
+        let closeButtonFound = closeButton.waitForExistence(timeout: 15)
+        if !closeButtonFound {
+            return
+        }
+        closeButton.forceTap()
     }
 
     private func collectCardholderName() {

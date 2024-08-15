@@ -9,7 +9,7 @@ Ryft for iOS allows you to accept in-app payments securely and safely using our 
 ## Requirements
 
 - iOS 12.0+
-- Xcode 11.0+
+- Xcode 15.0+
 - Swift 5+
 
 ## Installation

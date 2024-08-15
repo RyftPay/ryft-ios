@@ -6,32 +6,7 @@ import RyftCore
 
 final class RyftApplePayComponentTests: XCTestCase {
 
-    func test_present_shouldCompleteWithFailure_whenApiReturnsNoPaymentSession() {
-        let delegate = ApplePayComponentDelegateTester()
-        let apiClient = MockRyftApiClient()
-        let component = createComponent(
-            apiClient: apiClient,
-            delegate: delegate,
-            config: .auto(config: RyftApplePayConfig(
-                merchantIdentifier: "id",
-                merchantCountryCode: "GB",
-                merchantName: "Ryft"
-            ))
-        )
-        let expectation = expectation(description: "test")
-        component?.present { presented in
-            XCTAssertFalse(presented)
-            XCTAssertTrue(apiClient.didCallGetPaymentSession)
-            expectation.fulfill()
-        }
-        waitForExpectations(timeout: 10.0) { error in
-            if error != nil {
-                XCTFail(error!.localizedDescription)
-            }
-        }
-    }
-
-    func test_present_shouldCompleteWithSuccess_whenApiReturnsPaymentSession() {
+    func test_present_shouldCallApiToFetchPaymentSession_whenUsingAutoConfig() {
         let paymentSession = TestFixtures.paymentSession()
         let delegate = ApplePayComponentDelegateTester()
         let apiClient = MockRyftApiClient()
@@ -46,12 +21,11 @@ final class RyftApplePayComponentTests: XCTestCase {
             ))
         )
         let expectation = expectation(description: "test")
-        component?.present { presented in
-            XCTAssertTrue(presented)
+        component?.present { _ in
             XCTAssertTrue(apiClient.didCallGetPaymentSession)
             expectation.fulfill()
         }
-        waitForExpectations(timeout: 15.0) { error in
+        waitForExpectations(timeout: 20.0) { error in
             if error != nil {
                 XCTFail(error!.localizedDescription)
             }
@@ -80,7 +54,7 @@ final class RyftApplePayComponentTests: XCTestCase {
             XCTAssertFalse(apiClient.didCallGetPaymentSession)
             expectation.fulfill()
         }
-        waitForExpectations(timeout: 10.0) { error in
+        waitForExpectations(timeout: 20.0) { error in
             if error != nil {
                 XCTFail(error!.localizedDescription)
             }

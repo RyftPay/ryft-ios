@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-13
+    runs-on: macos-latest
     timeout-minutes: 35
     env:
       FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 6
@@ -19,7 +19,7 @@ jobs:
       - name: Setup - Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: "14.1"
+          xcode-version: "15.4"
 
       - name: Setup - Ruby and bundler dependencies
         uses: ruby/setup-ruby@v1
@@ -30,6 +30,7 @@ jobs:
       - name: Install Dependencies
         run: |
           gem install xcpretty
+          brew install swiftlint
 
       - name: Lint
         run: |
