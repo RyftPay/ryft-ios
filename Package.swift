@@ -24,7 +24,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/checkout/checkout-3ds-sdk-ios", from: "3.2.4")
+        .package(url: "https://github.com/checkout/checkout-3ds-sdk-ios", from: "3.2.5")
     ],
     targets: [
         .target(

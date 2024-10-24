@@ -1980,7 +1980,7 @@
 			repositoryURL = "https://github.com/checkout/checkout-3ds-sdk-ios";
 			requirement = {
 				kind = exactVersion;
-				version = 3.2.4;
+				version = 3.2.5;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
