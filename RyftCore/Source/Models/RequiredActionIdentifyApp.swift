@@ -1,18 +1,18 @@
 public struct RequiredActionIdentifyApp: Codable, Equatable, Hashable {
 
-    public let sessionId: String
-    public let sessionSecret: String
+    public let ravelinPublicKey: String
+    public let protocolVersion: String
     public let scheme: String
     public let paymentMethodId: String
 
     public init(
-        sessionId: String,
-        sessionSecret: String,
+        ravelinPublicKey: String,
+        protocolVersion: String,
         scheme: String,
         paymentMethodId: String
     ) {
-        self.sessionId = sessionId
-        self.sessionSecret = sessionSecret
+        self.ravelinPublicKey = ravelinPublicKey
+        self.protocolVersion = protocolVersion
         self.scheme = scheme
         self.paymentMethodId = paymentMethodId
     }
@@ -21,15 +21,15 @@ public struct RequiredActionIdentifyApp: Codable, Equatable, Hashable {
         lhs: RequiredActionIdentifyApp,
         rhs: RequiredActionIdentifyApp
     ) -> Bool {
-        lhs.sessionId == rhs.sessionId &&
-            lhs.sessionSecret == rhs.sessionSecret &&
+        lhs.ravelinPublicKey == rhs.ravelinPublicKey &&
+            lhs.protocolVersion == rhs.protocolVersion &&
         lhs.scheme == rhs.scheme &&
         lhs.paymentMethodId == rhs.paymentMethodId
     }
 
     enum CodingKeys: String, CodingKey {
-        case sessionId
-        case sessionSecret
+        case ravelinPublicKey
+        case protocolVersion
         case scheme
         case paymentMethodId
     }

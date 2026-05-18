@@ -48,8 +48,8 @@ class PaymentSessionTests: XCTestCase {
                 "requiredAction": {
                     "type": "Identify",
                     "identify": {
-                        "sessionId": "123",
-                        "sessionSecret": "secret",
+                        "ravelinPublicKey": "pk_test_ravelin_123",
+                        "protocolVersion": "2.2.0",
                         "scheme": "mastercard",
                         "paymentMethodId": "pmt_01G0EYVFR02KBBVE2YWQ8AKMGJ"
                     }
@@ -68,8 +68,8 @@ class PaymentSessionTests: XCTestCase {
         XCTAssertEqual("https://ryftpay.com", result.returnUrl)
         XCTAssertEqual(PaymentSessionStatus.pendingAction, result.status)
         XCTAssertEqual(.identify, result.requiredAction?.type)
-        XCTAssertEqual("123", result.requiredAction?.identify?.sessionId)
-        XCTAssertEqual("secret", result.requiredAction?.identify?.sessionSecret)
+        XCTAssertEqual("pk_test_ravelin_123", result.requiredAction?.identify?.ravelinPublicKey)
+        XCTAssertEqual("2.2.0", result.requiredAction?.identify?.protocolVersion)
         XCTAssertEqual("mastercard", result.requiredAction?.identify?.scheme)
         XCTAssertEqual(
             "pmt_01G0EYVFR02KBBVE2YWQ8AKMGJ",

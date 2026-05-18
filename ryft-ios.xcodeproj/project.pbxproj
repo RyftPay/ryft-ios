@@ -26,9 +26,7 @@
 		0B2789372902D9D2006E21F6 /* MockRyftThreeDsActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2789362902D9D2006E21F6 /* MockRyftThreeDsActionHandler.swift */; };
 		0B2789392902E24B006E21F6 /* RyftRequiredActionDelegateTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2789382902E24B006E21F6 /* RyftRequiredActionDelegateTester.swift */; };
 		0BB02A9F2905522B00667CF0 /* MockRyftThreeDsActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB02A9E2905522B00667CF0 /* MockRyftThreeDsActionHandler.swift */; };
-		0BB6A1F32C6CEEEF00F6AD47 /* Checkout3DSPackages in Frameworks */ = {isa = PBXBuildFile; productRef = 0BB6A1F22C6CEEEF00F6AD47 /* Checkout3DSPackages */; };
-		0BB6A1F52C6CEF6200F6AD47 /* Checkout3DSPackages in Frameworks */ = {isa = PBXBuildFile; productRef = 0BB6A1F42C6CEF6200F6AD47 /* Checkout3DSPackages */; };
-		0BB6A1F72C6CEF7600F6AD47 /* Checkout3DSPackages in Frameworks */ = {isa = PBXBuildFile; productRef = 0BB6A1F62C6CEF7600F6AD47 /* Checkout3DSPackages */; };
+
 		0BE1A02D29E7077400682697 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0BE1A02B29E7077400682697 /* Localizable.strings */; };
 		D868925C27A2A3E8003DBFAA /* RyftCard.h in Headers */ = {isa = PBXBuildFile; fileRef = D868924E27A2A3E8003DBFAA /* RyftCard.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D868926D27A2A4D7003DBFAA /* RyftCore.h in Headers */ = {isa = PBXBuildFile; fileRef = D868926B27A2A4D7003DBFAA /* RyftCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -220,9 +218,9 @@
 		0B27890728F5BD8F006E21F6 /* PaymentRequestPaymentMethodOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentRequestPaymentMethodOptions.swift; sourceTree = "<group>"; };
 		0B27890928F5BED0006E21F6 /* RyftSaveCardToggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftSaveCardToggleView.swift; sourceTree = "<group>"; };
 		0B27890B28F5DD18006E21F6 /* PaymentRequestPaymentMethodOptionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentRequestPaymentMethodOptionsTests.swift; sourceTree = "<group>"; };
-		0B27890F28F730AC006E21F6 /* Checkout3DS.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Checkout3DS.xcframework; path = frameworks/Checkout3DS.xcframework; sourceTree = "<group>"; };
+
 		0B27891028F730AC006E21F6 /* JOSESwift.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = JOSESwift.xcframework; path = frameworks/JOSESwift.xcframework; sourceTree = "<group>"; };
-		0B27891128F730AC006E21F6 /* CheckoutEventLoggerKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = CheckoutEventLoggerKit.xcframework; path = frameworks/CheckoutEventLoggerKit.xcframework; sourceTree = "<group>"; };
+
 		0B27891A28F81146006E21F6 /* RequiredActionIdentifyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequiredActionIdentifyApp.swift; sourceTree = "<group>"; };
 		0B27892529003289006E21F6 /* RyftEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftEnvironment.swift; sourceTree = "<group>"; };
 		0B27892729004146006E21F6 /* RyftRequiredActionComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftRequiredActionComponent.swift; sourceTree = "<group>"; };
@@ -370,7 +368,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D86892B227A2ABFC003DBFAA /* RyftCore.framework in Frameworks */,
-				0BB6A1F32C6CEEEF00F6AD47 /* Checkout3DSPackages in Frameworks */,
 				D86892B727A2AC0A003DBFAA /* RyftCard.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -395,7 +392,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0BB6A1F52C6CEF6200F6AD47 /* Checkout3DSPackages in Frameworks */,
 				D8F1639327A2E7790076CC02 /* RyftUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -404,7 +400,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0BB6A1F72C6CEF7600F6AD47 /* Checkout3DSPackages in Frameworks */,
 				D8F163CA27A31EFB0076CC02 /* RyftUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -593,8 +588,6 @@
 		D86892B127A2ABFC003DBFAA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				0B27890F28F730AC006E21F6 /* Checkout3DS.xcframework */,
-				0B27891128F730AC006E21F6 /* CheckoutEventLoggerKit.xcframework */,
 				0B27891028F730AC006E21F6 /* JOSESwift.xcframework */,
 			);
 			name = Frameworks;
@@ -937,9 +930,6 @@
 				D86892BA27A2AC0A003DBFAA /* PBXTargetDependency */,
 			);
 			name = RyftUI;
-			packageProductDependencies = (
-				0BB6A1F22C6CEEEF00F6AD47 /* Checkout3DSPackages */,
-			);
 			productName = RyftUI;
 			productReference = D868927627A2A4E7003DBFAA /* RyftUI.framework */;
 			productType = "com.apple.product-type.framework";
@@ -994,9 +984,6 @@
 				D8F1639527A2E7790076CC02 /* PBXTargetDependency */,
 			);
 			name = RyftUIUnitTests;
-			packageProductDependencies = (
-				0BB6A1F42C6CEF6200F6AD47 /* Checkout3DSPackages */,
-			);
 			productName = RyftUIUnitTests;
 			productReference = D8F1638E27A2E7780076CC02 /* RyftUIUnitTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -1016,9 +1003,6 @@
 				D8F163CD27A31EFB0076CC02 /* PBXTargetDependency */,
 			);
 			name = RyftUITestApp;
-			packageProductDependencies = (
-				0BB6A1F62C6CEF7600F6AD47 /* Checkout3DSPackages */,
-			);
 			productName = RyftUITestApp;
 			productReference = D8F163B627A31E560076CC02 /* RyftUITestApp.app */;
 			productType = "com.apple.product-type.application";
@@ -1093,7 +1077,6 @@
 			);
 			mainGroup = D868922227A2A383003DBFAA;
 			packageReferences = (
-				0BB6A1F12C6CEEEF00F6AD47 /* XCRemoteSwiftPackageReference "checkout-3ds-sdk-ios" */,
 			);
 			productRefGroup = D868922D27A2A383003DBFAA /* Products */;
 			projectDirPath = "";
@@ -1975,32 +1958,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		0BB6A1F12C6CEEEF00F6AD47 /* XCRemoteSwiftPackageReference "checkout-3ds-sdk-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/checkout/checkout-3ds-sdk-ios";
-			requirement = {
-				kind = exactVersion;
-				version = 3.2.5;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		0BB6A1F22C6CEEEF00F6AD47 /* Checkout3DSPackages */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0BB6A1F12C6CEEEF00F6AD47 /* XCRemoteSwiftPackageReference "checkout-3ds-sdk-ios" */;
-			productName = Checkout3DSPackages;
-		};
-		0BB6A1F42C6CEF6200F6AD47 /* Checkout3DSPackages */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0BB6A1F12C6CEEEF00F6AD47 /* XCRemoteSwiftPackageReference "checkout-3ds-sdk-ios" */;
-			productName = Checkout3DSPackages;
-		};
-		0BB6A1F62C6CEF7600F6AD47 /* Checkout3DSPackages */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0BB6A1F12C6CEEEF00F6AD47 /* XCRemoteSwiftPackageReference "checkout-3ds-sdk-ios" */;
-			productName = Checkout3DSPackages;
-		};
 /* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D868922327A2A383003DBFAA /* Project object */;

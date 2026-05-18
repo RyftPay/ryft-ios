@@ -20,8 +20,8 @@ final class TestFixtures {
         PaymentSessionRequiredAction(
             type: .identify,
             identify: RequiredActionIdentifyApp(
-                sessionId: "session_123",
-                sessionSecret: "secret",
+                ravelinPublicKey: "pk_test_ravelin_123",
+                protocolVersion: "2.2.0",
                 scheme: "mastercard",
                 paymentMethodId: "pmt_01FCTS1XMKH9FF43CAFA4CXT3P")
             )
