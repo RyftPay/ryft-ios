@@ -24,7 +24,7 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/checkout/checkout-3ds-sdk-ios", from: "3.2.5")
+        .package(url: "git@github.com:unravelin/ravelin-3ds-sdk-ios-xcframework-distribution.git", from: "2.0.1")
     ],
     targets: [
         .target(
@@ -48,7 +48,7 @@ let package = Package(
             dependencies: [
                 "RyftCore",
                 "RyftCard",
-                .product(name: "Checkout3DSPackages", package: "checkout-3ds-sdk-ios")
+                .product(name: "Ravelin3DS", package: "ravelin-3ds-sdk-ios-xcframework-distribution")
             ],
             path: "RyftUI/Source",
             exclude: ["Tests", "Info.plist"],
