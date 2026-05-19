@@ -276,7 +276,6 @@ final class ViewController: UIViewController {
             delegate: self
         )
         let threeDsHandler = MockRyftThreeDsActionHandler()
-        threeDsHandler.viewController = ryftDropIn
         let requiredActionComponent = RyftRequiredActionComponent(
             config: RyftRequiredActionComponent.Configuration(clientSecret: "secret"),
             apiClient: apiClient!,

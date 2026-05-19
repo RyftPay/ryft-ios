@@ -47,6 +47,23 @@ public final class DefaultRyftApiClient: RyftApiClient {
         )
     }
 
+    public func continuePayment(
+        request: ContinuePaymentRequest,
+        accountId: String?,
+        completion: @escaping PaymentSessionResponse
+    ) {
+        guard let url = Endpoint.continuePayment(baseUrl: baseApiUrl) else {
+            return
+        }
+        httpClient.postBody(
+            url: url,
+            headers: requestHeaders(accountId),
+            body: request.toJson(),
+            responseType: PaymentSession.self,
+            completion: { completion($0) }
+        )
+    }
+
     public func getPaymentSession(
         id: String,
         clientSecret: String,

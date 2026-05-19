@@ -7,6 +7,7 @@ final class MockRyftApiClient: RyftApiClient {
     var accountId: String?
     var paymentSession: PaymentSession?
     var attemptPaymentRequest: AttemptPaymentRequest?
+    var continuePaymentRequest: ContinuePaymentRequest?
     var didCallGetPaymentSession = false
 
     func attemptPayment(
@@ -18,6 +19,20 @@ final class MockRyftApiClient: RyftApiClient {
         attemptPaymentRequest = request
         guard let paymentSession = paymentSession else {
             completion(.failure(HttpError.general(message: "API response [attempt-payment]")))
+            return
+        }
+        completion(.success(paymentSession))
+    }
+
+    func continuePayment(
+        request: ContinuePaymentRequest,
+        accountId: String?,
+        completion: @escaping PaymentSessionResponse
+    ) {
+        self.accountId = accountId
+        continuePaymentRequest = request
+        guard let paymentSession = paymentSession else {
+            completion(.failure(HttpError.general(message: "API response [continue-payment]")))
             return
         }
         completion(.success(paymentSession))

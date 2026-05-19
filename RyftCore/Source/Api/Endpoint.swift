@@ -14,6 +14,11 @@ struct Endpoint {
             .appendingPathComponent("attempt-payment")
     }
 
+    static func continuePayment(baseUrl: String) -> URL? {
+        return paymentSessions(baseUrl: baseUrl)?
+            .appendingPathComponent("continue-payment")
+    }
+
     static func paymentSessionId(
         baseUrl: String,
         id: String,

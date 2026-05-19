@@ -231,7 +231,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
         returnUrl: URL?,
         _ action: PaymentSessionRequiredAction
     ) {
-        requiredActionComponent.handle(action: action)
+        requiredActionComponent.handle(action: action, presentingViewController: self)
     }
 
     private func createRequiredActionComponent() -> RyftRequiredActionComponent {
