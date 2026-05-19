@@ -28,12 +28,32 @@ final class MockRyftApiClient: RyftApiClient {
         createdTimestamp: 123
     ))
 
+    var continuePaymentResult: Result<PaymentSession, HttpError> = .success(PaymentSession(
+        id: "ps_01FCTS1XMKH9FF43CAFA4CXT3P",
+        amount: 350,
+        currency: "GBP",
+        status: .approved,
+        customerEmail: "support@ryftpay.com",
+        lastError: nil,
+        requiredAction: nil,
+        returnUrl: "https://ryftpay.com",
+        createdTimestamp: 123
+    ))
+
     func attemptPayment(
         request: AttemptPaymentRequest,
         accountId: String?,
         completion: @escaping PaymentSessionResponse
     ) {
         completion(attemptPaymentResult)
+    }
+
+    func continuePayment(
+        request: ContinuePaymentRequest,
+        accountId: String?,
+        completion: @escaping PaymentSessionResponse
+    ) {
+        completion(continuePaymentResult)
     }
 
     func getPaymentSession(

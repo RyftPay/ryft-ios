@@ -106,6 +106,90 @@ class DefaultRyftApiClientTests: XCTestCase {
         }
     }
 
+    func test_continuePayment_shouldReturnError_whenHttpClientReturnsNoResult() {
+        let apiClient = createApiClient()
+        httpClient.shouldFailWithError = true
+        apiClient.continuePayment(
+            request: continuePaymentRequest(),
+            accountId: nil,
+            completion: { result in
+                switch result {
+                case .success:
+                    XCTFail("expected failure, but got success")
+                case .failure(let httpError):
+                    self.assertGeneralHttpError(httpError)
+                }
+            })
+    }
+
+    func test_continuePayment_shouldReturnError_whenHttpClientMakesRequestButHasUnexpectedResponse() {
+        let apiClient = createApiClient()
+        apiClient.continuePayment(
+            request: continuePaymentRequest(),
+            accountId: nil,
+            completion: { result in
+                switch result {
+                case .success:
+                    XCTFail("expected failure, but got success")
+                case .failure(let httpError):
+                    self.assertResponseHttpError(httpError)
+                }
+            })
+    }
+
+    func test_continuePayment_shouldUseExpectedHeaders_whenInvokingHttpClient_forNonSubAccountRequest() {
+        let apiClient = createApiClient()
+        let responseBody = TestFixtures.paymentSession()
+        httpClient.responseBody = responseBody
+        apiClient.continuePayment(request: continuePaymentRequest(), accountId: nil) { result in
+            switch result {
+            case .success:
+                let expectedHeaders = [
+                    "Authorization": self.publicApiKey,
+                    "User-Agent": Constants.userAgent,
+                    "Content-Type": "application/json"
+                ]
+                XCTAssertEqual(expectedHeaders, self.httpClient.headers)
+            case .failure(let httpError):
+                self.assertResponseHttpError(httpError)
+            }
+        }
+    }
+
+    func test_continuePayment_shouldUseExpectedHeaders_whenInvokingHttpClient_forSubAccountRequest() {
+        let apiClient = createApiClient()
+        let responseBody = TestFixtures.paymentSession()
+        httpClient.responseBody = responseBody
+        apiClient.continuePayment(request: continuePaymentRequest(), accountId: subAccountId) { result in
+            switch result {
+            case .success:
+                let expectedHeaders = [
+                    "Authorization": self.publicApiKey,
+                    "User-Agent": Constants.userAgent,
+                    "Content-Type": "application/json",
+                    "Account": self.subAccountId
+                ]
+                XCTAssertEqual(expectedHeaders, self.httpClient.headers)
+            case .failure(let httpError):
+                self.assertResponseHttpError(httpError)
+            }
+        }
+    }
+
+    func test_continuePayment_shouldReturnExpectedResponse_whenSuccessful() {
+        let apiClient = createApiClient()
+        let responseBody = TestFixtures.paymentSession()
+        httpClient.responseBody = responseBody
+        apiClient.continuePayment(request: continuePaymentRequest(), accountId: subAccountId) { result in
+            switch result {
+            case .success(let response):
+                XCTAssertEqual(response.id, responseBody.id)
+            case .failure(let httpError):
+                self.assertResponseHttpError(httpError)
+            }
+        }
+    }
+
     func test_getPaymentSession_shouldReturnError_whenHttpClientReturnsNoResult() {
         let apiClient = createApiClient()
         httpClient.shouldFailWithError = true
@@ -212,6 +296,19 @@ class DefaultRyftApiClientTests: XCTestCase {
             expiryYear: "2028",
             cvc: "100",
             store: false
+        )
+    }
+
+    private func continuePaymentRequest() -> ContinuePaymentRequest {
+        return ContinuePaymentRequest.from(
+            clientSecret: "secret",
+            params: ThreeDsTransactionParams(
+                sdkTransactionId: "sdk_txn_123",
+                sdkApplicationId: "sdk_app_123",
+                sdkEncryptedData: "sdk_enc_data",
+                sdkEphemeralPublicKey: "sdk_epk_123",
+                sdkReferenceNumber: "sdk_ref_123"
+            )
         )
     }
 
