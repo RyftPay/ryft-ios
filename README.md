@@ -91,7 +91,9 @@ To handle the result, the following methods of `RyftDropInPaymentDelegate` need 
 func onPaymentResult(result: RyftPaymentResult)
 ```
 
-This method is invoked once the customer has entered their payment method details and submitted the payment
+This method is invoked once the customer has entered their payment method details and submitted the payment.
+
+Any required actions (e.g. 3DS) are handled automatically by the drop-in — you will only receive a terminal result.
 
 **Example:**
 
@@ -101,13 +103,6 @@ func onPaymentResult(result: RyftPaymentResult) {
     // payment approved, send the customer to your receipt/success view
     case .success(let paymentSession):
         showSuccessView()
-    // payment requires an additional action in order to be approved (e.g. 3ds)
-    case .pendingAction(let paymentSession, let requiredAction):
-        // instruct the drop-in to handle the action
-        ryftDropIn?.handleRequiredAction(
-            returnUrl: URL(string: paymentSession.returnUrl),
-            requiredAction
-        )
     // payment failed, show an alert to the customer
     // `error.displayError` provides a human friendly message you can display
     case .failed(let error):
@@ -121,10 +116,10 @@ func onPaymentResult(result: RyftPaymentResult) {
             self.showDropIn()
         })
         present(alert, animated: true, completion: nil)
-    }
-    // drop in was cancelled prior to attempting payment
+    // drop-in was cancelled prior to attempting payment
     case .cancelled:
         // you may want to log that the payment was cancelled here
+    }
 }
 ```
 
@@ -279,11 +274,10 @@ RyftDropInConfiguration(
 
 ### Handling Required Actions
 
-Some payments will need additional steps after the initial payment attempt in order to be successfully authorized/settled (for example 3DS).
-Our drop-in payment controller will handle these steps automatically for you, however you may wish or need to handle any required actions outside of checkout or by yourself if using your own UI.
+Some payments will need additional steps after the initial payment attempt in order to be successfully authorized/settled (for example 3DS). The drop-in handles these automatically — no additional integration work is required for standard checkout flows.
 
-A common use-case would be a MIT payment in which the bank still mandates that 3DS be performed to authorize the payment.
-In this case you will need to bring your customer back online in your app/website and have them complete the necessary step.
+However, you may need to handle required actions outside of checkout. A common use-case would be a MIT (merchant-initiated transaction) payment where the bank still mandates that 3DS be performed to authorize the payment.
+In this case you will need to bring your customer back online in your app and have them complete the necessary step.
 
 You can use our `RyftRequiredActionComponent` by itself (without the drop-in controller) if you wish to facilitate this.
 
