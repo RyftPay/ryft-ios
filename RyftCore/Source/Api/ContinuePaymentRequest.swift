@@ -64,7 +64,7 @@ public struct ContinuePaymentRequest {
 
     private static let sdkMaxTimeoutMinutes = 10
     private static let sdkInterface = "01"
-    private static let sdkUiTypes = ["01", "02", "03"]
+    private static let sdkUiTypes = ["01", "02", "03", "04"]
 
     public static func from(
         clientSecret: String,

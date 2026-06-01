@@ -40,6 +40,9 @@ final class MockRyftApiClient: RyftApiClient {
         createdTimestamp: 123
     ))
 
+    /// Optional queue of results consumed in order. Falls back to continuePaymentResult when empty.
+    var continuePaymentResultQueue: [Result<PaymentSession, HttpError>] = []
+
     func attemptPayment(
         request: AttemptPaymentRequest,
         accountId: String?,
@@ -53,7 +56,11 @@ final class MockRyftApiClient: RyftApiClient {
         accountId: String?,
         completion: @escaping PaymentSessionResponse
     ) {
-        completion(continuePaymentResult)
+        if !continuePaymentResultQueue.isEmpty {
+            completion(continuePaymentResultQueue.removeFirst())
+        } else {
+            completion(continuePaymentResult)
+        }
     }
 
     func getPaymentSession(

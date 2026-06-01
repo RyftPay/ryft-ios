@@ -26,7 +26,6 @@
 		0B2789372902D9D2006E21F6 /* MockRyftThreeDsActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2789362902D9D2006E21F6 /* MockRyftThreeDsActionHandler.swift */; };
 		0B2789392902E24B006E21F6 /* RyftRequiredActionDelegateTester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2789382902E24B006E21F6 /* RyftRequiredActionDelegateTester.swift */; };
 		0BB02A9F2905522B00667CF0 /* MockRyftThreeDsActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB02A9E2905522B00667CF0 /* MockRyftThreeDsActionHandler.swift */; };
-
 		0BE1A02D29E7077400682697 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0BE1A02B29E7077400682697 /* Localizable.strings */; };
 		D868925C27A2A3E8003DBFAA /* RyftCard.h in Headers */ = {isa = PBXBuildFile; fileRef = D868924E27A2A3E8003DBFAA /* RyftCard.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D868926D27A2A4D7003DBFAA /* RyftCore.h in Headers */ = {isa = PBXBuildFile; fileRef = D868926B27A2A4D7003DBFAA /* RyftCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -132,6 +131,10 @@
 		D8F163E027A34E780076CC02 /* MockRyftApiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F163DF27A34E780076CC02 /* MockRyftApiClient.swift */; };
 		D8F163E427A3E8C10076CC02 /* MockRyftApiClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F163E327A3E8C10076CC02 /* MockRyftApiClient.swift */; };
 		D8F163E727A3EE6D0076CC02 /* DropInViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F163E627A3EE6D0076CC02 /* DropInViewFactory.swift */; };
+		DB26EABF2FBCB31400FCA61B /* ContinuePaymentRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB26EABE2FBCB31400FCA61B /* ContinuePaymentRequest.swift */; };
+		DB26EAC22FBCB34400FCA61B /* ChallengeAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB26EAC02FBCB34400FCA61B /* ChallengeAction.swift */; };
+		DB26EAC32FBCB34400FCA61B /* ThreeDsTransactionParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB26EAC12FBCB34400FCA61B /* ThreeDsTransactionParams.swift */; };
+		DB26EAC62FBF3B4100FCA61B /* Ravelin3DS in Frameworks */ = {isa = PBXBuildFile; productRef = DB26EAC52FBF3B4100FCA61B /* Ravelin3DS */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -218,9 +221,7 @@
 		0B27890728F5BD8F006E21F6 /* PaymentRequestPaymentMethodOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentRequestPaymentMethodOptions.swift; sourceTree = "<group>"; };
 		0B27890928F5BED0006E21F6 /* RyftSaveCardToggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftSaveCardToggleView.swift; sourceTree = "<group>"; };
 		0B27890B28F5DD18006E21F6 /* PaymentRequestPaymentMethodOptionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentRequestPaymentMethodOptionsTests.swift; sourceTree = "<group>"; };
-
 		0B27891028F730AC006E21F6 /* JOSESwift.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = JOSESwift.xcframework; path = frameworks/JOSESwift.xcframework; sourceTree = "<group>"; };
-
 		0B27891A28F81146006E21F6 /* RequiredActionIdentifyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequiredActionIdentifyApp.swift; sourceTree = "<group>"; };
 		0B27892529003289006E21F6 /* RyftEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftEnvironment.swift; sourceTree = "<group>"; };
 		0B27892729004146006E21F6 /* RyftRequiredActionComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftRequiredActionComponent.swift; sourceTree = "<group>"; };
@@ -346,6 +347,9 @@
 		D8F163DF27A34E780076CC02 /* MockRyftApiClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRyftApiClient.swift; sourceTree = "<group>"; };
 		D8F163E327A3E8C10076CC02 /* MockRyftApiClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRyftApiClient.swift; sourceTree = "<group>"; };
 		D8F163E627A3EE6D0076CC02 /* DropInViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropInViewFactory.swift; sourceTree = "<group>"; };
+		DB26EABE2FBCB31400FCA61B /* ContinuePaymentRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContinuePaymentRequest.swift; sourceTree = "<group>"; };
+		DB26EAC02FBCB34400FCA61B /* ChallengeAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeAction.swift; sourceTree = "<group>"; };
+		DB26EAC12FBCB34400FCA61B /* ThreeDsTransactionParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreeDsTransactionParams.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -368,6 +372,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D86892B227A2ABFC003DBFAA /* RyftCore.framework in Frameworks */,
+				DB26EAC62FBF3B4100FCA61B /* Ravelin3DS in Frameworks */,
 				D86892B727A2AC0A003DBFAA /* RyftCard.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -545,6 +550,8 @@
 		D868928E27A2A836003DBFAA /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				DB26EAC02FBCB34400FCA61B /* ChallengeAction.swift */,
+				DB26EAC12FBCB34400FCA61B /* ThreeDsTransactionParams.swift */,
 				D868928F27A2A851003DBFAA /* PaymentSession.swift */,
 				D868929127A2A86E003DBFAA /* PaymentSessionError.swift */,
 				D868929527A2A894003DBFAA /* PaymentSessionRequiredAction.swift */,
@@ -560,6 +567,7 @@
 		D868929927A2A8D4003DBFAA /* Api */ = {
 			isa = PBXGroup;
 			children = (
+				DB26EABE2FBCB31400FCA61B /* ContinuePaymentRequest.swift */,
 				D868929A27A2A8E4003DBFAA /* AttemptPaymentRequest.swift */,
 				D868929C27A2A8FE003DBFAA /* DefaultRyftApiClient.swift */,
 				D868929E27A2A911003DBFAA /* Endpoint.swift */,
@@ -1077,6 +1085,7 @@
 			);
 			mainGroup = D868922227A2A383003DBFAA;
 			packageReferences = (
+				DB26EAC42FBF3A5E00FCA61B /* XCRemoteSwiftPackageReference "ravelin-3ds-sdk-ios-xcframework-distribution" */,
 			);
 			productRefGroup = D868922D27A2A383003DBFAA /* Products */;
 			projectDirPath = "";
@@ -1193,11 +1202,14 @@
 				0B27891B28F81146006E21F6 /* RequiredActionIdentifyApp.swift in Sources */,
 				D86892A927A2A973003DBFAA /* RyftApiError.swift in Sources */,
 				D8AB659C28367393009EF72C /* Currency.swift in Sources */,
+				DB26EABF2FBCB31400FCA61B /* ContinuePaymentRequest.swift in Sources */,
 				0B27892629003289006E21F6 /* RyftEnvironment.swift in Sources */,
 				D8AB65AC283674FE009EF72C /* Money.swift in Sources */,
 				0B27893029019D55006E21F6 /* PaymentSessionActionType.swift in Sources */,
 				D86892A527A2A94A003DBFAA /* HttpMethod.swift in Sources */,
 				D868929D27A2A8FE003DBFAA /* DefaultRyftApiClient.swift in Sources */,
+				DB26EAC22FBCB34400FCA61B /* ChallengeAction.swift in Sources */,
+				DB26EAC32FBCB34400FCA61B /* ThreeDsTransactionParams.swift in Sources */,
 				D86892A127A2A924003DBFAA /* HttpClient.swift in Sources */,
 				D89384B7283BB1D000F67926 /* PaymentRequestCustomerDetails.swift in Sources */,
 				D868929B27A2A8E4003DBFAA /* AttemptPaymentRequest.swift in Sources */,
@@ -1958,9 +1970,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		DB26EAC42FBF3A5E00FCA61B /* XCRemoteSwiftPackageReference "ravelin-3ds-sdk-ios-xcframework-distribution" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@github.com:unravelin/ravelin-3ds-sdk-ios-xcframework-distribution.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		DB26EAC52FBF3B4100FCA61B /* Ravelin3DS */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB26EAC42FBF3A5E00FCA61B /* XCRemoteSwiftPackageReference "ravelin-3ds-sdk-ios-xcframework-distribution" */;
+			productName = Ravelin3DS;
+		};
 /* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = D868922327A2A383003DBFAA /* Project object */;

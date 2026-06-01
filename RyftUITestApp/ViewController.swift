@@ -252,6 +252,41 @@ final class ViewController: UIViewController {
                 createdTimestamp: 123
             )
             apiClient?.attemptPaymentResult = .success(paymentSessionRequiringThreeDs)
+            apiClient?.continuePaymentResultQueue = [
+                // First continuePayment (app authentication) → triggers challenge
+                .success(PaymentSession(
+                    id: "ps_01FCTS1XMKH9FF43CAFA4CXT3P",
+                    amount: 350,
+                    currency: "GBP",
+                    status: .pendingAction,
+                    customerEmail: nil,
+                    lastError: nil,
+                    requiredAction: PaymentSessionRequiredAction(
+                        type: .challenge,
+                        identify: nil,
+                        challenge: ChallengeAction(
+                            threeDSServerTransactionId: "3ds_txn_mock",
+                            acsTransactionId: "acs_txn_mock",
+                            acsRefNumber: "acs_ref_mock",
+                            acsSignedContent: "acs_signed_content_mock"
+                        )
+                    ),
+                    returnUrl: "https://ryftpay.com",
+                    createdTimestamp: 123
+                )),
+                // Second continuePayment (challenge result) → approved
+                .success(PaymentSession(
+                    id: "ps_01FCTS1XMKH9FF43CAFA4CXT3P",
+                    amount: 350,
+                    currency: "GBP",
+                    status: .approved,
+                    customerEmail: nil,
+                    lastError: nil,
+                    requiredAction: nil,
+                    returnUrl: "https://ryftpay.com",
+                    createdTimestamp: 123
+                ))
+            ]
         }
         let myTheme = RyftUITheme.defaultTheme
         ryftDropIn = RyftDropInPaymentViewController(
@@ -301,20 +336,6 @@ extension ViewController: RyftDropInPaymentDelegate {
         case .success(let paymentSession):
             title = "Payment Success"
             message = paymentSession.id
-        case .pendingAction(_, let requiredAction):
-            apiClient?.attemptPaymentResult = .success(PaymentSession(
-                id: "ps_01FCTS1XMKH9FF43CAFA4CXT3P",
-                amount: 350,
-                currency: "GBP",
-                status: .approved,
-                customerEmail: "support@ryftpay.com",
-                lastError: nil,
-                requiredAction: nil,
-                returnUrl: "https://ryftpay.com",
-                createdTimestamp: 123
-            ))
-            ryftDropIn?.handleRequiredAction(returnUrl: nil, requiredAction)
-            return
         }
         let alert = UIAlertController(
             title: title,

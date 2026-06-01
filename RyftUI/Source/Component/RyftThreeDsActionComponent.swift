@@ -29,6 +29,8 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
     private let environment: RyftEnvironment
     private var threeDsService: ThreeDS2SDK?
     private var transaction: (any Transaction)?
+    private var challengeStatusReceiver: ChallengeStatusReceiver?
+    private var challengeView: ViewControllerChallengeView?
 
     public init(environment: RyftEnvironment) {
         self.environment = environment
@@ -58,7 +60,7 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
                 guard let self = self else { return }
                 do {
                     let directoryServerId = try self.toDirectoryServerId(scheme: action.scheme)
-                    let messageVersion = self.resolveProtocolVersion(action.protocolVersion)
+                    let messageVersion = action.protocolVersion
                     service.createTransaction(
                         directoryServerID: directoryServerId,
                         messageVersion: messageVersion
@@ -111,6 +113,8 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
             completion: completion
         )
         let challengeView = ViewControllerChallengeView(viewController: presentingViewController)
+        self.challengeStatusReceiver = receiver
+        self.challengeView = challengeView
         do {
             try tx.doChallenge(
                 challengeParameters: challengeParams,
@@ -128,6 +132,8 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
         try? threeDsService?.cleanup()
         transaction = nil
         threeDsService = nil
+        challengeStatusReceiver = nil
+        challengeView = nil
     }
 
     private func toDirectoryServerId(scheme: String) throws -> String {
@@ -143,13 +149,6 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
         }
     }
 
-    private func resolveProtocolVersion(_ version: String) -> String {
-        // Floor to minimum required version in non-prod to avoid ACS compatibility issues
-        if environment != .production && version < "2.2.0" {
-            return "2.2.0"
-        }
-        return version
-    }
 }
 
 private enum RavelinThreeDsError: Error {
