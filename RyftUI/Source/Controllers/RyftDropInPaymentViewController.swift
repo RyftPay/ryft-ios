@@ -227,7 +227,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
         view.accessibilityIdentifier = "RyftDropIn"
     }
 
-    private func handleRequiredAction(
+    public func handleRequiredAction(
         returnUrl: URL?,
         _ action: PaymentSessionRequiredAction
     ) {
@@ -287,8 +287,10 @@ public final class RyftDropInPaymentViewController: UIViewController {
             }
             if let requiredAction = paymentSession.requiredAction {
                 shouldDismiss = false
-                handleRequiredAction(returnUrl: nil, requiredAction)
-                return
+                paymentResult = .pendingAction(
+                    paymentSession: paymentSession,
+                    requiredAction: requiredAction
+                )
             }
             if let lastError = paymentSession.lastError {
                 paymentResult = .failed(

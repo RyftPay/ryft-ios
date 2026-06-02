@@ -93,8 +93,6 @@ func onPaymentResult(result: RyftPaymentResult)
 
 This method is invoked once the customer has entered their payment method details and submitted the payment.
 
-Any required actions (e.g. 3DS) are handled automatically by the drop-in — you will only receive a terminal result.
-
 **Example:**
 
 ```swift
@@ -103,6 +101,12 @@ func onPaymentResult(result: RyftPaymentResult) {
     // payment approved, send the customer to your receipt/success view
     case .success(let paymentSession):
         showSuccessView()
+    // payment requires an additional action (e.g. 3DS) — instruct the drop-in to handle it
+    case .pendingAction(let paymentSession, let requiredAction):
+        ryftDropIn?.handleRequiredAction(
+            returnUrl: URL(string: paymentSession.returnUrl),
+            requiredAction
+        )
     // payment failed, show an alert to the customer
     // `error.displayError` provides a human friendly message you can display
     case .failed(let error):
@@ -122,6 +126,7 @@ func onPaymentResult(result: RyftPaymentResult) {
     }
 }
 ```
+
 
 ## Adding Apple Pay
 
@@ -298,7 +303,7 @@ private func initialiseRyftRequiredActionComponent() {
         apiClient: DefaultRyftApiClient(publicApiKey: "your public API key")
     )
     component.delegate = self
-    component.handle(action: action)
+    component.handle(action: action, presentingViewController: self)
 }
 ```
 

@@ -336,6 +336,9 @@ extension ViewController: RyftDropInPaymentDelegate {
         case .success(let paymentSession):
             title = "Payment Success"
             message = paymentSession.id
+        case .pendingAction(_, let requiredAction):
+            ryftDropIn?.handleRequiredAction(returnUrl: nil, requiredAction)
+            return
         }
         let alert = UIAlertController(
             title: title,
