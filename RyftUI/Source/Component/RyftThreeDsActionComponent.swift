@@ -68,11 +68,11 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
                         switch result {
                         case .failure(let error):
                             completion(.failure(error))
-                        case .success(let tx):
+                        case .success(let transaction):
                             self?.threeDsService = service
-                            self?.transaction = tx
+                            self?.transaction = transaction
                             do {
-                                let params = try tx.getAuthenticationRequestParameters()
+                                let params = try transaction.getAuthenticationRequestParameters()
                                 completion(.success(ThreeDsTransactionParams(
                                     sdkTransactionId: params.getSDKTransactionID(),
                                     sdkApplicationId: params.getSDKAppID(),
@@ -99,7 +99,7 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
         presentingViewController: UIViewController,
         completion: @escaping (ThreeDsChallengeResult) -> Void
     ) {
-        guard let tx = transaction else {
+        guard let transaction = transaction else {
             completion(.failed(message: "No active 3DS transaction"))
             return
         }
@@ -116,7 +116,7 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
         self.challengeStatusReceiver = receiver
         self.challengeView = challengeView
         do {
-            try tx.doChallenge(
+            try transaction.doChallenge(
                 challengeParameters: challengeParams,
                 challengeStatusReceiver: receiver,
                 timeOut: 5,
@@ -148,7 +148,6 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
         default: throw RavelinThreeDsError.unsupportedScheme(scheme)
         }
     }
-
 }
 
 private enum RavelinThreeDsError: Error {

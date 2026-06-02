@@ -95,7 +95,8 @@ public struct ContinuePaymentRequest {
         transactionStatus: String,
         threeDSServerTransactionId: String
     ) -> ContinuePaymentRequest {
-        let json = "{\"transStatus\":\"\(transactionStatus)\",\"threeDSServerTransID\":\"\(threeDSServerTransactionId)\"}"
+        let json = "{\"transStatus\":\"\(transactionStatus)\","
+            + "\"threeDSServerTransID\":\"\(threeDSServerTransactionId)\"}"
         let encoded = Data(json.utf8).base64EncodedString()
         return ContinuePaymentRequest(
             clientSecret: clientSecret,

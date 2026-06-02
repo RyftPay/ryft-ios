@@ -127,7 +127,7 @@ public final class RyftRequiredActionComponent {
             presentingViewController: presentingViewController
         ) { [weak self] result in
             switch result {
-            case .completed(let transactionStatus, let threeDSServerTransactionId):
+            case let .completed(transactionStatus, threeDSServerTransactionId):
                 self?.continueWithChallengeResult(
                     transactionStatus: transactionStatus,
                     threeDSServerTransactionId: threeDSServerTransactionId
