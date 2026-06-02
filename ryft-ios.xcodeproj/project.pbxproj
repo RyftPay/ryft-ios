@@ -1972,7 +1972,7 @@
 /* Begin XCRemoteSwiftPackageReference section */
 		DB26EAC42FBF3A5E00FCA61B /* XCRemoteSwiftPackageReference "ravelin-3ds-sdk-ios-xcframework-distribution" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@github.com:unravelin/ravelin-3ds-sdk-ios-xcframework-distribution.git";
+			repositoryURL = "https://github.com/unravelin/ravelin-3ds-sdk-ios-xcframework-distribution.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.0.0;

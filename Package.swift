@@ -24,7 +24,10 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "git@github.com:unravelin/ravelin-3ds-sdk-ios-xcframework-distribution.git", from: "2.0.1")
+        .package(
+            url: "https://github.com/unravelin/ravelin-3ds-sdk-ios-xcframework-distribution.git",
+            from: "2.0.1"
+        )
     ],
     targets: [
         .target(
