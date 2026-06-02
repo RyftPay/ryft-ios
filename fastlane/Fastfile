@@ -50,7 +50,12 @@ platform :ios do
       scheme: "RyftUITestApp",
       devices: ["iPhone 16"],
       derived_data_path: "scan_derived_data",
-      reset_simulator: true
+      reset_simulator: true,
+      # Boot the simulator before testing so the XCUITest runner handshake doesn't
+      # time out "while preparing to run tests" on a cold-booted CI simulator.
+      prelaunch_simulator: true,
+      # Retry once to absorb transient simulator/runner preparation timeouts on CI.
+      number_of_retries: 1
     )
   end
 
