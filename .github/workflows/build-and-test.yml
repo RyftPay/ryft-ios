@@ -8,23 +8,23 @@ on:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-15
     timeout-minutes: 35
     env:
       FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 6
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
 
       - name: Setup - Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: "15.4"
+          xcode-version: latest-stable
 
       - name: Setup - Ruby and bundler dependencies
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.6
+          ruby-version: 3.3
           bundler-cache: true
 
       - name: Install Dependencies
