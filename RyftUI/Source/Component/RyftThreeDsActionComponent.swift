@@ -119,7 +119,7 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
             try transaction.doChallenge(
                 challengeParameters: challengeParams,
                 challengeStatusReceiver: receiver,
-                timeOut: 5,
+                timeOut: 10,
                 challengeView: challengeView
             )
         } catch {

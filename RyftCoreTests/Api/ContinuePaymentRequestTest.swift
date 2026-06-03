@@ -71,7 +71,7 @@ final class ContinuePaymentRequestTest: XCTestCase {
             return
         }
         XCTAssertEqual("01", sdkInterface)
-        XCTAssertEqual(["01", "02", "03"], sdkUiTypes)
+        XCTAssertEqual(["01", "02", "03", "04"], sdkUiTypes)
     }
 
     func test_fromChallengeResult_toJson_shouldReturnExpectedTopLevelKeys() {

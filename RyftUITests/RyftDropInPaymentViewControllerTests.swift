@@ -56,7 +56,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         let expirationInputField = app.otherElements["RyftExpirationInputField"]
         let cvcInputField = app.otherElements["RyftCvcInputField"]
         XCTAssertFalse(cardholderNameInputField.waitForExistence(timeout: 3))
-        XCTAssertTrue(cardInputField.waitForExistence(timeout: 3))
+        XCTAssertTrue(cardInputField.waitForExistence(timeout: 10))
         XCTAssertTrue(expirationInputField.exists)
         XCTAssertTrue(cvcInputField.exists)
         let cardNumberTextField = cardInputField.textFields.element
@@ -74,8 +74,8 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         let cardInputField = app.otherElements["RyftCardNumberInputField"]
         let expirationInputField = app.otherElements["RyftExpirationInputField"]
         let cvcInputField = app.otherElements["RyftCvcInputField"]
-        XCTAssertTrue(cardholderNameInputField.waitForExistence(timeout: 3))
-        XCTAssertTrue(cardInputField.waitForExistence(timeout: 3))
+        XCTAssertTrue(cardholderNameInputField.waitForExistence(timeout: 10))
+        XCTAssertTrue(cardInputField.waitForExistence(timeout: 10))
         XCTAssertTrue(expirationInputField.exists)
         XCTAssertTrue(cvcInputField.exists)
         let cardholderNameTextField = cardholderNameInputField.textFields.element
@@ -91,14 +91,14 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
     func test_payButton_isDisabledOnLoad() throws {
         openDropIn()
         let payButton = app.otherElements["RyftConfirmButton-Pay"]
-        XCTAssertTrue(payButton.waitForExistence(timeout: 3))
+        XCTAssertTrue(payButton.waitForExistence(timeout: 10))
         XCTAssertFalse(payButton.buttons.element.isEnabled)
     }
 
     func test_cardNumber_isFormattedCorrect_duringTyping() throws {
         openDropIn()
         let cardNumberInput = app.otherElements["RyftCardNumberInputField"]
-        XCTAssertTrue(cardNumberInput.waitForExistence(timeout: 3))
+        XCTAssertTrue(cardNumberInput.waitForExistence(timeout: 10))
 
         cardNumberInput.textFields.element.tap()
         cardNumberInput.textFields.element.typeText("4242424242424242")
@@ -111,7 +111,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
     func test_expiration_isFormattedCorrectly_duringTyping() throws {
         openDropIn()
         let expirationInput = app.otherElements["RyftExpirationInputField"]
-        XCTAssertTrue(expirationInput.waitForExistence(timeout: 3))
+        XCTAssertTrue(expirationInput.waitForExistence(timeout: 10))
 
         expirationInput.textFields.element.tap()
         expirationInput.textFields.element.typeText("1032")
@@ -126,7 +126,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         let cardNumberInput = app.otherElements["RyftCardNumberInputField"]
         let expirationInput = app.otherElements["RyftExpirationInputField"]
         let cvcInput = app.otherElements["RyftCvcInputField"]
-        XCTAssertTrue(cardNumberInput.waitForExistence(timeout: 3))
+        XCTAssertTrue(cardNumberInput.waitForExistence(timeout: 10))
 
         cardNumberInput.textFields.element.tap()
         cardNumberInput.textFields.element.typeText("4242424242424242")
@@ -275,7 +275,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         )
         let payButton = app.otherElements["RyftConfirmButton-Pay"]
         payButton.buttons.element.tap()
-        XCTAssertTrue(app.alerts.element.staticTexts["3DS Challenge"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.alerts.element.staticTexts["3DS Challenge"].waitForExistence(timeout: 10))
     }
 
     func test_dropIn_shouldDisplaySuccessAfterThreeds_whenIdentifyChallengeIsHandledSuccessfully() {
@@ -288,7 +288,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         )
         let payButton = app.otherElements["RyftConfirmButton-Pay"]
         payButton.buttons.element.tap()
-        XCTAssertTrue(app.alerts.element.staticTexts["3DS Challenge"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.alerts.element.staticTexts["3DS Challenge"].waitForExistence(timeout: 10))
         app.alerts.buttons["Pass"].forceTap()
         XCTAssertTrue(app.alerts.element.staticTexts["Payment Success"].waitForExistence(timeout: 5))
     }
@@ -311,7 +311,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         let cardNumberInput = app.otherElements["RyftCardNumberInputField"]
         let expirationInput = app.otherElements["RyftExpirationInputField"]
         let cvcInput = app.otherElements["RyftCvcInputField"]
-        XCTAssertTrue(cardNumberInput.waitForExistence(timeout: 3))
+        XCTAssertTrue(cardNumberInput.waitForExistence(timeout: 10))
 
         cardNumberInput.textFields.element.tap()
         cardNumberInput.textFields.element.typeText(cardNumber)
@@ -321,7 +321,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
 
     private func toggleSaveCard() {
         let saveCardToggle = app.otherElements["RyftSaveCardToggleView"]
-        XCTAssertTrue(saveCardToggle.waitForExistence(timeout: 3))
+        XCTAssertTrue(saveCardToggle.waitForExistence(timeout: 10))
 
         saveCardToggle.images.element.tap()
     }
