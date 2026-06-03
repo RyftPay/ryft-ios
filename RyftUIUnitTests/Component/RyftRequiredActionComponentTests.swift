@@ -58,7 +58,7 @@ final class RyftRequiredActionComponentTests: XCTestCase {
         switch result {
         case .success:
             XCTFail("expected failure but got success from delegate")
-        case .failure:
+        case .failure, .cancelled:
             XCTAssertTrue(true)
         }
     }
@@ -84,7 +84,7 @@ final class RyftRequiredActionComponentTests: XCTestCase {
         switch result {
         case .success:
             XCTFail("expected failure but got success from delegate")
-        case .failure:
+        case .failure, .cancelled:
             XCTAssertTrue(true)
         }
     }
@@ -114,6 +114,34 @@ final class RyftRequiredActionComponentTests: XCTestCase {
             XCTAssertEqual(updatedSession.id, paymentSession.id)
         case .failure(let error):
             XCTFail("expected success but got error from delegate \(error)")
+        case .cancelled:
+            XCTFail("expected success but got cancelled from delegate")
+        }
+    }
+
+    func test_handle_shouldNotifyDelegateCancelled_whenChallengeIsCancelled() {
+        let challengeAction = TestFixtures.challengeAction()
+        let sessionWithChallenge = TestFixtures.paymentSession(challengeAction: challengeAction)
+        let action = TestFixtures.identifyAction()
+        let threeDsHandler = MockRyftThreeDsActionHandler()
+        threeDsHandler.transactionResult = .success(TestFixtures.threeDsTransactionParams())
+        threeDsHandler.challengeResult = .cancelled
+        let apiClient = MockRyftApiClient()
+        apiClient.paymentSession = sessionWithChallenge
+        let delegate = RyftRequiredActionDelegateTester()
+        let component = createComponent(
+            apiClient: apiClient,
+            delegate: delegate,
+            threeDsActionHandler: threeDsHandler
+        )
+
+        component.handle(action: action, presentingViewController: presenter)
+
+        switch delegate.result {
+        case .cancelled:
+            XCTAssertTrue(true)
+        default:
+            XCTFail("expected .cancelled but got \(String(describing: delegate.result))")
         }
     }
 

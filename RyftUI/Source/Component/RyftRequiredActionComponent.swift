@@ -6,7 +6,7 @@ public protocol RyftRequiredActionDelegate: AnyObject {
 
     func onRequiredActionInProgress()
 
-    func onRequiredActionHandled(result: Result<PaymentSession, Error>)
+    func onRequiredActionHandled(result: RyftRequiredActionResult)
 }
 
 public final class RyftRequiredActionComponent {
@@ -32,7 +32,7 @@ public final class RyftRequiredActionComponent {
     private let apiClient: RyftApiClient
     private let threeDsActionHandler: RyftThreeDsActionHandler
 
-    public var delegate: RyftRequiredActionDelegate?
+    public weak var delegate: RyftRequiredActionDelegate?
 
     public init(
         config: Configuration,
@@ -80,6 +80,7 @@ public final class RyftRequiredActionComponent {
                 self?.delegate?.onRequiredActionHandled(result: .failure(error))
             case .success(let params):
                 self?.delegate?.onRequiredActionInProgress()
+
                 self?.continueWithAppAuthentication(
                     params: params,
                     presentingViewController: presentingViewController
@@ -134,14 +135,10 @@ public final class RyftRequiredActionComponent {
                 )
             case .cancelled:
                 self?.threeDsActionHandler.cleanup()
-                self?.delegate?.onRequiredActionHandled(
-                    result: .failure(ThreeDsChallengeError.cancelled)
-                )
-            case .failed(let message):
+                self?.delegate?.onRequiredActionHandled(result: .cancelled)
+            case .failed(let error):
                 self?.threeDsActionHandler.cleanup()
-                self?.delegate?.onRequiredActionHandled(
-                    result: .failure(ThreeDsChallengeError.failed(message: message))
-                )
+                self?.delegate?.onRequiredActionHandled(result: .failure(error))
             }
         }
     }
@@ -160,14 +157,12 @@ public final class RyftRequiredActionComponent {
             accountId: config.accountId
         ) { [weak self] result in
             self?.threeDsActionHandler.cleanup()
-            self?.delegate?.onRequiredActionHandled(
-                result: result.flatMapError { .failure($0) }
-            )
+            switch result {
+            case .success(let session):
+                self?.delegate?.onRequiredActionHandled(result: .success(session))
+            case .failure(let error):
+                self?.delegate?.onRequiredActionHandled(result: .failure(error))
+            }
         }
     }
-}
-
-private enum ThreeDsChallengeError: Error {
-    case cancelled
-    case failed(message: String)
 }

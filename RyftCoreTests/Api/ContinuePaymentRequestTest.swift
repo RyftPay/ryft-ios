@@ -17,13 +17,13 @@ final class ContinuePaymentRequestTest: XCTestCase {
         XCTAssertEqual("secret", result.clientSecret)
     }
 
-    func test_from_toJson_shouldReturnExpectedTopLevelKeys() {
+    func test_toJson_shouldReturnExpectedTopLevelKeys() {
         let result = ContinuePaymentRequest.from(clientSecret: "secret", params: params).toJson()
         XCTAssertNotNil(result["clientSecret"])
         XCTAssertNotNil(result["threeDs"])
     }
 
-    func test_from_toJson_shouldReturnExpectedAppAuthentication() {
+    func test_toJson_shouldReturnExpectedAppAuthentication() {
         let result = ContinuePaymentRequest.from(clientSecret: "secret", params: params).toJson()
         guard let threeDs = result["threeDs"] as? [String: Any] else {
             XCTFail("serialized JSON threeDs field was not expected type")
@@ -53,7 +53,7 @@ final class ContinuePaymentRequestTest: XCTestCase {
         XCTAssertEqual(10, sdkMaxTimeoutInMinutes)
     }
 
-    func test_from_toJson_shouldReturnExpectedDeviceRenderOptions() {
+    func test_toJson_shouldReturnExpectedDeviceRenderOptions() {
         let result = ContinuePaymentRequest.from(clientSecret: "secret", params: params).toJson()
         guard
             let threeDs = result["threeDs"] as? [String: Any],

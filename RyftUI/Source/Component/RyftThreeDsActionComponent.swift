@@ -5,7 +5,7 @@ import Ravelin3DS
 public enum ThreeDsChallengeResult {
     case completed(transactionStatus: String, threeDSServerTransactionId: String)
     case cancelled
-    case failed(message: String)
+    case failed(error: Error)
 }
 
 public protocol RyftThreeDsActionHandler {
@@ -27,6 +27,8 @@ public protocol RyftThreeDsActionHandler {
 public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
 
     private let environment: RyftEnvironment
+    private static let challengeTimeoutInMinutes = 10
+
     private var threeDsService: ThreeDS2SDK?
     private var transaction: (any Transaction)?
     private var challengeStatusReceiver: ChallengeStatusReceiver?
@@ -40,6 +42,12 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
         action: RequiredActionIdentifyApp,
         completion: @escaping (Result<ThreeDsTransactionParams, Error>) -> Void
     ) {
+        guard threeDsService == nil else {
+            return
+        }
+        let mainThreadCompletion: (Result<ThreeDsTransactionParams, Error>) -> Void = { result in
+            DispatchQueue.main.async { completion(result) }
+        }
         let configParams = ConfigParameters()
         do {
             try configParams.addParam(
@@ -47,50 +55,72 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
                 paramValue: action.ravelinPublicKey
             )
         } catch {
-            completion(.failure(error))
+            mainThreadCompletion(.failure(error))
             return
         }
         let service = ThreeDS2SDK()
         do {
             try service.initialize(configParameters: configParams, uiCustomization: nil) { [weak self] success in
                 guard success else {
-                    completion(.failure(RavelinThreeDsError.initialisationFailed))
+                    mainThreadCompletion(.failure(RavelinThreeDsError.initialisationFailed))
                     return
                 }
-                guard let self = self else { return }
-                do {
-                    let directoryServerId = try self.toDirectoryServerId(scheme: action.scheme)
-                    let messageVersion = action.protocolVersion
-                    service.createTransaction(
-                        directoryServerID: directoryServerId,
-                        messageVersion: messageVersion
-                    ) { [weak self] result in
-                        switch result {
-                        case .failure(let error):
-                            completion(.failure(error))
-                        case .success(let transaction):
-                            self?.threeDsService = service
-                            self?.transaction = transaction
-                            do {
-                                let params = try transaction.getAuthenticationRequestParameters()
-                                completion(.success(ThreeDsTransactionParams(
-                                    sdkTransactionId: params.getSDKTransactionID(),
-                                    sdkApplicationId: params.getSDKAppID(),
-                                    sdkEncryptedData: params.getDeviceData(),
-                                    sdkEphemeralPublicKey: params.getSDKEphemeralPublicKey(),
-                                    sdkReferenceNumber: params.getSDKReferenceNumber()
-                                )))
-                            } catch {
-                                completion(.failure(error))
-                            }
-                        }
-                    }
-                } catch {
-                    completion(.failure(error))
+                guard let self = self else {
+                    mainThreadCompletion(.failure(RavelinThreeDsError.initialisationFailed))
+                    return
                 }
+                self.handleInitialised(service: service, action: action, completion: mainThreadCompletion)
+            }
+        } catch {
+            mainThreadCompletion(.failure(error))
+        }
+    }
+
+    private func handleInitialised(
+        service: ThreeDS2SDK,
+        action: RequiredActionIdentifyApp,
+        completion: @escaping (Result<ThreeDsTransactionParams, Error>) -> Void
+    ) {
+        do {
+            let directoryServerId = try toDirectoryServerId(scheme: action.scheme)
+            service.createTransaction(
+                directoryServerID: directoryServerId,
+                messageVersion: action.protocolVersion
+            ) { [weak self] result in
+                self?.handleTransactionCreated(
+                    service: service,
+                    result: result.mapError { $0 as Error },
+                    completion: completion
+                )
             }
         } catch {
             completion(.failure(error))
+        }
+    }
+
+    private func handleTransactionCreated(
+        service: ThreeDS2SDK,
+        result: Result<any Transaction, Error>,
+        completion: @escaping (Result<ThreeDsTransactionParams, Error>) -> Void
+    ) {
+        switch result {
+        case .failure(let error):
+            completion(.failure(error))
+        case .success(let transaction):
+            threeDsService = service
+            self.transaction = transaction
+            do {
+                let params = try transaction.getAuthenticationRequestParameters()
+                completion(.success(ThreeDsTransactionParams(
+                    sdkTransactionId: params.getSDKTransactionID(),
+                    sdkApplicationId: params.getSDKAppID(),
+                    sdkEncryptedData: params.getDeviceData(),
+                    sdkEphemeralPublicKey: params.getSDKEphemeralPublicKey(),
+                    sdkReferenceNumber: params.getSDKReferenceNumber()
+                )))
+            } catch {
+                completion(.failure(error))
+            }
         }
     }
 
@@ -99,8 +129,11 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
         presentingViewController: UIViewController,
         completion: @escaping (ThreeDsChallengeResult) -> Void
     ) {
+        let mainThreadCompletion: (ThreeDsChallengeResult) -> Void = { result in
+            DispatchQueue.main.async { completion(result) }
+        }
         guard let transaction = transaction else {
-            completion(.failed(message: "No active 3DS transaction"))
+            mainThreadCompletion(.failed(error: RavelinThreeDsError.missingTransaction))
             return
         }
         let challengeParams = ChallengeParameters()
@@ -110,7 +143,7 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
         challengeParams.setAcsSignedContent(action.acsSignedContent)
         let receiver = ChallengeStatusReceiver(
             threeDSServerTransactionId: action.threeDSServerTransactionId,
-            completion: completion
+            completion: mainThreadCompletion
         )
         let challengeView = ViewControllerChallengeView(viewController: presentingViewController)
         self.challengeStatusReceiver = receiver
@@ -119,11 +152,11 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
             try transaction.doChallenge(
                 challengeParameters: challengeParams,
                 challengeStatusReceiver: receiver,
-                timeOut: 10,
+                timeOut: DefaultRyftThreeDsActionHandler.challengeTimeoutInMinutes,
                 challengeView: challengeView
             )
         } catch {
-            completion(.failed(message: error.localizedDescription))
+            mainThreadCompletion(.failed(error: error))
         }
     }
 
@@ -152,6 +185,9 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
 
 private enum RavelinThreeDsError: Error {
     case initialisationFailed
+    case missingTransaction
+    case challengeTimedOut
+    case challengeFailed(message: String)
     case unsupportedScheme(String)
 }
 
@@ -180,17 +216,23 @@ private final class ChallengeStatusReceiver: Ravelin3DS.ChallengeStatusReceiver 
     }
 
     func timedout() {
-        completion(.failed(message: "Challenge timed out"))
+        completion(.failed(error: RavelinThreeDsError.challengeTimedOut))
     }
 
     func protocolError(protocolErrorEvent: Ravelin3DS.ProtocolErrorEvent) {
         completion(.failed(
-            message: "Protocol error: \(protocolErrorEvent.getErrorMessage().getErrorDescription())"
+            error: RavelinThreeDsError.challengeFailed(
+                message: protocolErrorEvent.getErrorMessage().getErrorDescription()
+            )
         ))
     }
 
     func runtimeError(runtimeErrorEvent: Ravelin3DS.RuntimeErrorEvent) {
-        completion(.failed(message: "Runtime error: \(runtimeErrorEvent.getErrorMessage())"))
+        completion(.failed(
+            error: RavelinThreeDsError.challengeFailed(
+                message: runtimeErrorEvent.getErrorMessage()
+            )
+        ))
     }
 }
 

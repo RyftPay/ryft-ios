@@ -267,11 +267,9 @@ public final class RyftDropInPaymentViewController: UIViewController {
             ),
             accountId: config.accountId
         ) { result in
-            DispatchQueue.main.async {
-                self.handlePaymentResult(result.flatMapError { httpError in
-                    .failure(httpError)
-                })
-            }
+            self.handlePaymentResult(result.flatMapError { httpError in
+                .failure(httpError)
+            })
         }
     }
 
@@ -595,12 +593,19 @@ extension RyftDropInPaymentViewController: RyftCardholderNameInputProtocol,
 extension RyftDropInPaymentViewController: RyftRequiredActionDelegate {
 
     public func onRequiredActionInProgress() {
-        updateButtonStates(state: .loading)
+        DispatchQueue.main.async {
+            self.updateButtonStates(state: .loading)
+        }
     }
 
-    public func onRequiredActionHandled(result: Result<PaymentSession, Error>) {
-        DispatchQueue.main.async {
-            self.handlePaymentResult(result)
+    public func onRequiredActionHandled(result: RyftRequiredActionResult) {
+        switch result {
+        case .success(let session):
+            handlePaymentResult(.success(session))
+        case .cancelled:
+            invokeDelegate(with: .cancelled, shouldDismiss: true)
+        case .failure(let error):
+            handlePaymentResult(.failure(error))
         }
     }
 }

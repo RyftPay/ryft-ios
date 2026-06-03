@@ -34,7 +34,7 @@ final class MockRyftThreeDsActionHandler: RyftThreeDsActionHandler {
             preferredStyle: .alert
         )
         alertVC.addAction(UIAlertAction(title: "Fail", style: .cancel) { _ in
-            completion(.failed(message: "User failed challenge"))
+            completion(.failed(error: MockChallengeError.userFailed))
         })
         alertVC.addAction(UIAlertAction(title: "Pass", style: .default) { _ in
             completion(.completed(
@@ -46,4 +46,8 @@ final class MockRyftThreeDsActionHandler: RyftThreeDsActionHandler {
     }
 
     func cleanup() {}
+}
+
+private enum MockChallengeError: Error {
+    case userFailed
 }

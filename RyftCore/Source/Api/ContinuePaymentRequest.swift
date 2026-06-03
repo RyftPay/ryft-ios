@@ -7,7 +7,7 @@ public struct ContinuePaymentRequest {
 
     struct ThreeDsDetails {
         let appAuthentication: AppAuthentication?
-        let challengeResult: String?
+        let challengeResult: ThreeDsChallengeResult?
 
         func toJson() -> [String: Any] {
             var json: [String: Any] = [:]
@@ -15,9 +15,23 @@ public struct ContinuePaymentRequest {
                 json["appAuthentication"] = auth.toJson()
             }
             if let result = challengeResult {
-                json["challengeResult"] = result
+                json["challengeResult"] = result.toBase64EncodedJson()
             }
             return json
+        }
+    }
+
+    struct ThreeDsChallengeResult {
+        let transStatus: String
+        let threeDSServerTransactionId: String
+
+        func toBase64EncodedJson() -> String {
+            let json: [String: Any] = [
+                "transStatus": transStatus,
+                "threeDSServerTransID": threeDSServerTransactionId
+            ]
+            let data = (try? JSONSerialization.data(withJSONObject: json)) ?? Data()
+            return data.base64EncodedString()
         }
     }
 
@@ -95,14 +109,14 @@ public struct ContinuePaymentRequest {
         transactionStatus: String,
         threeDSServerTransactionId: String
     ) -> ContinuePaymentRequest {
-        let json = "{\"transStatus\":\"\(transactionStatus)\","
-            + "\"threeDSServerTransID\":\"\(threeDSServerTransactionId)\"}"
-        let encoded = Data(json.utf8).base64EncodedString()
-        return ContinuePaymentRequest(
+        ContinuePaymentRequest(
             clientSecret: clientSecret,
             threeDs: ThreeDsDetails(
                 appAuthentication: nil,
-                challengeResult: encoded
+                challengeResult: ThreeDsChallengeResult(
+                    transStatus: transactionStatus,
+                    threeDSServerTransactionId: threeDSServerTransactionId
+                )
             )
         )
     }
