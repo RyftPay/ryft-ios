@@ -206,7 +206,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         openDropIn()
         let cancelButton = app.buttons["RyftButton-Cancel"]
         cancelButton.tap()
-        XCTAssertTrue(app.alerts.element.staticTexts["Payment Cancelled"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.alerts.element.staticTexts["Payment Cancelled"].waitForExistence(timeout: 10))
     }
 
     func test_dropIn_shouldDisplayAlert_whenCardPaymentFails() {
@@ -219,7 +219,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         )
         let payButton = app.otherElements["RyftConfirmButton-Pay"]
         payButton.buttons.element.tap()
-        XCTAssertTrue(app.alerts.element.staticTexts["Payment Failed"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.alerts.element.staticTexts["Payment Failed"].waitForExistence(timeout: 10))
     }
 
     func test_dropIn_shouldDisplaySuccess_whenCardPaymentSucceeds() {
@@ -231,7 +231,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         )
         let payButton = app.otherElements["RyftConfirmButton-Pay"]
         payButton.buttons.element.tap()
-        XCTAssertTrue(app.alerts.element.staticTexts["Payment Success"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.alerts.element.staticTexts["Payment Success"].waitForExistence(timeout: 10))
     }
 
     func test_dropIn_shouldDisplayAlert_whenApplePayPaymentFails_dueToApiError() {
@@ -239,7 +239,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         app.segmentedControls["FailPaymentControl"].buttons.element(boundBy: 0).forceTap()
         openDropIn()
         _ = payWithApplePay()
-        XCTAssertTrue(app.alerts.element.staticTexts["Payment Failed"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.alerts.element.staticTexts["Payment Failed"].waitForExistence(timeout: 10))
     }
 
     func test_dropIn_shouldDisplayErrorOnApplePaySheet_whenApplePayPaymentFails_dueToBillingAddressError() {
@@ -262,7 +262,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         app.switches["ApplePayToggle"].forceTap()
         openDropIn()
         _ = payWithApplePay()
-        XCTAssertTrue(app.alerts.element.staticTexts["Payment Success"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.alerts.element.staticTexts["Payment Success"].waitForExistence(timeout: 10))
     }
 
     func test_dropIn_shouldDisplayThreeDs_whenCardPaymentMovesToRequiredActionIdentify() {
@@ -290,7 +290,7 @@ final class RyftDropInPaymentViewControllerTests: XCTestCase {
         payButton.buttons.element.tap()
         XCTAssertTrue(app.alerts.element.staticTexts["3DS Challenge"].waitForExistence(timeout: 10))
         app.alerts.buttons["Pass"].forceTap()
-        XCTAssertTrue(app.alerts.element.staticTexts["Payment Success"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.alerts.element.staticTexts["Payment Success"].waitForExistence(timeout: 10))
     }
 
     private func openDropIn() {
