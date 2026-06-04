@@ -12,6 +12,12 @@ public protocol RyftApiClient {
         completion: @escaping PaymentSessionResponse
     )
 
+    func continuePayment(
+        request: ContinuePaymentRequest,
+        accountId: String?,
+        completion: @escaping PaymentSessionResponse
+    )
+
     func getPaymentSession(
         id: String,
         clientSecret: String,

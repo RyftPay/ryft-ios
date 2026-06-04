@@ -24,6 +24,8 @@ public final class RyftDropInPaymentViewController: UIViewController {
     private var transitionHandler: SlidingTransitioningHandler?
     private var applePayComponent: RyftApplePayComponent?
 
+    private var delegateInvoked = false
+
     internal lazy var requiredActionComponent: RyftRequiredActionComponent = {
        let component = createRequiredActionComponent()
         component.delegate = self
@@ -202,7 +204,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
             height: estimatedHeight,
             dismissTransition: SlidingAnimator.dismissAnimator(
                 onComplete: {
-                    self.invokeDelegate(with: .cancelled, shouldDismiss: false)
+                    self.notifyDelegateAndDismiss(with: .cancelled, shouldDismiss: false)
                 }
             )
         )
@@ -231,7 +233,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
         returnUrl: URL?,
         _ action: PaymentSessionRequiredAction
     ) {
-        requiredActionComponent.handle(action: action)
+        requiredActionComponent.handle(action: action, presentingViewController: self)
     }
 
     private func createRequiredActionComponent() -> RyftRequiredActionComponent {
@@ -267,11 +269,9 @@ public final class RyftDropInPaymentViewController: UIViewController {
             ),
             accountId: config.accountId
         ) { result in
-            DispatchQueue.main.async {
-                self.handlePaymentResult(result.flatMapError { httpError in
-                    .failure(httpError)
-                })
-            }
+            self.handlePaymentResult(result.flatMapError { httpError in
+                .failure(httpError)
+            })
         }
     }
 
@@ -304,10 +304,18 @@ public final class RyftDropInPaymentViewController: UIViewController {
             )
         }
         updateButtonStates(state: .enabled)
-        invokeDelegate(with: paymentResult, shouldDismiss: shouldDismiss)
+        notifyDelegateAndDismiss(with: paymentResult, shouldDismiss: shouldDismiss)
     }
 
-    private func invokeDelegate(with result: RyftPaymentResult, shouldDismiss: Bool) {
+    private func notifyDelegateAndDismiss(with result: RyftPaymentResult, shouldDismiss: Bool) {
+        guard !delegateInvoked else {
+            return
+        }
+        // pendingAction is not a terminal result — the drop-in stays open and continues
+        // the flow, so we must not latch the flag yet.
+        if case .pendingAction = result {} else {
+            delegateInvoked = true
+        }
         if shouldDismiss {
             dismiss(animated: true, completion: nil)
         }
@@ -514,13 +522,13 @@ extension RyftDropInPaymentViewController: RyftApplePayComponentDelegate {
         case .cancelled:
             break
         case .success(let paymentSession):
-            invokeDelegate(
+            notifyDelegateAndDismiss(
                 with: .success(paymentSession: paymentSession),
                 shouldDismiss: true
             )
         case .error(_, let paymentError):
             let ryftError = paymentError ?? .init(paymentSessionError: .unknown)
-            invokeDelegate(
+            notifyDelegateAndDismiss(
                 with: .failed(error: ryftError),
                 shouldDismiss: true
             )
@@ -595,12 +603,19 @@ extension RyftDropInPaymentViewController: RyftCardholderNameInputProtocol,
 extension RyftDropInPaymentViewController: RyftRequiredActionDelegate {
 
     public func onRequiredActionInProgress() {
-        updateButtonStates(state: .loading)
+        DispatchQueue.main.async {
+            self.updateButtonStates(state: .loading)
+        }
     }
 
-    public func onRequiredActionHandled(result: Result<PaymentSession, Error>) {
-        DispatchQueue.main.async {
-            self.handlePaymentResult(result)
+    public func onRequiredActionHandled(result: RyftRequiredActionResult) {
+        switch result {
+        case .success(let session):
+            handlePaymentResult(.success(session))
+        case .cancelled:
+            notifyDelegateAndDismiss(with: .cancelled, shouldDismiss: true)
+        case .failure(let error):
+            handlePaymentResult(.failure(error))
         }
     }
 }

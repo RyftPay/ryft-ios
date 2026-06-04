@@ -25,6 +25,17 @@ class EndpointTest: XCTestCase {
         )
     }
 
+    func test_continuePayment_shouldReturnExpectedValue() {
+        guard let url = Endpoint.continuePayment(baseUrl: baseApiUrl) else {
+            XCTFail("expected non-nil endpoint")
+            return
+        }
+        XCTAssertEqual(
+            "https://dummy-api.ryftpay.com/v1/payment-sessions/continue-payment",
+            url.absoluteString
+        )
+    }
+
     func test_paymentSessionId_shouldReturnExpectedValue() {
         guard let url = Endpoint.paymentSessionId(
             baseUrl: baseApiUrl,

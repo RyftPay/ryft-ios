@@ -6,6 +6,6 @@ public enum RyftPaymentResult {
     case pendingAction(
         paymentSession: PaymentSession,
         requiredAction: PaymentSessionRequiredAction
-     )
+    )
     case success(paymentSession: PaymentSession)
 }

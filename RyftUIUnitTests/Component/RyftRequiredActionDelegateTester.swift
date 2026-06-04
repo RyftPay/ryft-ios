@@ -4,13 +4,13 @@ import RyftUI
 final class RyftRequiredActionDelegateTester: RyftRequiredActionDelegate {
 
     var inProgress = false
-    var result: Result<PaymentSession, Error>?
+    var result: RyftRequiredActionResult?
 
     func onRequiredActionInProgress() {
         inProgress = true
     }
 
-    func onRequiredActionHandled(result: Result<PaymentSession, Error>) {
+    func onRequiredActionHandled(result: RyftRequiredActionResult) {
         self.result = result
     }
 }

@@ -43,7 +43,24 @@ public final class DefaultRyftApiClient: RyftApiClient {
             headers: requestHeaders(accountId),
             body: request.toJson(),
             responseType: PaymentSession.self,
-            completion: { completion($0) }
+            completion: { [weak self] result in self?.complete(completion, with: result) }
+        )
+    }
+
+    public func continuePayment(
+        request: ContinuePaymentRequest,
+        accountId: String?,
+        completion: @escaping PaymentSessionResponse
+    ) {
+        guard let url = Endpoint.continuePayment(baseUrl: baseApiUrl) else {
+            return
+        }
+        httpClient.postBody(
+            url: url,
+            headers: requestHeaders(accountId),
+            body: request.toJson(),
+            responseType: PaymentSession.self,
+            completion: { [weak self] result in self?.complete(completion, with: result) }
         )
     }
 
@@ -65,8 +82,17 @@ public final class DefaultRyftApiClient: RyftApiClient {
             headers: requestHeaders(accountId),
             method: .get,
             responseType: PaymentSession.self,
-            completion: completion
+            completion: { [weak self] result in self?.complete(completion, with: result) }
         )
+    }
+
+    private func complete(
+        _ completion: @escaping PaymentSessionResponse,
+        with result: Result<PaymentSession, HttpError>
+    ) {
+        DispatchQueue.main.async {
+            completion(result)
+        }
     }
 
     private func requestHeaders(_ accountId: String?) -> [String: String] {

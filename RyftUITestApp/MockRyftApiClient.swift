@@ -28,12 +28,39 @@ final class MockRyftApiClient: RyftApiClient {
         createdTimestamp: 123
     ))
 
+    var continuePaymentResult: Result<PaymentSession, HttpError> = .success(PaymentSession(
+        id: "ps_01FCTS1XMKH9FF43CAFA4CXT3P",
+        amount: 350,
+        currency: "GBP",
+        status: .approved,
+        customerEmail: "support@ryftpay.com",
+        lastError: nil,
+        requiredAction: nil,
+        returnUrl: "https://ryftpay.com",
+        createdTimestamp: 123
+    ))
+
+    /// Optional queue of results consumed in order. Falls back to continuePaymentResult when empty.
+    var continuePaymentResultQueue: [Result<PaymentSession, HttpError>] = []
+
     func attemptPayment(
         request: AttemptPaymentRequest,
         accountId: String?,
         completion: @escaping PaymentSessionResponse
     ) {
         completion(attemptPaymentResult)
+    }
+
+    func continuePayment(
+        request: ContinuePaymentRequest,
+        accountId: String?,
+        completion: @escaping PaymentSessionResponse
+    ) {
+        if !continuePaymentResultQueue.isEmpty {
+            completion(continuePaymentResultQueue.removeFirst())
+        } else {
+            completion(continuePaymentResult)
+        }
     }
 
     func getPaymentSession(
