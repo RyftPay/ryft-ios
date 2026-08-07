@@ -169,21 +169,24 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
         challengeView = nil
     }
 
-    private func toDirectoryServerId(scheme: String) throws -> String {
-        let prefix = environment == .production ? "A" : "M"
+    internal func toDirectoryServerId(scheme: String) throws -> String {
+        // In sandbox all Luhn-valid test cards are wired to mock-directory-server-a (M000000003)
+        guard environment == .production else {
+            return "M000000003"
+        }
         switch scheme.lowercased() {
-        case "visa": return "\(prefix)000000003"
-        case "mastercard": return "\(prefix)000000004"
-        case "amex": return "\(prefix)000000025"
-        case "discover": return "\(prefix)000000152"
-        case "jcb": return "\(prefix)000000065"
-        case "unionpay": return "\(prefix)000000333"
+        case "visa": return "A000000003"
+        case "mastercard": return "A000000004"
+        case "amex": return "A000000025"
+        case "discover": return "A000000152"
+        case "jcb": return "A000000065"
+        case "unionpay": return "A000000333"
         default: throw RavelinThreeDsError.unsupportedScheme(scheme)
         }
     }
 }
 
-private enum RavelinThreeDsError: Error {
+internal enum RavelinThreeDsError: Error {
     case initialisationFailed
     case missingTransaction
     case challengeTimedOut
