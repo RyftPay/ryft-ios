@@ -45,7 +45,7 @@ final class SlidingAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         containerView.addSubview(toViewController.view)
         let presentFrame = transitionContext.finalFrame(for: toViewController)
         let initialFrame = CGRect(
-            origin: CGPoint(x: 0, y: UIScreen.main.bounds.size.height),
+            origin: CGPoint(x: 0, y: containerView.bounds.height),
             size: presentFrame.size
         )
         toViewController.view.frame = initialFrame
@@ -65,7 +65,7 @@ final class SlidingAnimator: NSObject, UIViewControllerAnimatedTransitioning {
             return
         }
         let dismissFrame = CGRect(
-            origin: CGPoint(x: 0, y: UIScreen.main.bounds.size.height),
+            origin: CGPoint(x: 0, y: transitionContext.containerView.bounds.height),
             size: fromViewController.view.frame.size
         )
         UIView.animate(
