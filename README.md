@@ -85,6 +85,8 @@ RyftDropInConfiguration(
 
 Once the customer has submitted their payment, the drop-in will dismiss.
 
+This also applies to failed payments: the drop-in does not display the error itself. It dismisses and returns `.failed` with a `displayError` message for you to show. You can present the drop-in again for the same payment session to let the customer retry with another card.
+
 To handle the result, the following methods of `RyftDropInPaymentDelegate` need to be implemented:
 
 ```swift
