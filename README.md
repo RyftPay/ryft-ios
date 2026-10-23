@@ -105,10 +105,7 @@ func onPaymentResult(result: RyftPaymentResult) {
         showSuccessView()
     // payment requires an additional action (e.g. 3DS) — instruct the drop-in to handle it
     case .pendingAction(let paymentSession, let requiredAction):
-        ryftDropIn?.handleRequiredAction(
-            returnUrl: URL(string: paymentSession.returnUrl),
-            requiredAction
-        )
+        ryftDropIn?.handleRequiredAction(requiredAction)
     // payment failed, show an alert to the customer
     // `error.displayError` provides a human friendly message you can display
     case .failed(let error):

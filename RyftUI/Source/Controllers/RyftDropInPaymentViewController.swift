@@ -229,19 +229,23 @@ public final class RyftDropInPaymentViewController: UIViewController {
         view.accessibilityIdentifier = "RyftDropIn"
     }
 
+    public func handleRequiredAction(_ action: PaymentSessionRequiredAction) {
+        requiredActionComponent.handle(action: action, presentingViewController: self)
+    }
+
+    @available(*, deprecated, message: "returnUrl is ignored, no return URL is needed for native 3DS. Use handleRequiredAction(_:) instead")
     public func handleRequiredAction(
         returnUrl: URL?,
         _ action: PaymentSessionRequiredAction
     ) {
-        requiredActionComponent.handle(action: action, presentingViewController: self)
+        handleRequiredAction(action)
     }
 
     private func createRequiredActionComponent() -> RyftRequiredActionComponent {
         RyftRequiredActionComponent(
             config: RyftRequiredActionComponent.Configuration(
                 clientSecret: config.clientSecret,
-                accountId: config.accountId,
-                returnUrl: nil
+                accountId: config.accountId
             ),
             apiClient: apiClient
         )
