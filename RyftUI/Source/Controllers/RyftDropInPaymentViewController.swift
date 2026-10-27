@@ -233,7 +233,10 @@ public final class RyftDropInPaymentViewController: UIViewController {
         requiredActionComponent.handle(action: action, presentingViewController: self)
     }
 
-    @available(*, deprecated, message: "returnUrl is ignored, no return URL is needed for native 3DS. Use handleRequiredAction(_:) instead")
+    @available(
+        *, deprecated,
+        message: "returnUrl is ignored for native 3DS. Use handleRequiredAction(_:) instead"
+    )
     public func handleRequiredAction(
         returnUrl: URL?,
         _ action: PaymentSessionRequiredAction

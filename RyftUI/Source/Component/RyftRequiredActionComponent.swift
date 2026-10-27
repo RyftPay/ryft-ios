@@ -27,7 +27,10 @@ public final class RyftRequiredActionComponent {
             self.accountId = accountId
         }
 
-        @available(*, deprecated, message: "returnUrl is ignored, no return URL is needed for native 3DS. Use init(clientSecret:accountId:) instead")
+        @available(
+            *, deprecated,
+            message: "returnUrl is ignored for native 3DS. Use init(clientSecret:accountId:) instead"
+        )
         public init(
             clientSecret: String,
             accountId: String? = nil,
