@@ -130,9 +130,7 @@ When the failure came from an API error response, `error` also carries:
 - `errorCode` - the API error code (e.g. `bad_request`)
 - `errorMessage` - the API error message, intended for logging and debugging. It is in English and not suitable to show to customers, so keep displaying `displayError`
 
-Both are `nil` for card declines, which are described by `error.paymentSessionError` instead.
-
-New decline reasons may be added to `PaymentSessionError` in future releases. If you `switch` on it, include an `@unknown default` case so your code keeps compiling when one is added.
+Both are `nil` for card declines. Show `displayError` to your customer; it covers every decline reason. If you need to act on a specific reason, check `error.paymentSessionError` and include an `@unknown default` case, as new reasons may be added in future releases.
 
 
 ## Adding Apple Pay
