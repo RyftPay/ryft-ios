@@ -74,16 +74,18 @@ public final class RyftRequiredActionComponent {
         switch action.type {
         case .identify:
             guard let identifyAction = action.identify else {
-                delegate?.onRequiredActionHandled(
-                    result: .failure(RyftRequiredActionError.missingIdentifyDetails)
-                )
+                notifyFailureAsync(RyftRequiredActionError.missingIdentifyDetails)
                 return
             }
             handle(action: identifyAction, presentingViewController: presentingViewController)
         default:
-            delegate?.onRequiredActionHandled(
-                result: .failure(RyftRequiredActionError.unsupportedRequiredAction(action.type))
-            )
+            notifyFailureAsync(RyftRequiredActionError.unsupportedRequiredAction(action.type))
+        }
+    }
+
+    private func notifyFailureAsync(_ error: RyftRequiredActionError) {
+        DispatchQueue.main.async { [weak self] in
+            self?.delegate?.onRequiredActionHandled(result: .failure(error))
         }
     }
 

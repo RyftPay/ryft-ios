@@ -56,6 +56,8 @@ final class RyftRequiredActionComponentTests: XCTestCase {
         component.handle(action: action, presentingViewController: presenter)
 
         XCTAssertFalse(threeDsHandler.createTransactionInvoked)
+        XCTAssertNil(delegate.result)
+        drainMainQueue()
         assertFailure(delegate.result, is: .unsupportedRequiredAction(.challenge))
     }
 
@@ -68,6 +70,8 @@ final class RyftRequiredActionComponentTests: XCTestCase {
         component.handle(action: action, presentingViewController: presenter)
 
         XCTAssertFalse(threeDsHandler.createTransactionInvoked)
+        XCTAssertNil(delegate.result)
+        drainMainQueue()
         assertFailure(delegate.result, is: .unsupportedRequiredAction(.unknown))
     }
 
@@ -80,6 +84,8 @@ final class RyftRequiredActionComponentTests: XCTestCase {
         component.handle(action: action, presentingViewController: presenter)
 
         XCTAssertFalse(threeDsHandler.createTransactionInvoked)
+        XCTAssertNil(delegate.result)
+        drainMainQueue()
         assertFailure(delegate.result, is: .missingIdentifyDetails)
     }
 
@@ -212,6 +218,14 @@ final class RyftRequiredActionComponentTests: XCTestCase {
         component.handle(action: action, presentingViewController: presenter)
 
         XCTAssertTrue(threeDsHandler.cleanupInvoked)
+    }
+
+    private func drainMainQueue() {
+        let drained = expectation(description: "main queue drained")
+        DispatchQueue.main.async {
+            drained.fulfill()
+        }
+        wait(for: [drained], timeout: 1.0)
     }
 
     private func assertFailure(
