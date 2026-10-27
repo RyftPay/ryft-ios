@@ -126,6 +126,12 @@ func onPaymentResult(result: RyftPaymentResult) {
 }
 ```
 
+When the failure came from an API error response, `error` also carries:
+- `errorCode` - the API error code (e.g. `bad_request`)
+- `errorMessage` - the API error message, intended for logging and debugging. It is in English and not suitable to show to customers, so keep displaying `displayError`
+
+Both are `nil` for card declines, which are described by `error.paymentSessionError` instead.
+
 
 ## Adding Apple Pay
 

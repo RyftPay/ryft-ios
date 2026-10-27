@@ -120,6 +120,7 @@
 		D8F1638927A2E7040076CC02 /* EndpointTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F1638827A2E7040076CC02 /* EndpointTest.swift */; };
 		D8F1639327A2E7790076CC02 /* RyftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D868927627A2A4E7003DBFAA /* RyftUI.framework */; };
 		D8F1639B27A2E8070076CC02 /* RyftDropInCardDetailsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F1639A27A2E8070076CC02 /* RyftDropInCardDetailsTests.swift */; };
+		0B0AD4642C6A132700556EA6 /* RyftPaymentErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0AD4632C6A132700556EA6 /* RyftPaymentErrorTests.swift */; };
 		D8F1639E27A2F0F20076CC02 /* URLExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F1639D27A2F0F20076CC02 /* URLExtensionTests.swift */; };
 		D8F163A127A2F7380076CC02 /* RyftCardCvcInputFieldTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F163A027A2F7380076CC02 /* RyftCardCvcInputFieldTests.swift */; };
 		D8F163B927A31E560076CC02 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F163B827A31E560076CC02 /* AppDelegate.swift */; };
@@ -339,6 +340,7 @@
 		D8F1638E27A2E7780076CC02 /* RyftUIUnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RyftUIUnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8F1639227A2E7790076CC02 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D8F1639A27A2E8070076CC02 /* RyftDropInCardDetailsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftDropInCardDetailsTests.swift; sourceTree = "<group>"; };
+		0B0AD4632C6A132700556EA6 /* RyftPaymentErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftPaymentErrorTests.swift; sourceTree = "<group>"; };
 		D8F1639D27A2F0F20076CC02 /* URLExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLExtensionTests.swift; sourceTree = "<group>"; };
 		D8F163A027A2F7380076CC02 /* RyftCardCvcInputFieldTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftCardCvcInputFieldTests.swift; sourceTree = "<group>"; };
 		D8F163B627A31E560076CC02 /* RyftUITestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RyftUITestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -821,6 +823,7 @@
 			isa = PBXGroup;
 			children = (
 				D8F1639A27A2E8070076CC02 /* RyftDropInCardDetailsTests.swift */,
+				0B0AD4632C6A132700556EA6 /* RyftPaymentErrorTests.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1322,6 +1325,7 @@
 				D89384B3283B812100F67926 /* PaymentSessionExtensionTests.swift in Sources */,
 				D89384AB2837E36B00F67926 /* RyftApplePayComponentTests.swift in Sources */,
 				D8F1639B27A2E8070076CC02 /* RyftDropInCardDetailsTests.swift in Sources */,
+				0B0AD4642C6A132700556EA6 /* RyftPaymentErrorTests.swift in Sources */,
 				D8F1639E27A2F0F20076CC02 /* URLExtensionTests.swift in Sources */,
 				D8F163E427A3E8C10076CC02 /* MockRyftApiClient.swift in Sources */,
 				0B2789352902D64D006E21F6 /* RyftRequiredActionComponentTests.swift in Sources */,

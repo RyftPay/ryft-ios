@@ -305,10 +305,8 @@ public final class RyftDropInPaymentViewController: UIViewController {
                         paymentSessionError: lastError)
                 )
             }
-        case .failure:
-            paymentResult = .failed(
-                error: RyftPaymentError(paymentSessionError: .unknown)
-            )
+        case .failure(let error):
+            paymentResult = .failed(error: RyftPaymentError.from(error: error))
         }
         updateButtonStates(state: .enabled)
         notifyDelegateAndDismiss(with: paymentResult, shouldDismiss: shouldDismiss)
@@ -533,8 +531,8 @@ extension RyftDropInPaymentViewController: RyftApplePayComponentDelegate {
                 with: .success(paymentSession: paymentSession),
                 shouldDismiss: true
             )
-        case .error(_, let paymentError):
-            let ryftError = paymentError ?? .init(paymentSessionError: .unknown)
+        case let .error(error, paymentError):
+            let ryftError = paymentError ?? RyftPaymentError.from(error: error)
             notifyDelegateAndDismiss(
                 with: .failed(error: ryftError),
                 shouldDismiss: true
