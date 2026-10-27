@@ -25,10 +25,11 @@ public struct RyftPaymentError {
               let apiError = detail.body.errors.first else {
             return RyftPaymentError(paymentSessionError: .unknown)
         }
+        let code = apiError.code.trimmingCharacters(in: .whitespacesAndNewlines)
         let message = apiError.message.trimmingCharacters(in: .whitespacesAndNewlines)
         return RyftPaymentError(
             paymentSessionError: .unknown,
-            errorCode: apiError.code,
+            errorCode: code.isEmpty ? nil : apiError.code,
             errorMessage: message.isEmpty ? nil : apiError.message
         )
     }

@@ -35,6 +35,15 @@ final class RyftPaymentErrorTests: XCTestCase {
         XCTAssertNil(error.errorMessage)
     }
 
+    func test_from_shouldReturnNilErrorCode_whenBadResponseCodeIsBlank() {
+        let error = RyftPaymentError.from(error: badResponse(
+            RyftApiError.RyftApiErrorElement(code: " ", message: "The request was invalid")
+        ))
+
+        XCTAssertNil(error.errorCode)
+        XCTAssertEqual(error.errorMessage, "The request was invalid")
+    }
+
     func test_from_shouldReturnNilCodeAndMessage_whenBadResponseHasNoErrors() {
         let error = RyftPaymentError.from(error: badResponse())
 
