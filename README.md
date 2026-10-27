@@ -132,6 +132,8 @@ When the failure came from an API error response, `error` also carries:
 
 Both are `nil` for card declines, which are described by `error.paymentSessionError` instead.
 
+New decline reasons may be added to `PaymentSessionError` in future releases. If you `switch` on it, include an `@unknown default` case so your code keeps compiling when one is added.
+
 
 ## Adding Apple Pay
 

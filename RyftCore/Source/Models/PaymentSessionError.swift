@@ -3,6 +3,7 @@ public enum PaymentSessionError: String, Codable {
     case insufficientFunds = "insufficient_funds"
     case declinedDoNotHonour = "declined_do_not_honour"
     case invalidCardNumber = "invalid_card_number"
+    case cvv2Failure = "cvv2_failure"
     case restrictedCard = "restricted_card"
     case securityViolation = "security_violation"
     case expiredCard = "expired_card"

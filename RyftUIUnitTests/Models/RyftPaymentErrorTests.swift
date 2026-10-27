@@ -15,6 +15,13 @@ final class RyftPaymentErrorTests: XCTestCase {
         XCTAssertNil(error.errorMessage)
     }
 
+    func test_init_shouldUseLocalizedCvvMessage_whenErrorIsCvv2Failure() {
+        let error = RyftPaymentError(paymentSessionError: .cvv2Failure)
+
+        XCTAssertNotEqual(error.displayError, unknownDisplayError)
+        XCTAssertTrue(error.displayError.contains("CVC"))
+    }
+
     func test_from_shouldReturnApiErrorCodeAndMessage_whenBadResponseHasErrors() {
         let error = RyftPaymentError.from(error: badResponse(
             RyftApiError.RyftApiErrorElement(code: "bad_request", message: "The request was invalid")
