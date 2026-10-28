@@ -19,9 +19,9 @@ final class RyftDropInPresentationController: UIPresentationController {
     }
 
     private lazy var dimmedView: UIView = {
-        let dimmedView = UIView(frame: CGRect(origin: .zero, size: UIScreen.main.bounds.size))
+        let dimmedView = UIView(frame: containerView?.bounds ?? .zero)
         dimmedView.backgroundColor = UIColor.black.withAlphaComponent(0)
-        dimmedView.translatesAutoresizingMaskIntoConstraints = false
+        dimmedView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         dimmedView.isUserInteractionEnabled = true
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTap(_:)))
         let swipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(onSwipe(_:)))
@@ -32,9 +32,10 @@ final class RyftDropInPresentationController: UIPresentationController {
     }()
 
     override var frameOfPresentedViewInContainerView: CGRect {
-        CGRect(
-            origin: CGPoint(x: 0, y: UIScreen.main.bounds.size.height - height),
-            size: CGSize(width: presentedViewController.view.frame.size.width, height: height)
+        let bounds = containerView?.bounds ?? .zero
+        return CGRect(
+            origin: CGPoint(x: 0, y: bounds.height - height),
+            size: CGSize(width: bounds.width, height: height)
         )
     }
 
@@ -52,11 +53,16 @@ final class RyftDropInPresentationController: UIPresentationController {
     }
 
     override func containerViewWillLayoutSubviews() {
+        dimmedView.frame = containerView?.bounds ?? .zero
         presentedView?.frame = frameOfPresentedViewInContainerView
     }
 
     override func presentationTransitionWillBegin() {
-        containerView?.insertSubview(dimmedView, at: 0)
+        guard let containerView = containerView else {
+            return
+        }
+        dimmedView.frame = containerView.bounds
+        containerView.insertSubview(dimmedView, at: 0)
         changeDimmedViewAlphaOnAnimation(to: maxDimmedAlpha)
     }
 

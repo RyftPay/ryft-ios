@@ -229,19 +229,26 @@ public final class RyftDropInPaymentViewController: UIViewController {
         view.accessibilityIdentifier = "RyftDropIn"
     }
 
+    public func handleRequiredAction(_ action: PaymentSessionRequiredAction) {
+        requiredActionComponent.handle(action: action, presentingViewController: self)
+    }
+
+    @available(
+        *, deprecated,
+        message: "returnUrl is ignored for native 3DS. Use handleRequiredAction(_:) instead"
+    )
     public func handleRequiredAction(
         returnUrl: URL?,
         _ action: PaymentSessionRequiredAction
     ) {
-        requiredActionComponent.handle(action: action, presentingViewController: self)
+        handleRequiredAction(action)
     }
 
     private func createRequiredActionComponent() -> RyftRequiredActionComponent {
         RyftRequiredActionComponent(
             config: RyftRequiredActionComponent.Configuration(
                 clientSecret: config.clientSecret,
-                accountId: config.accountId,
-                returnUrl: nil
+                accountId: config.accountId
             ),
             apiClient: apiClient
         )
@@ -298,10 +305,8 @@ public final class RyftDropInPaymentViewController: UIViewController {
                         paymentSessionError: lastError)
                 )
             }
-        case .failure:
-            paymentResult = .failed(
-                error: RyftPaymentError(paymentSessionError: .unknown)
-            )
+        case .failure(let error):
+            paymentResult = .failed(error: RyftPaymentError.from(error: error))
         }
         updateButtonStates(state: .enabled)
         notifyDelegateAndDismiss(with: paymentResult, shouldDismiss: shouldDismiss)
@@ -526,8 +531,8 @@ extension RyftDropInPaymentViewController: RyftApplePayComponentDelegate {
                 with: .success(paymentSession: paymentSession),
                 shouldDismiss: true
             )
-        case .error(_, let paymentError):
-            let ryftError = paymentError ?? .init(paymentSessionError: .unknown)
+        case let .error(error, paymentError):
+            let ryftError = paymentError ?? RyftPaymentError.from(error: error)
             notifyDelegateAndDismiss(
                 with: .failed(error: ryftError),
                 shouldDismiss: true

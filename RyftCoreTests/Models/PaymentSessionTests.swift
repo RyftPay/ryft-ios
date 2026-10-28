@@ -111,4 +111,13 @@ class PaymentSessionTests: XCTestCase {
         XCTAssertEqual("acs_ref_123", result.requiredAction?.challenge?.acsRefNumber)
         XCTAssertEqual("acs_signed_content", result.requiredAction?.challenge?.acsSignedContent)
     }
+
+    func test_paymentSessionError_shouldDecodeCvv2Failure() throws {
+        let rawJson = #"["cvv2_failure", "some_new_error"]"#
+        let result = try JSONDecoder().decode(
+            [PaymentSessionError].self,
+            from: Data(rawJson.utf8)
+        )
+        XCTAssertEqual([.cvv2Failure, .unknown], result)
+    }
 }

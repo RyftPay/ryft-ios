@@ -85,6 +85,8 @@ RyftDropInConfiguration(
 
 Once the customer has submitted their payment, the drop-in will dismiss.
 
+This also applies to failed payments: the drop-in does not display the error itself. It dismisses and returns `.failed` with a `displayError` message for you to show. You can present the drop-in again for the same payment session to let the customer retry with another card.
+
 To handle the result, the following methods of `RyftDropInPaymentDelegate` need to be implemented:
 
 ```swift
@@ -103,10 +105,7 @@ func onPaymentResult(result: RyftPaymentResult) {
         showSuccessView()
     // payment requires an additional action (e.g. 3DS) — instruct the drop-in to handle it
     case .pendingAction(let paymentSession, let requiredAction):
-        ryftDropIn?.handleRequiredAction(
-            returnUrl: URL(string: paymentSession.returnUrl),
-            requiredAction
-        )
+        ryftDropIn?.handleRequiredAction(requiredAction)
     // payment failed, show an alert to the customer
     // `error.displayError` provides a human friendly message you can display
     case .failed(let error):
@@ -126,6 +125,12 @@ func onPaymentResult(result: RyftPaymentResult) {
     }
 }
 ```
+
+When the failure came from an API error response, `error` also carries:
+- `errorCode` - the API error code (e.g. `bad_request`)
+- `errorMessage` - the API error message, intended for logging and debugging. It is in English and not suitable to show to customers, so keep displaying `displayError`
+
+Both are `nil` for card declines. Show `displayError` to your customer; it covers every decline reason. If you need to act on a specific reason, check `error.paymentSessionError` and include an `@unknown default` case, as new reasons may be added in future releases.
 
 
 ## Adding Apple Pay

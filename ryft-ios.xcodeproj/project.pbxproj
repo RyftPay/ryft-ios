@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		0B0AD4592C661BD300556EA6 /* RyftCardholderNameInputField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0AD4582C661BD300556EA6 /* RyftCardholderNameInputField.swift */; };
-		0B0AD45D2C6A132700556EA6 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 0B0AD45C2C6A132700556EA6 /* PrivacyInfo.xcprivacy */; };
-		0B0AD45E2C6A132700556EA6 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 0B0AD45C2C6A132700556EA6 /* PrivacyInfo.xcprivacy */; };
-		0B0AD45F2C6A132700556EA6 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 0B0AD45C2C6A132700556EA6 /* PrivacyInfo.xcprivacy */; };
+		0B0AD45D2C6A132700556EA6 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 0B0AD4602C6A132700556EA6 /* PrivacyInfo.xcprivacy */; };
+		0B0AD45E2C6A132700556EA6 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 0B0AD4612C6A132700556EA6 /* PrivacyInfo.xcprivacy */; };
+		0B0AD45F2C6A132700556EA6 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 0B0AD4622C6A132700556EA6 /* PrivacyInfo.xcprivacy */; };
 		0B27890828F5BD8F006E21F6 /* PaymentRequestPaymentMethodOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B27890728F5BD8F006E21F6 /* PaymentRequestPaymentMethodOptions.swift */; };
 		0B27890A28F5BED0006E21F6 /* RyftSaveCardToggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B27890928F5BED0006E21F6 /* RyftSaveCardToggleView.swift */; };
 		0B27890C28F5DD18006E21F6 /* PaymentRequestPaymentMethodOptionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B27890B28F5DD18006E21F6 /* PaymentRequestPaymentMethodOptionsTests.swift */; };
@@ -120,6 +120,7 @@
 		D8F1638927A2E7040076CC02 /* EndpointTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F1638827A2E7040076CC02 /* EndpointTest.swift */; };
 		D8F1639327A2E7790076CC02 /* RyftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D868927627A2A4E7003DBFAA /* RyftUI.framework */; };
 		D8F1639B27A2E8070076CC02 /* RyftDropInCardDetailsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F1639A27A2E8070076CC02 /* RyftDropInCardDetailsTests.swift */; };
+		0B0AD4642C6A132700556EA6 /* RyftPaymentErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B0AD4632C6A132700556EA6 /* RyftPaymentErrorTests.swift */; };
 		D8F1639E27A2F0F20076CC02 /* URLExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F1639D27A2F0F20076CC02 /* URLExtensionTests.swift */; };
 		D8F163A127A2F7380076CC02 /* RyftCardCvcInputFieldTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F163A027A2F7380076CC02 /* RyftCardCvcInputFieldTests.swift */; };
 		D8F163B927A31E560076CC02 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F163B827A31E560076CC02 /* AppDelegate.swift */; };
@@ -220,7 +221,9 @@
 
 /* Begin PBXFileReference section */
 		0B0AD4582C661BD300556EA6 /* RyftCardholderNameInputField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftCardholderNameInputField.swift; sourceTree = "<group>"; };
-		0B0AD45C2C6A132700556EA6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		0B0AD4602C6A132700556EA6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		0B0AD4612C6A132700556EA6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		0B0AD4622C6A132700556EA6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		0B27890728F5BD8F006E21F6 /* PaymentRequestPaymentMethodOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentRequestPaymentMethodOptions.swift; sourceTree = "<group>"; };
 		0B27890928F5BED0006E21F6 /* RyftSaveCardToggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftSaveCardToggleView.swift; sourceTree = "<group>"; };
 		0B27890B28F5DD18006E21F6 /* PaymentRequestPaymentMethodOptionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentRequestPaymentMethodOptionsTests.swift; sourceTree = "<group>"; };
@@ -337,6 +340,7 @@
 		D8F1638E27A2E7780076CC02 /* RyftUIUnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RyftUIUnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8F1639227A2E7790076CC02 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D8F1639A27A2E8070076CC02 /* RyftDropInCardDetailsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftDropInCardDetailsTests.swift; sourceTree = "<group>"; };
+		0B0AD4632C6A132700556EA6 /* RyftPaymentErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftPaymentErrorTests.swift; sourceTree = "<group>"; };
 		D8F1639D27A2F0F20076CC02 /* URLExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLExtensionTests.swift; sourceTree = "<group>"; };
 		D8F163A027A2F7380076CC02 /* RyftCardCvcInputFieldTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftCardCvcInputFieldTests.swift; sourceTree = "<group>"; };
 		D8F163B627A31E560076CC02 /* RyftUITestApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RyftUITestApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -436,7 +440,6 @@
 		D868922227A2A383003DBFAA = {
 			isa = PBXGroup;
 			children = (
-				0B0AD45C2C6A132700556EA6 /* PrivacyInfo.xcprivacy */,
 				D868928027A2A588003DBFAA /* Package.swift */,
 				D868924D27A2A3E8003DBFAA /* RyftCard */,
 				D868926A27A2A4D7003DBFAA /* RyftCore */,
@@ -479,6 +482,7 @@
 		D868926327A2A4A8003DBFAA /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				0B0AD4602C6A132700556EA6 /* PrivacyInfo.xcprivacy */,
 				D86892CE27A2AE12003DBFAA /* Extension */,
 				D868928327A2A74F003DBFAA /* CardBinRange.swift */,
 				D868928A27A2A805003DBFAA /* RyftInputValidationState.swift */,
@@ -514,6 +518,7 @@
 		D868927E27A2A4ED003DBFAA /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				0B0AD4622C6A132700556EA6 /* PrivacyInfo.xcprivacy */,
 				D8AB658A2834DB09009EF72C /* Component */,
 				D86892FF27A2BC8D003DBFAA /* Resources */,
 				D86892E027A2AF71003DBFAA /* Controllers */,
@@ -533,6 +538,7 @@
 		D868927F27A2A4F2003DBFAA /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				0B0AD4612C6A132700556EA6 /* PrivacyInfo.xcprivacy */,
 				D8AB659D283673AC009EF72C /* Utility */,
 				D868929927A2A8D4003DBFAA /* Api */,
 				D868928E27A2A836003DBFAA /* Models */,
@@ -817,6 +823,7 @@
 			isa = PBXGroup;
 			children = (
 				D8F1639A27A2E8070076CC02 /* RyftDropInCardDetailsTests.swift */,
+				0B0AD4632C6A132700556EA6 /* RyftPaymentErrorTests.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1318,6 +1325,7 @@
 				D89384B3283B812100F67926 /* PaymentSessionExtensionTests.swift in Sources */,
 				D89384AB2837E36B00F67926 /* RyftApplePayComponentTests.swift in Sources */,
 				D8F1639B27A2E8070076CC02 /* RyftDropInCardDetailsTests.swift in Sources */,
+				0B0AD4642C6A132700556EA6 /* RyftPaymentErrorTests.swift in Sources */,
 				D8F1639E27A2F0F20076CC02 /* URLExtensionTests.swift in Sources */,
 				D8F163E427A3E8C10076CC02 /* MockRyftApiClient.swift in Sources */,
 				0B2789352902D64D006E21F6 /* RyftRequiredActionComponentTests.swift in Sources */,
@@ -1573,7 +1581,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.1;
+				MARKETING_VERSION = 2.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ryftpay.RyftCard;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -1600,7 +1608,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.1;
+				MARKETING_VERSION = 2.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ryftpay.RyftCard;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -1626,7 +1634,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.1;
+				MARKETING_VERSION = 2.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ryftpay.RyftCore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -1653,7 +1661,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.1;
+				MARKETING_VERSION = 2.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ryftpay.RyftCore;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -1680,7 +1688,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.1;
+				MARKETING_VERSION = 2.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ryftpay.RyftUI;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -1708,7 +1716,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.1;
+				MARKETING_VERSION = 2.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ryftpay.RyftUI;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;

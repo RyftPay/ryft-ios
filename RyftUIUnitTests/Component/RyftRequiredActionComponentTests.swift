@@ -43,6 +43,52 @@ final class RyftRequiredActionComponentTests: XCTestCase {
         XCTAssertTrue(delegate.inProgress)
     }
 
+    func test_handle_shouldNotifyDelegateFailure_whenActionTypeIsChallenge() {
+        let action = PaymentSessionRequiredAction(
+            type: .challenge,
+            identify: nil,
+            challenge: TestFixtures.challengeAction()
+        )
+        let threeDsHandler = MockRyftThreeDsActionHandler()
+        let delegate = RyftRequiredActionDelegateTester()
+        let component = createComponent(delegate: delegate, threeDsActionHandler: threeDsHandler)
+
+        component.handle(action: action, presentingViewController: presenter)
+
+        XCTAssertFalse(threeDsHandler.createTransactionInvoked)
+        XCTAssertNil(delegate.result)
+        drainMainQueue()
+        assertFailure(delegate.result, is: .unsupportedRequiredAction(.challenge))
+    }
+
+    func test_handle_shouldNotifyDelegateFailure_whenActionTypeIsUnknown() {
+        let action = PaymentSessionRequiredAction(type: .unknown, identify: nil)
+        let threeDsHandler = MockRyftThreeDsActionHandler()
+        let delegate = RyftRequiredActionDelegateTester()
+        let component = createComponent(delegate: delegate, threeDsActionHandler: threeDsHandler)
+
+        component.handle(action: action, presentingViewController: presenter)
+
+        XCTAssertFalse(threeDsHandler.createTransactionInvoked)
+        XCTAssertNil(delegate.result)
+        drainMainQueue()
+        assertFailure(delegate.result, is: .unsupportedRequiredAction(.unknown))
+    }
+
+    func test_handle_shouldNotifyDelegateFailure_whenIdentifyActionHasNoIdentifyDetails() {
+        let action = PaymentSessionRequiredAction(type: .identify, identify: nil)
+        let threeDsHandler = MockRyftThreeDsActionHandler()
+        let delegate = RyftRequiredActionDelegateTester()
+        let component = createComponent(delegate: delegate, threeDsActionHandler: threeDsHandler)
+
+        component.handle(action: action, presentingViewController: presenter)
+
+        XCTAssertFalse(threeDsHandler.createTransactionInvoked)
+        XCTAssertNil(delegate.result)
+        drainMainQueue()
+        assertFailure(delegate.result, is: .missingIdentifyDetails)
+    }
+
     func test_handle_shouldNotifyDelegateFailure_whenCreateTransactionFails() {
         let action = TestFixtures.identifyAction()
         let threeDsHandler = MockRyftThreeDsActionHandler()
@@ -172,6 +218,28 @@ final class RyftRequiredActionComponentTests: XCTestCase {
         component.handle(action: action, presentingViewController: presenter)
 
         XCTAssertTrue(threeDsHandler.cleanupInvoked)
+    }
+
+    private func drainMainQueue() {
+        let drained = expectation(description: "main queue drained")
+        DispatchQueue.main.async {
+            drained.fulfill()
+        }
+        wait(for: [drained], timeout: 1.0)
+    }
+
+    private func assertFailure(
+        _ result: RyftRequiredActionResult?,
+        is expected: RyftRequiredActionError,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        switch result {
+        case .failure(let error):
+            XCTAssertEqual(error as? RyftRequiredActionError, expected, file: file, line: line)
+        default:
+            XCTFail("expected .failure but got \(String(describing: result))", file: file, line: line)
+        }
     }
 
     private func createComponent(

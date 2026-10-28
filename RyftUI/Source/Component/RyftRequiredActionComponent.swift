@@ -15,16 +15,28 @@ public final class RyftRequiredActionComponent {
 
         public let clientSecret: String
         public let accountId: String?
-        public let returnUrl: URL?
+
+        @available(*, deprecated, message: "returnUrl is ignored, no return URL is needed for native 3DS")
+        public let returnUrl: URL? = nil
 
         public init(
             clientSecret: String,
-            accountId: String? = nil,
-            returnUrl: URL? = nil
+            accountId: String? = nil
         ) {
             self.clientSecret = clientSecret
             self.accountId = accountId
-            self.returnUrl = returnUrl
+        }
+
+        @available(
+            *, deprecated,
+            message: "returnUrl is ignored for native 3DS. Use init(clientSecret:accountId:) instead"
+        )
+        public init(
+            clientSecret: String,
+            accountId: String? = nil,
+            returnUrl: URL?
+        ) {
+            self.init(clientSecret: clientSecret, accountId: accountId)
         }
     }
 
@@ -61,11 +73,19 @@ public final class RyftRequiredActionComponent {
     ) {
         switch action.type {
         case .identify:
-            handle(action: action.identify!, presentingViewController: presentingViewController)
+            guard let identifyAction = action.identify else {
+                notifyFailureAsync(RyftRequiredActionError.missingIdentifyDetails)
+                return
+            }
+            handle(action: identifyAction, presentingViewController: presentingViewController)
         default:
-            assertionFailure(
-                "The requiredAction type '\(action.type)' is unsupported on iOS"
-            )
+            notifyFailureAsync(RyftRequiredActionError.unsupportedRequiredAction(action.type))
+        }
+    }
+
+    private func notifyFailureAsync(_ error: RyftRequiredActionError) {
+        DispatchQueue.main.async { [weak self] in
+            self?.delegate?.onRequiredActionHandled(result: .failure(error))
         }
     }
 
@@ -165,4 +185,9 @@ public final class RyftRequiredActionComponent {
             }
         }
     }
+}
+
+public enum RyftRequiredActionError: Error, Equatable {
+    case unsupportedRequiredAction(PaymentSessionActionType)
+    case missingIdentifyDetails
 }
