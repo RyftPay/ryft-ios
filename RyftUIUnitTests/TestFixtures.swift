@@ -36,9 +36,9 @@ final class TestFixtures {
         )
     }
 
-    static func challengeAction() -> ChallengeAction {
+    static func challengeAction(threeDSServerTransactionId: String = "3ds_txn_123") -> ChallengeAction {
         ChallengeAction(
-            threeDSServerTransactionId: "3ds_txn_123",
+            threeDSServerTransactionId: threeDSServerTransactionId,
             acsTransactionId: "acs_txn_123",
             acsRefNumber: "acs_ref_123",
             acsSignedContent: "acs_signed_content"

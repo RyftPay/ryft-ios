@@ -98,20 +98,18 @@ final class RyftRequiredActionChallengeTests: XCTestCase {
         assertSuccess(delegate.result, status: .captured)
     }
 
-    func test_handle_shouldNotifyDelegateChallengeError_whenReportingChallengeFailureFailsAndSessionHasNotProcessed() {
+    func test_handle_shouldNotifyDelegateChallengeError_whenReportingChallengeFailureFailsAndChallengeStaysPending() {
         let apiClient = MockRyftApiClient()
         apiClient.continuePaymentResults = [
             .success(TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())),
             .failure(HttpError.general(message: "API response [continue-payment]"))
         ]
-        apiClient.getPaymentSessionResults = [
-            .success(TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction()))
-        ]
+        apiClient.paymentSession = TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())
         let delegate = RyftRequiredActionDelegateTester()
 
         handleFailedChallenge(apiClient: apiClient, delegate: delegate)
 
-        XCTAssertEqual(apiClient.getPaymentSessionRequestCount, 1)
+        XCTAssertEqual(apiClient.getPaymentSessionRequestCount, 15)
         assertChallengeFailure(delegate.result)
     }
 
@@ -195,14 +193,65 @@ final class RyftRequiredActionChallengeTests: XCTestCase {
         assertSuccess(delegate.result, status: .captured)
     }
 
-    func test_handle_shouldNotifyDelegateFailure_whenChallengeResultCallFailsAndSessionHasNotProcessed() {
+    func test_handle_shouldCheckSessionWithChallengeSessionId_whenChallengeResultCallFails() {
         let apiClient = MockRyftApiClient()
         apiClient.continuePaymentResults = [
             .success(TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())),
             .failure(HttpError.general(message: "API response [continue-payment]"))
         ]
         apiClient.getPaymentSessionResults = [
-            .success(TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction()))
+            .success(TestFixtures.paymentSession(status: .captured))
+        ]
+        let delegate = RyftRequiredActionDelegateTester()
+
+        handleCompletedChallenge(apiClient: apiClient, delegate: delegate)
+
+        XCTAssertEqual(apiClient.getPaymentSessionIds, ["ps_01FCTS1XMKH9FF43CAFA4CXT3P"])
+    }
+
+    func test_handle_shouldNotifyDelegateWithProcessedSession_whenChallengeIsStillPendingOnFirstSessionCheck() {
+        let apiClient = MockRyftApiClient()
+        apiClient.continuePaymentResults = [
+            .success(TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())),
+            .failure(HttpError.general(message: "API response [continue-payment]"))
+        ]
+        apiClient.getPaymentSessionResults = [
+            .success(TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())),
+            .success(TestFixtures.paymentSession(status: .captured))
+        ]
+        let delegate = RyftRequiredActionDelegateTester()
+
+        handleCompletedChallenge(apiClient: apiClient, delegate: delegate)
+
+        XCTAssertEqual(apiClient.getPaymentSessionRequestCount, 2)
+        assertSuccess(delegate.result, status: .captured)
+    }
+
+    func test_handle_shouldNotifyDelegateFailure_whenChallengeResultCallFailsAndChallengeStaysPending() {
+        let apiClient = MockRyftApiClient()
+        apiClient.continuePaymentResults = [
+            .success(TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())),
+            .failure(HttpError.general(message: "API response [continue-payment]"))
+        ]
+        apiClient.paymentSession = TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())
+        let delegate = RyftRequiredActionDelegateTester()
+
+        handleCompletedChallenge(apiClient: apiClient, delegate: delegate)
+
+        XCTAssertEqual(apiClient.getPaymentSessionRequestCount, 15)
+        assertHttpFailure(delegate.result)
+    }
+
+    func test_handle_shouldNotKeepCheckingSession_whenSessionHasDifferentRequiredAction() {
+        let apiClient = MockRyftApiClient()
+        apiClient.continuePaymentResults = [
+            .success(TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())),
+            .failure(HttpError.general(message: "API response [continue-payment]"))
+        ]
+        apiClient.getPaymentSessionResults = [
+            .success(TestFixtures.paymentSession(
+                challengeAction: TestFixtures.challengeAction(threeDSServerTransactionId: "3ds_txn_456")
+            ))
         ]
         let delegate = RyftRequiredActionDelegateTester()
 

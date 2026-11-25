@@ -12,6 +12,7 @@ final class MockRyftApiClient: RyftApiClient {
     var continuePaymentResults: [Result<PaymentSession, HttpError>] = []
     var didCallGetPaymentSession = false
     var getPaymentSessionRequestCount = 0
+    var getPaymentSessionIds: [String] = []
     var getPaymentSessionResults: [Result<PaymentSession, HttpError>] = []
 
     func attemptPayment(
@@ -56,6 +57,7 @@ final class MockRyftApiClient: RyftApiClient {
         self.accountId = accountId
         didCallGetPaymentSession = true
         getPaymentSessionRequestCount += 1
+        getPaymentSessionIds.append(id)
         guard getPaymentSessionResults.isEmpty else {
             completion(getPaymentSessionResults.removeFirst())
             return

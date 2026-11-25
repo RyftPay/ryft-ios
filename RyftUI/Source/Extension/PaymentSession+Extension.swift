@@ -11,6 +11,10 @@ extension PaymentSession {
         status == .unknown && lastError == nil && requiredAction == nil
     }
 
+    func hasPendingChallenge(threeDSServerTransactionId: String) -> Bool {
+        lastError == nil && requiredAction?.challenge?.threeDSServerTransactionId == threeDSServerTransactionId
+    }
+
     func toPKPayment(
         merchantIdentifier: String,
         merchantCountry: String,

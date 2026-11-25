@@ -63,6 +63,29 @@ final class PaymentSessionExtensionTests: XCTestCase {
         XCTAssertFalse(paymentSession.isAwaitingOutcome)
     }
 
+    func test_hasPendingChallenge_shouldReturnTrue_whenSameChallengeIsPendingWithNoError() {
+        let paymentSession = TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())
+        XCTAssertTrue(paymentSession.hasPendingChallenge(threeDSServerTransactionId: "3ds_txn_123"))
+    }
+
+    func test_hasPendingChallenge_shouldReturnFalse_whenChallengeIsDifferent() {
+        let paymentSession = TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())
+        XCTAssertFalse(paymentSession.hasPendingChallenge(threeDSServerTransactionId: "3ds_txn_456"))
+    }
+
+    func test_hasPendingChallenge_shouldReturnFalse_whenSessionHasLastError() {
+        let paymentSession = TestFixtures.paymentSession(
+            challengeAction: TestFixtures.challengeAction(),
+            lastError: .threeDSecureAuthenticationFailure
+        )
+        XCTAssertFalse(paymentSession.hasPendingChallenge(threeDSServerTransactionId: "3ds_txn_123"))
+    }
+
+    func test_hasPendingChallenge_shouldReturnFalse_whenSessionHasNoRequiredAction() {
+        let paymentSession = TestFixtures.paymentSession(status: .captured)
+        XCTAssertFalse(paymentSession.hasPendingChallenge(threeDSServerTransactionId: "3ds_txn_123"))
+    }
+
     private func assertResult(
         _ result: PKPaymentRequest,
         _ paymentSession: PaymentSession
