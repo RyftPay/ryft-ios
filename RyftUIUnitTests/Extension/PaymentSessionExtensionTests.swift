@@ -28,6 +28,41 @@ final class PaymentSessionExtensionTests: XCTestCase {
         XCTAssertEqual(result.requiredShippingContactFields, [])
     }
 
+    func test_hasSucceeded_shouldReturnTrue_whenStatusIsApprovedOrCaptured() {
+        XCTAssertTrue(TestFixtures.paymentSession(status: .approved).hasSucceeded)
+        XCTAssertTrue(TestFixtures.paymentSession(status: .captured).hasSucceeded)
+    }
+
+    func test_hasSucceeded_shouldReturnFalse_whenStatusIsNotApprovedOrCaptured() {
+        XCTAssertFalse(TestFixtures.paymentSession(status: .pendingPayment).hasSucceeded)
+        XCTAssertFalse(TestFixtures.paymentSession(status: .pendingAction).hasSucceeded)
+        XCTAssertFalse(TestFixtures.paymentSession(status: .unknown).hasSucceeded)
+    }
+
+    func test_isAwaitingOutcome_shouldReturnTrue_whenStatusIsUnknownWithNoErrorOrAction() {
+        XCTAssertTrue(TestFixtures.paymentSession(status: .unknown).isAwaitingOutcome)
+    }
+
+    func test_isAwaitingOutcome_shouldReturnFalse_whenStatusIsKnown() {
+        XCTAssertFalse(TestFixtures.paymentSession(status: .approved).isAwaitingOutcome)
+        XCTAssertFalse(TestFixtures.paymentSession(status: .captured).isAwaitingOutcome)
+        XCTAssertFalse(TestFixtures.paymentSession(status: .pendingPayment).isAwaitingOutcome)
+        XCTAssertFalse(TestFixtures.paymentSession(status: .pendingAction).isAwaitingOutcome)
+    }
+
+    func test_isAwaitingOutcome_shouldReturnFalse_whenSessionHasLastError() {
+        let paymentSession = TestFixtures.paymentSession(status: .unknown, lastError: .gatewayReject)
+        XCTAssertFalse(paymentSession.isAwaitingOutcome)
+    }
+
+    func test_isAwaitingOutcome_shouldReturnFalse_whenSessionHasRequiredAction() {
+        let paymentSession = TestFixtures.paymentSession(
+            challengeAction: TestFixtures.challengeAction(),
+            status: .unknown
+        )
+        XCTAssertFalse(paymentSession.isAwaitingOutcome)
+    }
+
     private func assertResult(
         _ result: PKPaymentRequest,
         _ paymentSession: PaymentSession

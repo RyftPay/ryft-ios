@@ -40,9 +40,14 @@ public final class RyftRequiredActionComponent {
         }
     }
 
+    internal static let defaultSessionCheckInterval: TimeInterval = 2
+    private static let sessionCheckAttempts = 15
+    private static let unknownTransactionStatus = "U"
+
     private let config: Configuration
     private let apiClient: RyftApiClient
     private let threeDsActionHandler: RyftThreeDsActionHandler
+    private let sessionCheckInterval: TimeInterval
 
     public weak var delegate: RyftRequiredActionDelegate?
 
@@ -55,16 +60,19 @@ public final class RyftRequiredActionComponent {
         self.threeDsActionHandler = DefaultRyftThreeDsActionHandler(
             environment: apiClient.environment
         )
+        self.sessionCheckInterval = RyftRequiredActionComponent.defaultSessionCheckInterval
     }
 
     internal init(
         config: Configuration,
         apiClient: RyftApiClient,
-        threeDsActionHandler: RyftThreeDsActionHandler
+        threeDsActionHandler: RyftThreeDsActionHandler,
+        sessionCheckInterval: TimeInterval = RyftRequiredActionComponent.defaultSessionCheckInterval
     ) {
         self.config = config
         self.apiClient = apiClient
         self.threeDsActionHandler = threeDsActionHandler
+        self.sessionCheckInterval = sessionCheckInterval
     }
 
     public func handle(
@@ -157,15 +165,19 @@ public final class RyftRequiredActionComponent {
                 self?.threeDsActionHandler.cleanup()
                 self?.delegate?.onRequiredActionHandled(result: .cancelled)
             case .failed(let error):
-                self?.threeDsActionHandler.cleanup()
-                self?.delegate?.onRequiredActionHandled(result: .failure(error))
+                self?.continueWithChallengeResult(
+                    transactionStatus: RyftRequiredActionComponent.unknownTransactionStatus,
+                    threeDSServerTransactionId: challengeAction.threeDSServerTransactionId,
+                    challengeError: error
+                )
             }
         }
     }
 
     private func continueWithChallengeResult(
         transactionStatus: String,
-        threeDSServerTransactionId: String
+        threeDSServerTransactionId: String,
+        challengeError: Error? = nil
     ) {
         let request = ContinuePaymentRequest.fromChallengeResult(
             clientSecret: config.clientSecret,
@@ -179,10 +191,58 @@ public final class RyftRequiredActionComponent {
             self?.threeDsActionHandler.cleanup()
             switch result {
             case .success(let session):
-                self?.delegate?.onRequiredActionHandled(result: .success(session))
+                self?.handleChallengeResultSession(session)
             case .failure(let error):
-                self?.delegate?.onRequiredActionHandled(result: .failure(error))
+                self?.checkSession(
+                    fallback: .failure(challengeError ?? error),
+                    attemptsLeft: RyftRequiredActionComponent.sessionCheckAttempts
+                )
             }
+        }
+    }
+
+    private func handleChallengeResultSession(_ session: PaymentSession) {
+        guard session.isAwaitingOutcome else {
+            delegate?.onRequiredActionHandled(result: .success(session))
+            return
+        }
+        checkSessionLater(
+            fallback: .success(session),
+            attemptsLeft: RyftRequiredActionComponent.sessionCheckAttempts
+        )
+    }
+
+    private func checkSessionLater(
+        fallback: RyftRequiredActionResult,
+        attemptsLeft: Int
+    ) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + sessionCheckInterval) { [weak self] in
+            self?.checkSession(fallback: fallback, attemptsLeft: attemptsLeft)
+        }
+    }
+
+    private func checkSession(
+        fallback: RyftRequiredActionResult,
+        attemptsLeft: Int
+    ) {
+        apiClient.getPaymentSession(
+            id: String(config.clientSecret.components(separatedBy: "_secret_")[0]),
+            clientSecret: config.clientSecret,
+            accountId: config.accountId
+        ) { [weak self] result in
+            guard case .success(let session) = result else {
+                self?.delegate?.onRequiredActionHandled(result: fallback)
+                return
+            }
+            if session.isAwaitingOutcome && attemptsLeft > 1 {
+                self?.checkSessionLater(fallback: fallback, attemptsLeft: attemptsLeft - 1)
+                return
+            }
+            if case .failure = fallback, !session.hasSucceeded {
+                self?.delegate?.onRequiredActionHandled(result: fallback)
+                return
+            }
+            self?.delegate?.onRequiredActionHandled(result: .success(session))
         }
     }
 }

@@ -3,6 +3,14 @@ import PassKit
 
 extension PaymentSession {
 
+    var hasSucceeded: Bool {
+        status == .approved || status == .captured
+    }
+
+    var isAwaitingOutcome: Bool {
+        status == .unknown && lastError == nil && requiredAction == nil
+    }
+
     func toPKPayment(
         merchantIdentifier: String,
         merchantCountry: String,
