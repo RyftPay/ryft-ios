@@ -314,6 +314,84 @@ final class RyftRequiredActionChallengeTests: XCTestCase {
         assertSuccess(delegate.result, status: .captured)
     }
 
+    func test_handle_shouldKeepCheckingSession_whenChallengeResultResponseStillHasPendingChallenge() {
+        let apiClient = MockRyftApiClient()
+        apiClient.continuePaymentResults = [
+            .success(TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())),
+            .success(TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction()))
+        ]
+        apiClient.getPaymentSessionResults = [
+            .success(TestFixtures.paymentSession(status: .captured))
+        ]
+        let delegate = RyftRequiredActionDelegateTester()
+
+        handleCompletedChallenge(apiClient: apiClient, delegate: delegate)
+
+        XCTAssertEqual(apiClient.getPaymentSessionRequestCount, 1)
+        assertSuccess(delegate.result, status: .captured)
+    }
+
+    func test_handle_shouldNotCheckSession_whenChallengeResultResponseHasDifferentRequiredAction() {
+        let apiClient = MockRyftApiClient()
+        apiClient.continuePaymentResults = [
+            .success(TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())),
+            .success(TestFixtures.paymentSession(
+                challengeAction: TestFixtures.challengeAction(threeDSServerTransactionId: "3ds_txn_456")
+            ))
+        ]
+        let delegate = RyftRequiredActionDelegateTester()
+
+        handleCompletedChallenge(apiClient: apiClient, delegate: delegate)
+
+        XCTAssertEqual(apiClient.getPaymentSessionRequestCount, 0)
+        assertSuccess(delegate.result, status: .pendingAction)
+    }
+
+    func test_handle_shouldNotifyDelegateWithDeclinedSession_whenChallengeResultCallFailsAndSessionHasSettled() {
+        let apiClient = MockRyftApiClient()
+        apiClient.continuePaymentResults = [
+            .success(TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())),
+            .failure(HttpError.general(message: "API response [continue-payment]"))
+        ]
+        apiClient.getPaymentSessionResults = [
+            .success(TestFixtures.paymentSession(
+                status: .pendingPayment,
+                lastError: .threeDSecureAuthenticationFailure
+            ))
+        ]
+        let delegate = RyftRequiredActionDelegateTester()
+
+        handleCompletedChallenge(apiClient: apiClient, delegate: delegate)
+
+        XCTAssertEqual(apiClient.getPaymentSessionRequestCount, 1)
+        switch delegate.result {
+        case .success(let session):
+            XCTAssertEqual(session.lastError, .threeDSecureAuthenticationFailure)
+        default:
+            XCTFail("expected .success but got \(String(describing: delegate.result))")
+        }
+    }
+
+    func test_handle_shouldNotifyDelegateChallengeError_whenReportingChallengeFailureFailsAndSessionHasSettled() {
+        let apiClient = MockRyftApiClient()
+        apiClient.continuePaymentResults = [
+            .success(TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())),
+            .failure(HttpError.general(message: "API response [continue-payment]"))
+        ]
+        apiClient.getPaymentSessionResults = [
+            .success(TestFixtures.paymentSession(
+                status: .pendingPayment,
+                lastError: .threeDSecureAuthenticationFailure
+            ))
+        ]
+        let delegate = RyftRequiredActionDelegateTester()
+
+        handleFailedChallenge(apiClient: apiClient, delegate: delegate)
+
+        XCTAssertEqual(apiClient.getPaymentSessionRequestCount, 1)
+        assertChallengeFailure(delegate.result)
+    }
+
     func test_handle_shouldNotifyDelegateWithFailedSession_whenSessionSettlesWithLastError() {
         let apiClient = MockRyftApiClient()
         apiClient.continuePaymentResults = [

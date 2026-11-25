@@ -44,6 +44,7 @@ public final class RyftRequiredActionComponent {
         let paymentSessionId: String
         let threeDSServerTransactionId: String
         let fallback: RyftRequiredActionResult
+        let returnsDeclinedSession: Bool
         var attemptsLeft: Int
     }
 
@@ -212,6 +213,7 @@ public final class RyftRequiredActionComponent {
                     paymentSessionId: paymentSessionId,
                     threeDSServerTransactionId: threeDSServerTransactionId,
                     fallback: .failure(challengeError ?? error),
+                    returnsDeclinedSession: challengeError == nil,
                     attemptsLeft: RyftRequiredActionComponent.sessionCheckAttempts
                 ))
             }
@@ -222,7 +224,8 @@ public final class RyftRequiredActionComponent {
         _ session: PaymentSession,
         threeDSServerTransactionId: String
     ) {
-        guard session.isAwaitingOutcome else {
+        guard session.isAwaitingOutcome
+            || session.hasPendingChallenge(threeDSServerTransactionId: threeDSServerTransactionId) else {
             delegate?.onRequiredActionHandled(result: .success(session))
             return
         }
@@ -230,6 +233,7 @@ public final class RyftRequiredActionComponent {
             paymentSessionId: session.id,
             threeDSServerTransactionId: threeDSServerTransactionId,
             fallback: .success(session),
+            returnsDeclinedSession: true,
             attemptsLeft: RyftRequiredActionComponent.sessionCheckAttempts
         ))
     }
@@ -258,7 +262,9 @@ public final class RyftRequiredActionComponent {
                 self?.checkSessionLater(nextCheck)
                 return
             }
-            if case .failure = check.fallback, !session.hasSucceeded {
+            let hasSettled = session.hasSucceeded
+                || (check.returnsDeclinedSession && session.lastError != nil)
+            if case .failure = check.fallback, !hasSettled {
                 self?.delegate?.onRequiredActionHandled(result: check.fallback)
                 return
             }
