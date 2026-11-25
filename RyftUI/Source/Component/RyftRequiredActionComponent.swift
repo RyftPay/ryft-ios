@@ -43,7 +43,7 @@ public final class RyftRequiredActionComponent {
     private struct SessionCheck {
         let paymentSessionId: String
         let threeDSServerTransactionId: String
-        let fallback: RyftRequiredActionResult
+        var fallback: RyftRequiredActionResult
         let returnsDeclinedSession: Bool
         var attemptsLeft: Int
     }
@@ -259,6 +259,9 @@ public final class RyftRequiredActionComponent {
             if isPending && check.attemptsLeft > 1 {
                 var nextCheck = check
                 nextCheck.attemptsLeft -= 1
+                if case .success = check.fallback {
+                    nextCheck.fallback = .success(session)
+                }
                 self?.checkSessionLater(nextCheck)
                 return
             }
