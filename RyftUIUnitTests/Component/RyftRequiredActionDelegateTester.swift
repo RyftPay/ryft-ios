@@ -5,6 +5,7 @@ final class RyftRequiredActionDelegateTester: RyftRequiredActionDelegate {
 
     var inProgress = false
     var result: RyftRequiredActionResult?
+    var onHandled: (() -> Void)?
 
     func onRequiredActionInProgress() {
         inProgress = true
@@ -12,5 +13,6 @@ final class RyftRequiredActionDelegateTester: RyftRequiredActionDelegate {
 
     func onRequiredActionHandled(result: RyftRequiredActionResult) {
         self.result = result
+        onHandled?()
     }
 }

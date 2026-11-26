@@ -4,7 +4,9 @@ final class TestFixtures {
 
     static func paymentSession(
         customerEmail: String? = nil,
-        challengeAction: ChallengeAction? = nil
+        challengeAction: ChallengeAction? = nil,
+        status: PaymentSessionStatus? = nil,
+        lastError: PaymentSessionError? = nil
     ) -> PaymentSession {
         let requiredAction = challengeAction.map {
             PaymentSessionRequiredAction(type: .challenge, identify: nil, challenge: $0)
@@ -13,9 +15,9 @@ final class TestFixtures {
             id: "ps_01FCTS1XMKH9FF43CAFA4CXT3P",
             amount: 350,
             currency: "GBP",
-            status: requiredAction == nil ? .approved : .pendingAction,
+            status: status ?? (requiredAction == nil ? .approved : .pendingAction),
             customerEmail: customerEmail,
-            lastError: nil,
+            lastError: lastError,
             requiredAction: requiredAction,
             returnUrl: "https://ryftpay.com",
             createdTimestamp: 123
@@ -34,9 +36,9 @@ final class TestFixtures {
         )
     }
 
-    static func challengeAction() -> ChallengeAction {
+    static func challengeAction(threeDSServerTransactionId: String = "3ds_txn_123") -> ChallengeAction {
         ChallengeAction(
-            threeDSServerTransactionId: "3ds_txn_123",
+            threeDSServerTransactionId: threeDSServerTransactionId,
             acsTransactionId: "acs_txn_123",
             acsRefNumber: "acs_ref_123",
             acsSignedContent: "acs_signed_content"
