@@ -249,7 +249,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
             config: RyftRequiredActionComponent.Configuration(
                 clientSecret: config.clientSecret,
                 accountId: config.accountId,
-                oobReturnUrl: config.oobReturnUrl
+                threeDSRequestorAppUrl: config.threeDSRequestorAppUrl
             ),
             apiClient: apiClient
         )

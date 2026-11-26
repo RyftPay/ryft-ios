@@ -83,7 +83,7 @@ RyftDropInConfiguration(
 
 #### Optional: Returning to your app after a banking app approval
 
-Some banks ask the customer to approve a 3DS challenge in their banking app. To let the banking app send the customer back to your app once they have approved, supply `oobReturnUrl` when initialising the `RyftDropInConfiguration`:
+Some banks ask the customer to approve a 3DS challenge in their banking app. To let the banking app send the customer back to your app once they have approved, supply `threeDSRequestorAppUrl` (the EMV 3DS "3DS Requestor App URL") when initialising the `RyftDropInConfiguration`:
 
 **Example:**
 
@@ -91,11 +91,11 @@ Some banks ask the customer to approve a 3DS challenge in their banking app. To 
 RyftDropInConfiguration(
     clientSecret: "<the client secret of the payment-session>",
     accountId: "nil | <the Id of the sub-account you are taking payments for>",
-    oobReturnUrl: URL(string: "https://your-domain.com/oob-return")
+    threeDSRequestorAppUrl: URL(string: "https://your-domain.com/3ds-return")
 )
 ```
 
-- `oobReturnUrl` must be a [universal link](https://developer.apple.com/documentation/xcode/supporting-universal-links-in-your-app) for your app: an `https` URL on a domain that is listed in your app's Associated Domains (`applinks:your-domain.com`) and hosts an `apple-app-site-association` file.
+- `threeDSRequestorAppUrl` must be a [universal link](https://developer.apple.com/documentation/xcode/supporting-universal-links-in-your-app) for your app: an `https` URL on a domain that is listed in your app's Associated Domains (`applinks:your-domain.com`) and hosts an `apple-app-site-association` file.
 - Supply the base URL only. The SDK adds a `transID` query parameter before passing it to the 3DS challenge.
 - The challenge continues when your app returns to the foreground.
 - Without it the challenge still completes, but the customer has to switch back to your app themselves. Whether the link is used is up to the customer's bank.
@@ -331,7 +331,7 @@ private func initialiseRyftRequiredActionComponent() {
 }
 ```
 
-`RyftRequiredActionComponent.Configuration` also accepts the optional `oobReturnUrl` described in [Returning to your app after a banking app approval](#optional-returning-to-your-app-after-a-banking-app-approval).
+`RyftRequiredActionComponent.Configuration` also accepts the optional `threeDSRequestorAppUrl` described in [Returning to your app after a banking app approval](#optional-returning-to-your-app-after-a-banking-app-approval).
 
 #### Implementing the RyftRequiredActionComponentDelegate
 

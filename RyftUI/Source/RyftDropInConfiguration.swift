@@ -7,7 +7,7 @@ public struct RyftDropInConfiguration {
     public let display: RyftDropInDisplayConfig?
     public let applePay: RyftApplePayConfig?
     public let fieldCollection: RyftDropInFieldCollectionConfig?
-    public let oobReturnUrl: URL?
+    public let threeDSRequestorAppUrl: URL?
 
     public init(
         clientSecret: String,
@@ -15,14 +15,14 @@ public struct RyftDropInConfiguration {
         display: RyftDropInDisplayConfig? = nil,
         applePay: RyftApplePayConfig? = nil,
         fieldCollection: RyftDropInFieldCollectionConfig? = nil,
-        oobReturnUrl: URL? = nil
+        threeDSRequestorAppUrl: URL? = nil
     ) {
         self.clientSecret = clientSecret
         self.accountId = accountId
         self.display = display
         self.applePay = applePay
         self.fieldCollection = fieldCollection
-        self.oobReturnUrl = oobReturnUrl
+        self.threeDSRequestorAppUrl = threeDSRequestorAppUrl
     }
 
     public struct RyftDropInDisplayConfig {

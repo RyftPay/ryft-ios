@@ -27,7 +27,7 @@ public protocol RyftThreeDsActionHandler {
 public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
 
     private let environment: RyftEnvironment
-    private let oobReturnUrl: URL?
+    private let threeDSRequestorAppUrl: URL?
     private static let challengeTimeoutInMinutes = 10
     private static let requestorAppUrlTransactionIdParameter = "transID"
 
@@ -37,9 +37,9 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
     private var challengeStatusReceiver: ChallengeStatusReceiver?
     private var challengeView: ViewControllerChallengeView?
 
-    public init(environment: RyftEnvironment, oobReturnUrl: URL? = nil) {
+    public init(environment: RyftEnvironment, threeDSRequestorAppUrl: URL? = nil) {
         self.environment = environment
-        self.oobReturnUrl = oobReturnUrl
+        self.threeDSRequestorAppUrl = threeDSRequestorAppUrl
     }
 
     public func createTransaction(
@@ -180,9 +180,9 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
     }
 
     internal func toRequestorAppUrl(sdkTransactionId: String?) -> String? {
-        guard let oobReturnUrl = oobReturnUrl,
+        guard let threeDSRequestorAppUrl = threeDSRequestorAppUrl,
               let sdkTransactionId = sdkTransactionId,
-              var components = URLComponents(url: oobReturnUrl, resolvingAgainstBaseURL: false) else {
+              var components = URLComponents(url: threeDSRequestorAppUrl, resolvingAgainstBaseURL: false) else {
             return nil
         }
         components.queryItems = (components.queryItems ?? []) + [

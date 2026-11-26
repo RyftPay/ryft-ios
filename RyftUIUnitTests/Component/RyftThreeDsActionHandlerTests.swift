@@ -76,32 +76,32 @@ final class RyftThreeDsActionHandlerTests: XCTestCase {
         waitForExpectations(timeout: 2)
     }
 
-    func test_toRequestorAppUrl_shouldReturnNil_whenOobReturnUrlIsNotConfigured() {
+    func test_toRequestorAppUrl_shouldReturnNil_whenThreeDSRequestorAppUrlIsNotConfigured() {
         let handler = DefaultRyftThreeDsActionHandler(environment: .sandbox)
 
         XCTAssertNil(handler.toRequestorAppUrl(sdkTransactionId: "sdk-transaction-id"))
     }
 
-    func test_toRequestorAppUrl_shouldAppendSdkTransactionId_whenOobReturnUrlIsConfigured() {
+    func test_toRequestorAppUrl_shouldAppendSdkTransactionId_whenThreeDSRequestorAppUrlIsConfigured() {
         let handler = DefaultRyftThreeDsActionHandler(
             environment: .sandbox,
-            oobReturnUrl: URL(string: "https://merchant.com/oob-return")
+            threeDSRequestorAppUrl: URL(string: "https://merchant.com/3ds-return")
         )
 
         XCTAssertEqual(
-            "https://merchant.com/oob-return?transID=sdk-transaction-id",
+            "https://merchant.com/3ds-return?transID=sdk-transaction-id",
             handler.toRequestorAppUrl(sdkTransactionId: "sdk-transaction-id")
         )
     }
 
-    func test_toRequestorAppUrl_shouldKeepExistingQuery_whenOobReturnUrlHasQuery() {
+    func test_toRequestorAppUrl_shouldKeepExistingQuery_whenThreeDSRequestorAppUrlHasQuery() {
         let handler = DefaultRyftThreeDsActionHandler(
             environment: .sandbox,
-            oobReturnUrl: URL(string: "https://merchant.com/oob-return?source=bank")
+            threeDSRequestorAppUrl: URL(string: "https://merchant.com/3ds-return?source=bank")
         )
 
         XCTAssertEqual(
-            "https://merchant.com/oob-return?source=bank&transID=sdk-transaction-id",
+            "https://merchant.com/3ds-return?source=bank&transID=sdk-transaction-id",
             handler.toRequestorAppUrl(sdkTransactionId: "sdk-transaction-id")
         )
     }
@@ -109,7 +109,7 @@ final class RyftThreeDsActionHandlerTests: XCTestCase {
     func test_toRequestorAppUrl_shouldReturnNil_whenSdkTransactionIdIsMissing() {
         let handler = DefaultRyftThreeDsActionHandler(
             environment: .sandbox,
-            oobReturnUrl: URL(string: "https://merchant.com/oob-return")
+            threeDSRequestorAppUrl: URL(string: "https://merchant.com/3ds-return")
         )
 
         XCTAssertNil(handler.toRequestorAppUrl(sdkTransactionId: nil))
