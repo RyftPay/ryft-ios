@@ -60,9 +60,9 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
         }
         let service = ThreeDS2SDK()
         do {
-            try service.initialize(configParameters: configParams, uiCustomization: nil) { [weak self] success in
-                guard success else {
-                    mainThreadCompletion(.failure(RavelinThreeDsError.initialisationFailed))
+            try service.initialize(configParameters: configParams, uiCustomization: nil) { [weak self] result in
+                if case .failure(let error) = result {
+                    mainThreadCompletion(.failure(error))
                     return
                 }
                 guard let self = self else {

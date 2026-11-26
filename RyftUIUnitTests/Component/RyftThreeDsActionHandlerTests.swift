@@ -54,4 +54,25 @@ final class RyftThreeDsActionHandlerTests: XCTestCase {
             XCTAssertEqual("diners", scheme)
         }
     }
+
+    func test_createTransaction_shouldCompleteWithFailure_whenRavelinPublicKeyIsEmpty() {
+        let handler = DefaultRyftThreeDsActionHandler(environment: .sandbox)
+        let completed = expectation(description: "completion called")
+
+        handler.createTransaction(
+            action: RequiredActionIdentifyApp(
+                ravelinPublicKey: "",
+                protocolVersion: "2.2.0",
+                scheme: "visa",
+                paymentMethodId: "pmt_123"
+            )
+        ) { result in
+            if case .success = result {
+                XCTFail("expected failure but got \(result)")
+            }
+            completed.fulfill()
+        }
+
+        waitForExpectations(timeout: 2)
+    }
 }
