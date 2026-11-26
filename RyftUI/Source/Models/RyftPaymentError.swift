@@ -30,7 +30,6 @@ public struct RyftPaymentError {
         if let threeDsError = error as? RyftThreeDsError {
             return RyftPaymentError(
                 paymentSessionError: paymentSessionError,
-                errorCode: threeDsError.errorCode,
                 errorMessage: threeDsError.errorDescription ?? threeDsError.type.rawValue,
                 threeDsError: threeDsError
             )

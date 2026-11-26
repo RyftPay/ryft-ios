@@ -155,12 +155,57 @@ final class RyftRequiredActionChallengeTests: XCTestCase {
             .success(TestFixtures.paymentSession(lastError: .threeDSecureAuthenticationFailure))
         ]
         let delegate = RyftRequiredActionDelegateTester()
-        var challengeErrorWhenHandled: Error?
+        var challengeErrorWhenHandled: RyftThreeDsError?
         delegate.onHandled = { challengeErrorWhenHandled = delegate.challengeError }
 
         handleFailedChallenge(apiClient: apiClient, delegate: delegate)
 
-        XCTAssertEqual(challengeErrorWhenHandled as? RyftThreeDsError, RyftThreeDsError(type: .timeout))
+        XCTAssertEqual(challengeErrorWhenHandled, RyftThreeDsError(type: .timeout))
+    }
+
+    func test_handle_shouldNotifyDelegateOfRuntimeError_whenChallengeFailsWithOtherError() {
+        let apiClient = MockRyftApiClient()
+        apiClient.continuePaymentResults = [
+            .success(TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())),
+            .success(TestFixtures.paymentSession(lastError: .threeDSecureAuthenticationFailure))
+        ]
+        let delegate = RyftRequiredActionDelegateTester()
+
+        handleChallenge(
+            result: .failed(error: RyftRequiredActionError.missingIdentifyDetails),
+            apiClient: apiClient,
+            delegate: delegate
+        )
+
+        XCTAssertEqual(
+            delegate.challengeError,
+            RyftThreeDsError(type: .runtimeError, errorDescription: "missingIdentifyDetails")
+        )
+    }
+
+    func test_handle_shouldNotifyDelegateFailureWithRuntimeError_whenOtherErrorCannotBeReported() {
+        let apiClient = MockRyftApiClient()
+        apiClient.continuePaymentResults = [
+            .success(TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())),
+            .failure(HttpError.general(message: "API response [continue-payment]"))
+        ]
+        apiClient.getPaymentSessionResults = [.failure(HttpError.general(message: "API response [get]"))]
+        let delegate = RyftRequiredActionDelegateTester()
+
+        handleChallenge(
+            result: .failed(error: RyftRequiredActionError.missingIdentifyDetails),
+            apiClient: apiClient,
+            delegate: delegate
+        )
+
+        guard case .failure(let error)? = delegate.result else {
+            XCTFail("expected .failure but got \(String(describing: delegate.result))")
+            return
+        }
+        XCTAssertEqual(
+            error as? RyftThreeDsError,
+            RyftThreeDsError(type: .runtimeError, errorDescription: "missingIdentifyDetails")
+        )
     }
 
     func test_handle_shouldNotNotifyDelegateOfChallengeError_whenChallengeCompletes() {

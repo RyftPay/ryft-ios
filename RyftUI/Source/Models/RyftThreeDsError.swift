@@ -28,6 +28,13 @@ public struct RyftThreeDsError: Error, Equatable {
         self.errorDetail = RyftThreeDsError.nilIfBlank(errorDetail)
     }
 
+    static func from(challengeError: Error) -> RyftThreeDsError {
+        if let threeDsError = challengeError as? RyftThreeDsError {
+            return threeDsError
+        }
+        return RyftThreeDsError(type: .runtimeError, errorDescription: String(describing: challengeError))
+    }
+
     private static func nilIfBlank(_ value: String?) -> String? {
         guard let value = value,
               !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {

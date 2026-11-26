@@ -86,7 +86,7 @@ final class RyftPaymentErrorTests: XCTestCase {
         XCTAssertNil(error.threeDsError)
     }
 
-    func test_from_shouldReturnThreeDsErrorDetails_whenErrorIsThreeDsError() {
+    func test_from_shouldReturnThreeDsErrorWithoutErrorCode_whenErrorIsThreeDsError() {
         let threeDsError = RyftThreeDsError(
             type: .protocolError,
             errorCode: "201",
@@ -99,9 +99,10 @@ final class RyftPaymentErrorTests: XCTestCase {
 
         XCTAssertEqual(error.paymentSessionError, .unknown)
         XCTAssertEqual(error.displayError, unknownDisplayError)
-        XCTAssertEqual(error.errorCode, "201")
+        XCTAssertNil(error.errorCode)
         XCTAssertEqual(error.errorMessage, "Required element missing")
         XCTAssertEqual(error.threeDsError, threeDsError)
+        XCTAssertEqual(error.threeDsError?.errorCode, "201")
     }
 
     func test_from_shouldReturnThreeDsErrorType_whenThreeDsErrorHasNoDescription() {

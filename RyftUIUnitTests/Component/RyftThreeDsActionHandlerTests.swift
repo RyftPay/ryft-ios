@@ -1,4 +1,5 @@
 import XCTest
+import UIKit
 import RyftCore
 
 @testable import RyftUI
@@ -70,6 +71,28 @@ final class RyftThreeDsActionHandlerTests: XCTestCase {
             if case .success = result {
                 XCTFail("expected failure but got \(result)")
             }
+            completed.fulfill()
+        }
+
+        waitForExpectations(timeout: 2)
+    }
+
+    func test_doChallenge_shouldCompleteWithRuntimeError_whenTransactionIsMissing() {
+        let handler = DefaultRyftThreeDsActionHandler(environment: .sandbox)
+        let completed = expectation(description: "completion called")
+
+        handler.doChallenge(
+            action: TestFixtures.challengeAction(),
+            presentingViewController: UIViewController()
+        ) { result in
+            guard case .failed(let error) = result else {
+                XCTFail("expected .failed but got \(result)")
+                return
+            }
+            XCTAssertEqual(
+                error as? RyftThreeDsError,
+                RyftThreeDsError(type: .runtimeError, errorDescription: "missingTransaction")
+            )
             completed.fulfill()
         }
 

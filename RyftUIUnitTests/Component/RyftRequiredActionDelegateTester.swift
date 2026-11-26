@@ -5,7 +5,7 @@ final class RyftRequiredActionDelegateTester: RyftRequiredActionDelegate {
 
     var inProgress = false
     var result: RyftRequiredActionResult?
-    var challengeError: Error?
+    var challengeError: RyftThreeDsError?
     var onHandled: (() -> Void)?
 
     func onRequiredActionInProgress() {
@@ -17,7 +17,7 @@ final class RyftRequiredActionDelegateTester: RyftRequiredActionDelegate {
         onHandled?()
     }
 
-    func onRequiredActionChallengeFailed(error: Error) {
+    func onRequiredActionChallengeFailed(error: RyftThreeDsError) {
         challengeError = error
     }
 }

@@ -73,6 +73,18 @@ final class RyftThreeDsErrorTests: XCTestCase {
         XCTAssertEqual(error, RyftThreeDsError(type: .runtimeError, errorDescription: "Timed Out"))
     }
 
+    func test_from_shouldReturnSameError_whenChallengeErrorIsThreeDsError() {
+        let threeDsError = RyftThreeDsError(type: .protocolError, errorCode: "201")
+
+        XCTAssertEqual(RyftThreeDsError.from(challengeError: threeDsError), threeDsError)
+    }
+
+    func test_from_shouldReturnRuntimeErrorWithDescription_whenChallengeErrorIsNotThreeDsError() {
+        let error = RyftThreeDsError.from(challengeError: RavelinThreeDsError.missingTransaction)
+
+        XCTAssertEqual(error, RyftThreeDsError(type: .runtimeError, errorDescription: "missingTransaction"))
+    }
+
     private func protocolErrorEvent(
         errorCode: String,
         errorComponent: String,

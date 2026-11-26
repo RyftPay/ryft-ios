@@ -8,12 +8,12 @@ public protocol RyftRequiredActionDelegate: AnyObject {
 
     func onRequiredActionHandled(result: RyftRequiredActionResult)
 
-    func onRequiredActionChallengeFailed(error: Error)
+    func onRequiredActionChallengeFailed(error: RyftThreeDsError)
 }
 
 public extension RyftRequiredActionDelegate {
 
-    func onRequiredActionChallengeFailed(error: Error) {}
+    func onRequiredActionChallengeFailed(error: RyftThreeDsError) {}
 }
 
 public final class RyftRequiredActionComponent {
@@ -183,12 +183,13 @@ public final class RyftRequiredActionComponent {
                 self?.threeDsActionHandler.cleanup()
                 self?.delegate?.onRequiredActionHandled(result: .cancelled)
             case .failed(let error):
-                self?.delegate?.onRequiredActionChallengeFailed(error: error)
+                let threeDsError = RyftThreeDsError.from(challengeError: error)
+                self?.delegate?.onRequiredActionChallengeFailed(error: threeDsError)
                 self?.continueWithChallengeResult(
                     transactionStatus: RyftRequiredActionComponent.unknownTransactionStatus,
                     threeDSServerTransactionId: challengeAction.threeDSServerTransactionId,
                     paymentSessionId: paymentSessionId,
-                    challengeError: error
+                    challengeError: threeDsError
                 )
             }
         }

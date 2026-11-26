@@ -23,7 +23,7 @@ final class RyftDropInChallengeErrorTests: XCTestCase {
         let error = failedError(delegate.result)
         XCTAssertEqual(error?.paymentSessionError, .threeDSecureAuthenticationFailure)
         XCTAssertEqual(error?.threeDsError, threeDsError)
-        XCTAssertEqual(error?.errorCode, "201")
+        XCTAssertNil(error?.errorCode)
         XCTAssertEqual(error?.errorMessage, "Required element missing")
     }
 

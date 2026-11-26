@@ -25,7 +25,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
     private var applePayComponent: RyftApplePayComponent?
 
     private var delegateInvoked = false
-    private var challengeError: Error?
+    private var challengeError: RyftThreeDsError?
 
     internal lazy var requiredActionComponent: RyftRequiredActionComponent = {
        let component = createRequiredActionComponent()
@@ -628,7 +628,7 @@ extension RyftDropInPaymentViewController: RyftRequiredActionDelegate {
         }
     }
 
-    public func onRequiredActionChallengeFailed(error: Error) {
+    public func onRequiredActionChallengeFailed(error: RyftThreeDsError) {
         challengeError = error
     }
 }

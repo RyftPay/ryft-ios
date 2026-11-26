@@ -133,7 +133,9 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
             DispatchQueue.main.async { completion(result) }
         }
         guard let transaction = transaction else {
-            mainThreadCompletion(.failed(error: RavelinThreeDsError.missingTransaction))
+            mainThreadCompletion(.failed(
+                error: RyftThreeDsError.from(challengeError: RavelinThreeDsError.missingTransaction)
+            ))
             return
         }
         let challengeParams = ChallengeParameters()
@@ -156,7 +158,7 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
                 challengeView: challengeView
             )
         } catch {
-            mainThreadCompletion(.failed(error: error))
+            mainThreadCompletion(.failed(error: RyftThreeDsError.from(challengeError: error)))
         }
     }
 
