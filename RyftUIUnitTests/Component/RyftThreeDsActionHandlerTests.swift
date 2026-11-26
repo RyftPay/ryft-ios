@@ -75,4 +75,43 @@ final class RyftThreeDsActionHandlerTests: XCTestCase {
 
         waitForExpectations(timeout: 2)
     }
+
+    func test_toRequestorAppUrl_shouldReturnNil_whenOobReturnUrlIsNotConfigured() {
+        let handler = DefaultRyftThreeDsActionHandler(environment: .sandbox)
+
+        XCTAssertNil(handler.toRequestorAppUrl(sdkTransactionId: "sdk-transaction-id"))
+    }
+
+    func test_toRequestorAppUrl_shouldAppendSdkTransactionId_whenOobReturnUrlIsConfigured() {
+        let handler = DefaultRyftThreeDsActionHandler(
+            environment: .sandbox,
+            oobReturnUrl: URL(string: "https://merchant.com/oob-return")
+        )
+
+        XCTAssertEqual(
+            "https://merchant.com/oob-return?transID=sdk-transaction-id",
+            handler.toRequestorAppUrl(sdkTransactionId: "sdk-transaction-id")
+        )
+    }
+
+    func test_toRequestorAppUrl_shouldKeepExistingQuery_whenOobReturnUrlHasQuery() {
+        let handler = DefaultRyftThreeDsActionHandler(
+            environment: .sandbox,
+            oobReturnUrl: URL(string: "https://merchant.com/oob-return?source=bank")
+        )
+
+        XCTAssertEqual(
+            "https://merchant.com/oob-return?source=bank&transID=sdk-transaction-id",
+            handler.toRequestorAppUrl(sdkTransactionId: "sdk-transaction-id")
+        )
+    }
+
+    func test_toRequestorAppUrl_shouldReturnNil_whenSdkTransactionIdIsMissing() {
+        let handler = DefaultRyftThreeDsActionHandler(
+            environment: .sandbox,
+            oobReturnUrl: URL(string: "https://merchant.com/oob-return")
+        )
+
+        XCTAssertNil(handler.toRequestorAppUrl(sdkTransactionId: nil))
+    }
 }

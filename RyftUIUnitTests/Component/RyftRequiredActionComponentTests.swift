@@ -242,6 +242,38 @@ final class RyftRequiredActionComponentTests: XCTestCase {
         }
     }
 
+    func test_configuration_shouldDefaultOobReturnUrlToNil() {
+        let config = RyftRequiredActionComponent.Configuration(clientSecret: "secret")
+
+        XCTAssertNil(config.oobReturnUrl)
+    }
+
+    func test_configuration_shouldKeepOobReturnUrl_whenProvided() {
+        let oobReturnUrl = URL(string: "https://merchant.com/oob-return")
+
+        let config = RyftRequiredActionComponent.Configuration(
+            clientSecret: "secret",
+            accountId: "ac_123",
+            oobReturnUrl: oobReturnUrl
+        )
+
+        XCTAssertEqual(oobReturnUrl, config.oobReturnUrl)
+    }
+
+    func test_dropInConfiguration_shouldDefaultOobReturnUrlToNil() {
+        let config = RyftDropInConfiguration(clientSecret: "secret")
+
+        XCTAssertNil(config.oobReturnUrl)
+    }
+
+    func test_dropInConfiguration_shouldKeepOobReturnUrl_whenProvided() {
+        let oobReturnUrl = URL(string: "https://merchant.com/oob-return")
+
+        let config = RyftDropInConfiguration(clientSecret: "secret", oobReturnUrl: oobReturnUrl)
+
+        XCTAssertEqual(oobReturnUrl, config.oobReturnUrl)
+    }
+
     private func createComponent(
         apiClient: RyftApiClient = MockRyftApiClient(),
         delegate: RyftRequiredActionDelegate? = nil,
