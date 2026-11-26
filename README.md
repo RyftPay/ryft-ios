@@ -126,11 +126,12 @@ func onPaymentResult(result: RyftPaymentResult) {
 }
 ```
 
-When the failure came from an API error response, `error` also carries:
-- `errorCode` - the API error code (e.g. `bad_request`)
-- `errorMessage` - the API error message, intended for logging and debugging. It is in English and not suitable to show to customers, so keep displaying `displayError`
+When the failure is not a card decline, `error` also carries details for logging and debugging:
+- `errorCode` - the API error code (e.g. `bad_request`), or the EMV 3DS error code when a 3DS challenge failed
+- `errorMessage` - the API error message, or a description of the error when it did not come from the API (for example a network error or a failed 3DS challenge). It is in English and not suitable to show to customers, so keep displaying `displayError`
+- `threeDsError` - set when a 3DS challenge failed in the 3DS SDK. It carries the `type` (`timeout`, `protocolError` or `runtimeError`) and, when the 3DS SDK provides them, the EMV 3DS `errorCode`, `errorComponent`, `errorDescription` and `errorDetail`
 
-Both are `nil` for card declines. Show `displayError` to your customer; it covers every decline reason. If you need to act on a specific reason, check `error.paymentSessionError` and include an `@unknown default` case, as new reasons may be added in future releases.
+All three are `nil` for card declines. Show `displayError` to your customer; it covers every decline reason. If you need to act on a specific reason, check `error.paymentSessionError` and include an `@unknown default` case, as new reasons may be added in future releases.
 
 
 ## Adding Apple Pay
@@ -337,6 +338,16 @@ public func onRequiredActionHandled(result: Result<PaymentSession, Error>) {
     case failure(let error):
         // handle the error (try again/show an alert)
         print("error handling required action \(error)")
+}
+```
+
+You can also implement the optional `onRequiredActionChallengeFailed` to receive the error when a 3DS challenge fails in the 3DS SDK. It is called before `onRequiredActionHandled`, which still delivers the final result:
+
+```swift
+public func onRequiredActionChallengeFailed(error: Error) {
+    if let threeDsError = error as? RyftThreeDsError {
+        // log threeDsError.type, errorCode, errorComponent, errorDescription and errorDetail
+    }
 }
 ```
 

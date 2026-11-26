@@ -25,6 +25,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
     private var applePayComponent: RyftApplePayComponent?
 
     private var delegateInvoked = false
+    private var challengeError: Error?
 
     internal lazy var requiredActionComponent: RyftRequiredActionComponent = {
        let component = createRequiredActionComponent()
@@ -230,6 +231,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
     }
 
     public func handleRequiredAction(_ action: PaymentSessionRequiredAction) {
+        challengeError = nil
         requiredActionComponent.handle(action: action, presentingViewController: self)
     }
 
@@ -301,8 +303,10 @@ public final class RyftDropInPaymentViewController: UIViewController {
             }
             if let lastError = paymentSession.lastError {
                 paymentResult = .failed(
-                    error: RyftPaymentError(
-                        paymentSessionError: lastError)
+                    error: RyftPaymentError.from(
+                        error: challengeError,
+                        paymentSessionError: lastError
+                    )
                 )
             }
         case .failure(let error):
@@ -622,5 +626,9 @@ extension RyftDropInPaymentViewController: RyftRequiredActionDelegate {
         case .failure(let error):
             handlePaymentResult(.failure(error))
         }
+    }
+
+    public func onRequiredActionChallengeFailed(error: Error) {
+        challengeError = error
     }
 }
