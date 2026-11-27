@@ -284,7 +284,10 @@ public final class RyftDropInPaymentViewController: UIViewController {
         }
     }
 
-    private func handlePaymentResult(_ result: Result<PaymentSession, Error>) {
+    private func handlePaymentResult(
+        _ result: Result<PaymentSession, Error>,
+        challengeError: RyftThreeDsError? = nil
+    ) {
         var paymentResult = RyftPaymentResult.failed(
             error: RyftPaymentError(paymentSessionError: .unknown)
         )
@@ -618,9 +621,11 @@ extension RyftDropInPaymentViewController: RyftRequiredActionDelegate {
     }
 
     public func onRequiredActionHandled(result: RyftRequiredActionResult) {
+        let challengeError = self.challengeError
+        self.challengeError = nil
         switch result {
         case .success(let session):
-            handlePaymentResult(.success(session))
+            handlePaymentResult(.success(session), challengeError: challengeError)
         case .cancelled:
             notifyDelegateAndDismiss(with: .cancelled, shouldDismiss: true)
         case .failure(let error):

@@ -65,6 +65,22 @@ final class RyftDropInChallengeErrorTests: XCTestCase {
         }
     }
 
+    func test_onRequiredActionHandled_shouldNotReuseChallengeError_whenLaterResultHasLastError() {
+        let delegate = DropInDelegateTester()
+        let dropIn = createDropIn(delegate: delegate)
+
+        dropIn.onRequiredActionChallengeFailed(error: threeDsError)
+        dropIn.onRequiredActionHandled(result: .success(
+            TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())
+        ))
+        dropIn.onRequiredActionHandled(result: .success(failedSession()))
+
+        let error = failedError(delegate.result)
+        XCTAssertEqual(error?.paymentSessionError, .threeDSecureAuthenticationFailure)
+        XCTAssertNil(error?.threeDsError)
+        XCTAssertNil(error?.errorMessage)
+    }
+
     private func failedSession() -> PaymentSession {
         TestFixtures.paymentSession(
             status: .pendingPayment,
