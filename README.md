@@ -303,15 +303,17 @@ private func initialiseRyftRequiredActionComponent() {
         clientSecret: config.clientSecret,
         accountId: "nil | <the Id of the sub-account you are taking payments for>"
     )
-    // create a fresh instance each time
-    let component = RyftRequiredActionComponent(
+    // assign a fresh instance each time
+    self.requiredActionComponent = RyftRequiredActionComponent(
         config: config,
         apiClient: DefaultRyftApiClient(publicApiKey: "your public API key")
     )
-    component.delegate = self
-    component.handle(action: action, presentingViewController: self)
+    self.requiredActionComponent?.delegate = self
+    self.requiredActionComponent?.handle(action: action, presentingViewController: self)
 }
 ```
+
+Keep a strong reference to the component, for example in a property as above, until `onRequiredActionHandled` is called. If it is released earlier, the required action stops without a result.
 
 #### Implementing the RyftRequiredActionComponentDelegate
 
@@ -341,7 +343,7 @@ public func onRequiredActionHandled(result: Result<PaymentSession, Error>) {
 }
 ```
 
-You can also implement the optional `onRequiredActionChallengeFailed` to receive the error when a 3DS challenge fails in the 3DS SDK. It is called before `onRequiredActionHandled`, which still delivers the final result:
+You can also implement the optional `onRequiredActionChallengeFailed` to receive the error when a 3DS challenge fails in the 3DS SDK. It is called before `onRequiredActionHandled`, which still delivers the final result. Do not start another required action from this callback; wait for `onRequiredActionHandled`:
 
 ```swift
 public func onRequiredActionChallengeFailed(error: RyftThreeDsError) {
