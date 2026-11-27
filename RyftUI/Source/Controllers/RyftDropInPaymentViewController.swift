@@ -289,7 +289,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
         challengeError: RyftThreeDsError? = nil
     ) {
         var paymentResult = RyftPaymentResult.failed(
-            error: RyftPaymentError(paymentSessionError: .unknown)
+            error: RyftPaymentError.from(error: challengeError)
         )
         var shouldDismiss = true
         switch result {

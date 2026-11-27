@@ -81,6 +81,31 @@ final class RyftDropInChallengeErrorTests: XCTestCase {
         XCTAssertNil(error?.errorMessage)
     }
 
+    func test_onRequiredActionHandled_shouldReturnThreeDsError_whenChallengeFailedAndSessionIsUnresolved() {
+        let delegate = DropInDelegateTester()
+        let dropIn = createDropIn(delegate: delegate)
+
+        dropIn.onRequiredActionChallengeFailed(error: threeDsError)
+        dropIn.onRequiredActionHandled(result: .success(TestFixtures.paymentSession(status: .unknown)))
+
+        let error = failedError(delegate.result)
+        XCTAssertEqual(error?.paymentSessionError, .unknown)
+        XCTAssertEqual(error?.threeDsError, threeDsError)
+        XCTAssertEqual(error?.errorMessage, "Required element missing")
+    }
+
+    func test_onRequiredActionHandled_shouldReturnUnknownWithoutDetails_whenSessionIsUnresolvedAndNoChallengeFailed() {
+        let delegate = DropInDelegateTester()
+        let dropIn = createDropIn(delegate: delegate)
+
+        dropIn.onRequiredActionHandled(result: .success(TestFixtures.paymentSession(status: .unknown)))
+
+        let error = failedError(delegate.result)
+        XCTAssertEqual(error?.paymentSessionError, .unknown)
+        XCTAssertNil(error?.threeDsError)
+        XCTAssertNil(error?.errorMessage)
+    }
+
     private func failedSession() -> PaymentSession {
         TestFixtures.paymentSession(
             status: .pendingPayment,
