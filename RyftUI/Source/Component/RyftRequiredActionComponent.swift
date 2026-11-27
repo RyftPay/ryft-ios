@@ -209,20 +209,19 @@ public final class RyftRequiredActionComponent {
             transactionStatus: transactionStatus,
             threeDSServerTransactionId: threeDSServerTransactionId
         )
-        let threeDsActionHandler = self.threeDsActionHandler
         apiClient.continuePayment(
             request: request,
             accountId: config.accountId
-        ) { [weak self] result in
-            threeDsActionHandler.cleanup()
+        ) { result in
+            self.threeDsActionHandler.cleanup()
             switch result {
             case .success(let session):
-                self?.handleChallengeResultSession(
+                self.handleChallengeResultSession(
                     session,
                     threeDSServerTransactionId: threeDSServerTransactionId
                 )
             case .failure(let error):
-                self?.checkSession(SessionCheck(
+                self.checkSession(SessionCheck(
                     paymentSessionId: paymentSessionId,
                     threeDSServerTransactionId: threeDSServerTransactionId,
                     fallback: .failure(challengeError ?? error),

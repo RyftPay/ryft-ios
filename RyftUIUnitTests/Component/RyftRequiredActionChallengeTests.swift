@@ -239,55 +239,6 @@ final class RyftRequiredActionChallengeTests: XCTestCase {
         XCTAssertNil(delegate.challengeError)
     }
 
-    func test_handle_shouldReportChallengeFailure_whenComponentIsReleasedInChallengeFailedCallback() {
-        let threeDsHandler = DeferredChallengeHandler()
-        let apiClient = MockRyftApiClient()
-        apiClient.continuePaymentResults = [
-            .success(TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())),
-            .success(TestFixtures.paymentSession(lastError: .threeDSecureAuthenticationFailure))
-        ]
-        let delegate = RyftRequiredActionDelegateTester()
-        var component: RyftRequiredActionComponent? = createComponent(
-            apiClient: apiClient,
-            delegate: delegate,
-            threeDsActionHandler: threeDsHandler
-        )
-        delegate.onChallengeFailed = { component = nil }
-        component?.handle(action: TestFixtures.identifyAction(), presentingViewController: presenter)
-
-        threeDsHandler.completeChallenge(.failed(error: RyftThreeDsError(type: .timeout)))
-
-        XCTAssertEqual(apiClient.continuePaymentRequests.count, 2)
-        XCTAssertTrue(threeDsHandler.cleanupInvoked)
-    }
-
-    func test_handle_shouldCleanUp_whenComponentIsReleasedBeforeChallengeFailureReportCompletes() {
-        let threeDsHandler = DeferredChallengeHandler()
-        let apiClient = MockRyftApiClient()
-        apiClient.continuePaymentResults = [
-            .success(TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())),
-            .success(TestFixtures.paymentSession(lastError: .threeDSecureAuthenticationFailure))
-        ]
-        apiClient.deferContinuePaymentFromRequest = 2
-        let delegate = RyftRequiredActionDelegateTester()
-        var component: RyftRequiredActionComponent? = createComponent(
-            apiClient: apiClient,
-            delegate: delegate,
-            threeDsActionHandler: threeDsHandler
-        )
-        weak var releasedComponent = component
-        delegate.onChallengeFailed = { component = nil }
-        component?.handle(action: TestFixtures.identifyAction(), presentingViewController: presenter)
-
-        threeDsHandler.completeChallenge(.failed(error: RyftThreeDsError(type: .timeout)))
-
-        XCTAssertNil(releasedComponent)
-        XCTAssertEqual(apiClient.continuePaymentRequests.count, 2)
-        XCTAssertFalse(threeDsHandler.cleanupInvoked)
-        apiClient.completeDeferredContinuePayments()
-        XCTAssertTrue(threeDsHandler.cleanupInvoked)
-    }
-
     func test_handle_shouldCallCleanup_whenChallengeFails() {
         let threeDsHandler = MockRyftThreeDsActionHandler()
         threeDsHandler.transactionResult = .success(TestFixtures.threeDsTransactionParams())
@@ -441,34 +392,5 @@ final class RyftRequiredActionChallengeTests: XCTestCase {
         )
         component.delegate = delegate
         return component
-    }
-}
-
-private final class DeferredChallengeHandler: RyftThreeDsActionHandler {
-
-    private var challengeCompletion: ((ThreeDsChallengeResult) -> Void)?
-    private(set) var cleanupInvoked = false
-
-    func createTransaction(
-        action: RequiredActionIdentifyApp,
-        completion: @escaping (Result<ThreeDsTransactionParams, Error>) -> Void
-    ) {
-        completion(.success(TestFixtures.threeDsTransactionParams()))
-    }
-
-    func doChallenge(
-        action: ChallengeAction,
-        presentingViewController: UIViewController,
-        completion: @escaping (ThreeDsChallengeResult) -> Void
-    ) {
-        challengeCompletion = completion
-    }
-
-    func completeChallenge(_ result: ThreeDsChallengeResult) {
-        challengeCompletion?(result)
-    }
-
-    func cleanup() {
-        cleanupInvoked = true
     }
 }

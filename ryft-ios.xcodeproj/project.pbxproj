@@ -25,6 +25,7 @@
 		0B2789352902D64D006E21F6 /* RyftRequiredActionComponentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2789342902D64D006E21F6 /* RyftRequiredActionComponentTests.swift */; };
 		AD484C97695719978CB9B2D1 /* RyftRequiredActionChallengeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EAB792481ACBA05ECBFB85 /* RyftRequiredActionChallengeTests.swift */; };
 		BD238E705B315680773A0AA8 /* RyftRequiredActionSessionCheckTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4BD12F3B6606F681374FE8 /* RyftRequiredActionSessionCheckTests.swift */; };
+		D06DC1B49F13C0EC616660EE /* RyftRequiredActionLifetimeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B03C93D658C2EDD5A3330F5 /* RyftRequiredActionLifetimeTests.swift */; };
 		E62F9F2ACEF7294545DEAA9B /* RyftDropInChallengeErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1620EBF7F591E8507F8187D9 /* RyftDropInChallengeErrorTests.swift */; };
 		30DE231AB8F94496B46A66F5 /* RyftThreeDsActionHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC598D0ADEE14B81A57D4227 /* RyftThreeDsActionHandlerTests.swift */; };
 		0B2789372902D9D2006E21F6 /* MockRyftThreeDsActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B2789362902D9D2006E21F6 /* MockRyftThreeDsActionHandler.swift */; };
@@ -244,6 +245,7 @@
 		0B2789342902D64D006E21F6 /* RyftRequiredActionComponentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftRequiredActionComponentTests.swift; sourceTree = "<group>"; };
 		97EAB792481ACBA05ECBFB85 /* RyftRequiredActionChallengeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftRequiredActionChallengeTests.swift; sourceTree = "<group>"; };
 		6A4BD12F3B6606F681374FE8 /* RyftRequiredActionSessionCheckTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftRequiredActionSessionCheckTests.swift; sourceTree = "<group>"; };
+		2B03C93D658C2EDD5A3330F5 /* RyftRequiredActionLifetimeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftRequiredActionLifetimeTests.swift; sourceTree = "<group>"; };
 		1620EBF7F591E8507F8187D9 /* RyftDropInChallengeErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftDropInChallengeErrorTests.swift; sourceTree = "<group>"; };
 		EC598D0ADEE14B81A57D4227 /* RyftThreeDsActionHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RyftThreeDsActionHandlerTests.swift; sourceTree = "<group>"; };
 		0B2789362902D9D2006E21F6 /* MockRyftThreeDsActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRyftThreeDsActionHandler.swift; sourceTree = "<group>"; };
@@ -724,6 +726,7 @@
 				0B2789342902D64D006E21F6 /* RyftRequiredActionComponentTests.swift */,
 				97EAB792481ACBA05ECBFB85 /* RyftRequiredActionChallengeTests.swift */,
 				6A4BD12F3B6606F681374FE8 /* RyftRequiredActionSessionCheckTests.swift */,
+				2B03C93D658C2EDD5A3330F5 /* RyftRequiredActionLifetimeTests.swift */,
 				1620EBF7F591E8507F8187D9 /* RyftDropInChallengeErrorTests.swift */,
 				0B2789382902E24B006E21F6 /* RyftRequiredActionDelegateTester.swift */,
 				EC598D0ADEE14B81A57D4227 /* RyftThreeDsActionHandlerTests.swift */,
@@ -1348,6 +1351,7 @@
 				0B2789352902D64D006E21F6 /* RyftRequiredActionComponentTests.swift in Sources */,
 				AD484C97695719978CB9B2D1 /* RyftRequiredActionChallengeTests.swift in Sources */,
 				BD238E705B315680773A0AA8 /* RyftRequiredActionSessionCheckTests.swift in Sources */,
+				D06DC1B49F13C0EC616660EE /* RyftRequiredActionLifetimeTests.swift in Sources */,
 				E62F9F2ACEF7294545DEAA9B /* RyftDropInChallengeErrorTests.swift in Sources */,
 				30DE231AB8F94496B46A66F5 /* RyftThreeDsActionHandlerTests.swift in Sources */,
 			);
