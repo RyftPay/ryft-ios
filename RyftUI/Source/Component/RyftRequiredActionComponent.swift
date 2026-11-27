@@ -22,16 +22,19 @@ public final class RyftRequiredActionComponent {
 
         public let clientSecret: String
         public let accountId: String?
+        public let threeDSRequestorAppUrl: URL?
 
         @available(*, deprecated, message: "returnUrl is ignored, no return URL is needed for native 3DS")
         public let returnUrl: URL? = nil
 
         public init(
             clientSecret: String,
-            accountId: String? = nil
+            accountId: String? = nil,
+            threeDSRequestorAppUrl: URL? = nil
         ) {
             self.clientSecret = clientSecret
             self.accountId = accountId
+            self.threeDSRequestorAppUrl = threeDSRequestorAppUrl
         }
 
         @available(
@@ -73,7 +76,8 @@ public final class RyftRequiredActionComponent {
         self.config = config
         self.apiClient = apiClient
         self.threeDsActionHandler = DefaultRyftThreeDsActionHandler(
-            environment: apiClient.environment
+            environment: apiClient.environment,
+            threeDSRequestorAppUrl: config.threeDSRequestorAppUrl
         )
         self.sessionCheckInterval = RyftRequiredActionComponent.defaultSessionCheckInterval
     }
