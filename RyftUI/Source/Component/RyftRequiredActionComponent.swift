@@ -183,9 +183,12 @@ public final class RyftRequiredActionComponent {
                 self?.threeDsActionHandler.cleanup()
                 self?.delegate?.onRequiredActionHandled(result: .cancelled)
             case .failed(let error):
+                guard let self = self else {
+                    return
+                }
                 let threeDsError = RyftThreeDsError.from(challengeError: error)
-                self?.delegate?.onRequiredActionChallengeFailed(error: threeDsError)
-                self?.continueWithChallengeResult(
+                self.delegate?.onRequiredActionChallengeFailed(error: threeDsError)
+                self.continueWithChallengeResult(
                     transactionStatus: RyftRequiredActionComponent.unknownTransactionStatus,
                     threeDSServerTransactionId: challengeAction.threeDSServerTransactionId,
                     paymentSessionId: paymentSessionId,
@@ -206,11 +209,12 @@ public final class RyftRequiredActionComponent {
             transactionStatus: transactionStatus,
             threeDSServerTransactionId: threeDSServerTransactionId
         )
+        let threeDsActionHandler = self.threeDsActionHandler
         apiClient.continuePayment(
             request: request,
             accountId: config.accountId
         ) { [weak self] result in
-            self?.threeDsActionHandler.cleanup()
+            threeDsActionHandler.cleanup()
             switch result {
             case .success(let session):
                 self?.handleChallengeResultSession(
