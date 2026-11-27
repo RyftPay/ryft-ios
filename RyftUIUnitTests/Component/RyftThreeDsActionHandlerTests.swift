@@ -75,4 +75,43 @@ final class RyftThreeDsActionHandlerTests: XCTestCase {
 
         waitForExpectations(timeout: 2)
     }
+
+    func test_toRequestorAppUrl_shouldReturnNil_whenThreeDSRequestorAppUrlIsNotConfigured() {
+        let handler = DefaultRyftThreeDsActionHandler(environment: .sandbox)
+
+        XCTAssertNil(handler.toRequestorAppUrl(sdkTransactionId: "sdk-transaction-id"))
+    }
+
+    func test_toRequestorAppUrl_shouldAppendSdkTransactionId_whenThreeDSRequestorAppUrlIsConfigured() {
+        let handler = DefaultRyftThreeDsActionHandler(
+            environment: .sandbox,
+            threeDSRequestorAppUrl: URL(string: "https://merchant.com/3ds-return")
+        )
+
+        XCTAssertEqual(
+            "https://merchant.com/3ds-return?transID=sdk-transaction-id",
+            handler.toRequestorAppUrl(sdkTransactionId: "sdk-transaction-id")
+        )
+    }
+
+    func test_toRequestorAppUrl_shouldKeepExistingQuery_whenThreeDSRequestorAppUrlHasQuery() {
+        let handler = DefaultRyftThreeDsActionHandler(
+            environment: .sandbox,
+            threeDSRequestorAppUrl: URL(string: "https://merchant.com/3ds-return?source=bank")
+        )
+
+        XCTAssertEqual(
+            "https://merchant.com/3ds-return?source=bank&transID=sdk-transaction-id",
+            handler.toRequestorAppUrl(sdkTransactionId: "sdk-transaction-id")
+        )
+    }
+
+    func test_toRequestorAppUrl_shouldReturnNil_whenSdkTransactionIdIsMissing() {
+        let handler = DefaultRyftThreeDsActionHandler(
+            environment: .sandbox,
+            threeDSRequestorAppUrl: URL(string: "https://merchant.com/3ds-return")
+        )
+
+        XCTAssertNil(handler.toRequestorAppUrl(sdkTransactionId: nil))
+    }
 }

@@ -27,15 +27,19 @@ public protocol RyftThreeDsActionHandler {
 public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
 
     private let environment: RyftEnvironment
+    private let threeDSRequestorAppUrl: URL?
     private static let challengeTimeoutInMinutes = 10
+    private static let requestorAppUrlTransactionIdParameter = "transID"
 
     private var threeDsService: ThreeDS2SDK?
     private var transaction: (any Transaction)?
+    private var sdkTransactionId: String?
     private var challengeStatusReceiver: ChallengeStatusReceiver?
     private var challengeView: ViewControllerChallengeView?
 
-    public init(environment: RyftEnvironment) {
+    public init(environment: RyftEnvironment, threeDSRequestorAppUrl: URL? = nil) {
         self.environment = environment
+        self.threeDSRequestorAppUrl = threeDSRequestorAppUrl
     }
 
     public func createTransaction(
@@ -111,8 +115,10 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
             self.transaction = transaction
             do {
                 let params = try transaction.getAuthenticationRequestParameters()
+                let sdkTransactionId = params.getSDKTransactionID()
+                self.sdkTransactionId = sdkTransactionId
                 completion(.success(ThreeDsTransactionParams(
-                    sdkTransactionId: params.getSDKTransactionID(),
+                    sdkTransactionId: sdkTransactionId,
                     sdkApplicationId: params.getSDKAppID(),
                     sdkEncryptedData: params.getDeviceData(),
                     sdkEphemeralPublicKey: params.getSDKEphemeralPublicKey(),
@@ -141,6 +147,9 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
         challengeParams.setAcsTransactionID(action.acsTransactionId)
         challengeParams.setAcsRefNumber(action.acsRefNumber)
         challengeParams.setAcsSignedContent(action.acsSignedContent)
+        if let requestorAppUrl = toRequestorAppUrl(sdkTransactionId: sdkTransactionId) {
+            challengeParams.setThreeDSRequestorAppURL(requestorAppUrl)
+        }
         let receiver = ChallengeStatusReceiver(
             threeDSServerTransactionId: action.threeDSServerTransactionId,
             completion: mainThreadCompletion
@@ -164,9 +173,25 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
         try? transaction?.close()
         try? threeDsService?.cleanup()
         transaction = nil
+        sdkTransactionId = nil
         threeDsService = nil
         challengeStatusReceiver = nil
         challengeView = nil
+    }
+
+    internal func toRequestorAppUrl(sdkTransactionId: String?) -> String? {
+        guard let threeDSRequestorAppUrl = threeDSRequestorAppUrl,
+              let sdkTransactionId = sdkTransactionId,
+              var components = URLComponents(url: threeDSRequestorAppUrl, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+        components.queryItems = (components.queryItems ?? []) + [
+            URLQueryItem(
+                name: DefaultRyftThreeDsActionHandler.requestorAppUrlTransactionIdParameter,
+                value: sdkTransactionId
+            )
+        ]
+        return components.url?.absoluteString
     }
 
     internal func toDirectoryServerId(scheme: String) throws -> String {

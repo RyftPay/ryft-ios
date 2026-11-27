@@ -242,6 +242,38 @@ final class RyftRequiredActionComponentTests: XCTestCase {
         }
     }
 
+    func test_configuration_shouldDefaultThreeDSRequestorAppUrlToNil() {
+        let config = RyftRequiredActionComponent.Configuration(clientSecret: "secret")
+
+        XCTAssertNil(config.threeDSRequestorAppUrl)
+    }
+
+    func test_configuration_shouldKeepThreeDSRequestorAppUrl_whenProvided() {
+        let threeDSRequestorAppUrl = URL(string: "https://merchant.com/3ds-return")
+
+        let config = RyftRequiredActionComponent.Configuration(
+            clientSecret: "secret",
+            accountId: "ac_123",
+            threeDSRequestorAppUrl: threeDSRequestorAppUrl
+        )
+
+        XCTAssertEqual(threeDSRequestorAppUrl, config.threeDSRequestorAppUrl)
+    }
+
+    func test_dropInConfiguration_shouldDefaultThreeDSRequestorAppUrlToNil() {
+        let config = RyftDropInConfiguration(clientSecret: "secret")
+
+        XCTAssertNil(config.threeDSRequestorAppUrl)
+    }
+
+    func test_dropInConfiguration_shouldKeepThreeDSRequestorAppUrl_whenProvided() {
+        let threeDSRequestorAppUrl = URL(string: "https://merchant.com/3ds-return")
+
+        let config = RyftDropInConfiguration(clientSecret: "secret", threeDSRequestorAppUrl: threeDSRequestorAppUrl)
+
+        XCTAssertEqual(threeDSRequestorAppUrl, config.threeDSRequestorAppUrl)
+    }
+
     private func createComponent(
         apiClient: RyftApiClient = MockRyftApiClient(),
         delegate: RyftRequiredActionDelegate? = nil,
