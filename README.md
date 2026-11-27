@@ -128,7 +128,7 @@ func onPaymentResult(result: RyftPaymentResult) {
 
 When the failure is not a card decline, `error` also carries details for logging and debugging:
 - `errorCode` - the API error code (e.g. `bad_request`). It is only set for errors returned by the API
-- `errorMessage` - the API error message, or a description of the error when it did not come from the API (for example a network error or a failed 3DS challenge). It is in English and not suitable to show to customers, so keep displaying `displayError`
+- `errorMessage` - the API error message, or a description of the error when it did not come from the API (for example a network error or a failed 3DS challenge). It is for logging and debugging and is not suitable to show to customers, so keep displaying `displayError`. API messages are in English; a network error carries the system's own description, which may be in your app's language
 - `threeDsError` - set when a 3DS challenge failed in the 3DS SDK. It carries the `type` (`timeout`, `protocolError` or `runtimeError`) and, when the 3DS SDK provides them, the EMV 3DS `errorCode`, `errorComponent`, `errorDescription` and `errorDetail`
 
 All three are `nil` for card declines. Show `displayError` to your customer; it covers every decline reason. If you need to act on a specific reason, check `error.paymentSessionError` and include an `@unknown default` case, as new reasons may be added in future releases.
