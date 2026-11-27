@@ -145,11 +145,12 @@ func onPaymentResult(result: RyftPaymentResult) {
 }
 ```
 
-When the failure came from an API error response, `error` also carries:
-- `errorCode` - the API error code (e.g. `bad_request`)
-- `errorMessage` - the API error message, intended for logging and debugging. It is in English and not suitable to show to customers, so keep displaying `displayError`
+When the failure is not a card decline, `error` also carries details for logging and debugging:
+- `errorCode` - the API error code (e.g. `bad_request`). It is only set for errors returned by the API
+- `errorMessage` - the API error message, or a description of the error when it did not come from the API (for example a network error or a failed 3DS challenge). It is for logging and debugging and is not suitable to show to customers, so keep displaying `displayError`. API messages are in English; a network error carries the system's own description, which may be in your app's language
+- `threeDsError` - set when a 3DS challenge failed in the 3DS SDK. It carries the `type` (`timeout`, `protocolError` or `runtimeError`) and, when the 3DS SDK provides them, the EMV 3DS `errorCode`, `errorComponent`, `errorDescription` and `errorDetail`
 
-Both are `nil` for card declines. Show `displayError` to your customer; it covers every decline reason. If you need to act on a specific reason, check `error.paymentSessionError` and include an `@unknown default` case, as new reasons may be added in future releases.
+For a card decline `errorCode` is `nil`. `errorMessage` and `threeDsError` are `nil` too, unless a 3DS challenge also failed in the 3DS SDK during that payment, in which case they describe that failure. Show `displayError` to your customer; it covers every decline reason. If you need to act on a specific reason, check `error.paymentSessionError` and include an `@unknown default` case, as new reasons may be added in future releases.
 
 
 ## Adding Apple Pay
@@ -321,15 +322,17 @@ private func initialiseRyftRequiredActionComponent() {
         clientSecret: config.clientSecret,
         accountId: "nil | <the Id of the sub-account you are taking payments for>"
     )
-    // create a fresh instance each time
-    let component = RyftRequiredActionComponent(
+    // assign a fresh instance each time
+    self.requiredActionComponent = RyftRequiredActionComponent(
         config: config,
         apiClient: DefaultRyftApiClient(publicApiKey: "your public API key")
     )
-    component.delegate = self
-    component.handle(action: action, presentingViewController: self)
+    self.requiredActionComponent?.delegate = self
+    self.requiredActionComponent?.handle(action: action, presentingViewController: self)
 }
 ```
+
+Keep a strong reference to the component, for example in a property as above, until `onRequiredActionHandled` is called. If it is released earlier, the required action stops without a result.
 
 `RyftRequiredActionComponent.Configuration` also accepts the optional `threeDSRequestorAppUrl` described in [Returning to your app after a banking app approval](#optional-returning-to-your-app-after-a-banking-app-approval).
 
@@ -358,6 +361,14 @@ public func onRequiredActionHandled(result: Result<PaymentSession, Error>) {
     case failure(let error):
         // handle the error (try again/show an alert)
         print("error handling required action \(error)")
+}
+```
+
+You can also implement the optional `onRequiredActionChallengeFailed` to receive the error when a 3DS challenge fails in the 3DS SDK. It is called before `onRequiredActionHandled`, which still delivers the final result. Do not start another required action from this callback; wait for `onRequiredActionHandled`:
+
+```swift
+public func onRequiredActionChallengeFailed(error: RyftThreeDsError) {
+    // log error.type, errorCode, errorComponent, errorDescription and errorDetail
 }
 ```
 

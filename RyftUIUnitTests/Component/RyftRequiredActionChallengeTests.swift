@@ -43,21 +43,21 @@ final class RyftRequiredActionChallengeTests: XCTestCase {
     }
 
     func test_handle_shouldReportUnknownTransactionStatus_whenChallengeTimesOut() {
-        assertChallengeFailureIsReported(RavelinThreeDsError.challengeTimedOut)
+        assertChallengeFailureIsReported(RyftThreeDsError(type: .timeout))
     }
 
     func test_handle_shouldReportUnknownTransactionStatus_whenChallengeFailsWithProtocolError() {
-        assertChallengeFailureIsReported(RavelinThreeDsError.challengeFailed(message: "protocol error"))
+        assertChallengeFailureIsReported(RyftThreeDsError(type: .protocolError, errorCode: "201"))
     }
 
     func test_handle_shouldReportUnknownTransactionStatus_whenChallengeFailsWithRuntimeError() {
-        assertChallengeFailureIsReported(RavelinThreeDsError.challengeFailed(message: "runtime error"))
+        assertChallengeFailureIsReported(RyftThreeDsError(type: .runtimeError, errorDescription: "runtime error"))
     }
 
     func test_handle_shouldNotifyDelegateWithReportedSession_whenChallengeFails() {
         let threeDsHandler = MockRyftThreeDsActionHandler()
         threeDsHandler.transactionResult = .success(TestFixtures.threeDsTransactionParams())
-        threeDsHandler.challengeResult = .failed(error: RavelinThreeDsError.challengeTimedOut)
+        threeDsHandler.challengeResult = .failed(error: RyftThreeDsError(type: .timeout))
         let apiClient = MockRyftApiClient()
         apiClient.continuePaymentResults = [
             .success(TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())),
@@ -148,10 +148,101 @@ final class RyftRequiredActionChallengeTests: XCTestCase {
         assertSuccess(delegate.result, status: .captured)
     }
 
+    func test_handle_shouldNotifyDelegateOfChallengeError_whenChallengeFails() {
+        let apiClient = MockRyftApiClient()
+        apiClient.continuePaymentResults = [
+            .success(TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())),
+            .success(TestFixtures.paymentSession(lastError: .threeDSecureAuthenticationFailure))
+        ]
+        let delegate = RyftRequiredActionDelegateTester()
+        var challengeErrorWhenHandled: RyftThreeDsError?
+        delegate.onHandled = { challengeErrorWhenHandled = delegate.challengeError }
+
+        handleFailedChallenge(apiClient: apiClient, delegate: delegate)
+
+        XCTAssertEqual(challengeErrorWhenHandled, RyftThreeDsError(type: .timeout))
+    }
+
+    func test_handle_shouldNotifyDelegateOfRuntimeError_whenChallengeFailsWithOtherError() {
+        let apiClient = MockRyftApiClient()
+        apiClient.continuePaymentResults = [
+            .success(TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())),
+            .success(TestFixtures.paymentSession(lastError: .threeDSecureAuthenticationFailure))
+        ]
+        let delegate = RyftRequiredActionDelegateTester()
+
+        handleChallenge(
+            result: .failed(error: RyftRequiredActionError.missingIdentifyDetails),
+            apiClient: apiClient,
+            delegate: delegate
+        )
+
+        XCTAssertEqual(
+            delegate.challengeError,
+            RyftThreeDsError(type: .runtimeError, errorDescription: "missingIdentifyDetails")
+        )
+    }
+
+    func test_handle_shouldNotifyDelegateFailureWithRuntimeError_whenOtherErrorCannotBeReported() {
+        let apiClient = MockRyftApiClient()
+        apiClient.continuePaymentResults = [
+            .success(TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())),
+            .failure(HttpError.general(message: "API response [continue-payment]"))
+        ]
+        apiClient.getPaymentSessionResults = [.failure(HttpError.general(message: "API response [get]"))]
+        let delegate = RyftRequiredActionDelegateTester()
+
+        handleChallenge(
+            result: .failed(error: RyftRequiredActionError.missingIdentifyDetails),
+            apiClient: apiClient,
+            delegate: delegate
+        )
+
+        guard case .failure(let error)? = delegate.result else {
+            XCTFail("expected .failure but got \(String(describing: delegate.result))")
+            return
+        }
+        XCTAssertEqual(
+            error as? RyftThreeDsError,
+            RyftThreeDsError(type: .runtimeError, errorDescription: "missingIdentifyDetails")
+        )
+    }
+
+    func test_handle_shouldNotNotifyDelegateOfChallengeError_whenChallengeCompletes() {
+        let challengeAction = TestFixtures.challengeAction()
+        let apiClient = MockRyftApiClient()
+        apiClient.continuePaymentResults = [
+            .success(TestFixtures.paymentSession(challengeAction: challengeAction)),
+            .success(TestFixtures.paymentSession(status: .captured))
+        ]
+        let delegate = RyftRequiredActionDelegateTester()
+
+        handleChallenge(
+            result: .completed(
+                transactionStatus: "Y",
+                threeDSServerTransactionId: challengeAction.threeDSServerTransactionId
+            ),
+            apiClient: apiClient,
+            delegate: delegate
+        )
+
+        XCTAssertNil(delegate.challengeError)
+    }
+
+    func test_handle_shouldNotNotifyDelegateOfChallengeError_whenChallengeIsCancelled() {
+        let apiClient = MockRyftApiClient()
+        apiClient.paymentSession = TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())
+        let delegate = RyftRequiredActionDelegateTester()
+
+        handleChallenge(result: .cancelled, apiClient: apiClient, delegate: delegate)
+
+        XCTAssertNil(delegate.challengeError)
+    }
+
     func test_handle_shouldCallCleanup_whenChallengeFails() {
         let threeDsHandler = MockRyftThreeDsActionHandler()
         threeDsHandler.transactionResult = .success(TestFixtures.threeDsTransactionParams())
-        threeDsHandler.challengeResult = .failed(error: RavelinThreeDsError.challengeTimedOut)
+        threeDsHandler.challengeResult = .failed(error: RyftThreeDsError(type: .timeout))
         let apiClient = MockRyftApiClient()
         apiClient.paymentSession = TestFixtures.paymentSession(challengeAction: TestFixtures.challengeAction())
         let component = createComponent(apiClient: apiClient, threeDsActionHandler: threeDsHandler)
@@ -187,7 +278,7 @@ final class RyftRequiredActionChallengeTests: XCTestCase {
         delegate: RyftRequiredActionDelegateTester
     ) {
         handleChallenge(
-            result: .failed(error: RavelinThreeDsError.challengeTimedOut),
+            result: .failed(error: RyftThreeDsError(type: .timeout)),
             apiClient: apiClient,
             delegate: delegate
         )
@@ -238,10 +329,7 @@ final class RyftRequiredActionChallengeTests: XCTestCase {
     ) {
         switch result {
         case .failure(let error):
-            guard case .challengeTimedOut? = error as? RavelinThreeDsError else {
-                XCTFail("expected the challenge error but got \(error)", file: file, line: line)
-                return
-            }
+            XCTAssertEqual(error as? RyftThreeDsError, RyftThreeDsError(type: .timeout), file: file, line: line)
         default:
             XCTFail("expected .failure but got \(String(describing: result))", file: file, line: line)
         }

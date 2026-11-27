@@ -139,7 +139,9 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
             DispatchQueue.main.async { completion(result) }
         }
         guard let transaction = transaction else {
-            mainThreadCompletion(.failed(error: RavelinThreeDsError.missingTransaction))
+            mainThreadCompletion(.failed(
+                error: RyftThreeDsError.from(challengeError: RavelinThreeDsError.missingTransaction)
+            ))
             return
         }
         let challengeParams = ChallengeParameters()
@@ -165,7 +167,7 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
                 challengeView: challengeView
             )
         } catch {
-            mainThreadCompletion(.failed(error: error))
+            mainThreadCompletion(.failed(error: RyftThreeDsError.from(challengeError: error)))
         }
     }
 
@@ -214,9 +216,29 @@ public final class DefaultRyftThreeDsActionHandler: RyftThreeDsActionHandler {
 internal enum RavelinThreeDsError: Error {
     case initialisationFailed
     case missingTransaction
-    case challengeTimedOut
-    case challengeFailed(message: String)
     case unsupportedScheme(String)
+}
+
+extension RyftThreeDsError {
+
+    internal static func from(protocolErrorEvent: Ravelin3DS.ProtocolErrorEvent) -> RyftThreeDsError {
+        let errorMessage = protocolErrorEvent.getErrorMessage()
+        return RyftThreeDsError(
+            type: .protocolError,
+            errorCode: errorMessage.getErrorCode(),
+            errorComponent: errorMessage.getErrorComponent(),
+            errorDescription: errorMessage.getErrorDescription(),
+            errorDetail: errorMessage.getErrorDetails()
+        )
+    }
+
+    internal static func from(runtimeErrorEvent: Ravelin3DS.RuntimeErrorEvent) -> RyftThreeDsError {
+        RyftThreeDsError(
+            type: .runtimeError,
+            errorCode: runtimeErrorEvent.getErrorCode(),
+            errorDescription: runtimeErrorEvent.getErrorMessage()
+        )
+    }
 }
 
 private final class ChallengeStatusReceiver: Ravelin3DS.ChallengeStatusReceiver {
@@ -244,23 +266,15 @@ private final class ChallengeStatusReceiver: Ravelin3DS.ChallengeStatusReceiver 
     }
 
     func timedout() {
-        completion(.failed(error: RavelinThreeDsError.challengeTimedOut))
+        completion(.failed(error: RyftThreeDsError(type: .timeout)))
     }
 
     func protocolError(protocolErrorEvent: Ravelin3DS.ProtocolErrorEvent) {
-        completion(.failed(
-            error: RavelinThreeDsError.challengeFailed(
-                message: protocolErrorEvent.getErrorMessage().getErrorDescription()
-            )
-        ))
+        completion(.failed(error: RyftThreeDsError.from(protocolErrorEvent: protocolErrorEvent)))
     }
 
     func runtimeError(runtimeErrorEvent: Ravelin3DS.RuntimeErrorEvent) {
-        completion(.failed(
-            error: RavelinThreeDsError.challengeFailed(
-                message: runtimeErrorEvent.getErrorMessage()
-            )
-        ))
+        completion(.failed(error: RyftThreeDsError.from(runtimeErrorEvent: runtimeErrorEvent)))
     }
 }
 

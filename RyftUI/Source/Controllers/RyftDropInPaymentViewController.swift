@@ -25,6 +25,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
     private var applePayComponent: RyftApplePayComponent?
 
     private var delegateInvoked = false
+    private var challengeError: RyftThreeDsError?
 
     internal lazy var requiredActionComponent: RyftRequiredActionComponent = {
        let component = createRequiredActionComponent()
@@ -230,6 +231,7 @@ public final class RyftDropInPaymentViewController: UIViewController {
     }
 
     public func handleRequiredAction(_ action: PaymentSessionRequiredAction) {
+        challengeError = nil
         requiredActionComponent.handle(action: action, presentingViewController: self)
     }
 
@@ -283,9 +285,12 @@ public final class RyftDropInPaymentViewController: UIViewController {
         }
     }
 
-    private func handlePaymentResult(_ result: Result<PaymentSession, Error>) {
+    private func handlePaymentResult(
+        _ result: Result<PaymentSession, Error>,
+        challengeError: RyftThreeDsError? = nil
+    ) {
         var paymentResult = RyftPaymentResult.failed(
-            error: RyftPaymentError(paymentSessionError: .unknown)
+            error: RyftPaymentError.from(error: challengeError)
         )
         var shouldDismiss = true
         switch result {
@@ -302,8 +307,10 @@ public final class RyftDropInPaymentViewController: UIViewController {
             }
             if let lastError = paymentSession.lastError {
                 paymentResult = .failed(
-                    error: RyftPaymentError(
-                        paymentSessionError: lastError)
+                    error: RyftPaymentError.from(
+                        error: challengeError,
+                        paymentSessionError: lastError
+                    )
                 )
             }
         case .failure(let error):
@@ -615,13 +622,19 @@ extension RyftDropInPaymentViewController: RyftRequiredActionDelegate {
     }
 
     public func onRequiredActionHandled(result: RyftRequiredActionResult) {
+        let challengeError = self.challengeError
+        self.challengeError = nil
         switch result {
         case .success(let session):
-            handlePaymentResult(.success(session))
+            handlePaymentResult(.success(session), challengeError: challengeError)
         case .cancelled:
             notifyDelegateAndDismiss(with: .cancelled, shouldDismiss: true)
         case .failure(let error):
             handlePaymentResult(.failure(error))
         }
+    }
+
+    public func onRequiredActionChallengeFailed(error: RyftThreeDsError) {
+        challengeError = error
     }
 }

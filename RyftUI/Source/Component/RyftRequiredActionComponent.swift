@@ -7,6 +7,13 @@ public protocol RyftRequiredActionDelegate: AnyObject {
     func onRequiredActionInProgress()
 
     func onRequiredActionHandled(result: RyftRequiredActionResult)
+
+    func onRequiredActionChallengeFailed(error: RyftThreeDsError)
+}
+
+public extension RyftRequiredActionDelegate {
+
+    func onRequiredActionChallengeFailed(error: RyftThreeDsError) {}
 }
 
 public final class RyftRequiredActionComponent {
@@ -180,11 +187,16 @@ public final class RyftRequiredActionComponent {
                 self?.threeDsActionHandler.cleanup()
                 self?.delegate?.onRequiredActionHandled(result: .cancelled)
             case .failed(let error):
-                self?.continueWithChallengeResult(
+                guard let self = self else {
+                    return
+                }
+                let threeDsError = RyftThreeDsError.from(challengeError: error)
+                self.delegate?.onRequiredActionChallengeFailed(error: threeDsError)
+                self.continueWithChallengeResult(
                     transactionStatus: RyftRequiredActionComponent.unknownTransactionStatus,
                     threeDSServerTransactionId: challengeAction.threeDSServerTransactionId,
                     paymentSessionId: paymentSessionId,
-                    challengeError: error
+                    challengeError: threeDsError
                 )
             }
         }
@@ -204,16 +216,16 @@ public final class RyftRequiredActionComponent {
         apiClient.continuePayment(
             request: request,
             accountId: config.accountId
-        ) { [weak self] result in
-            self?.threeDsActionHandler.cleanup()
+        ) { result in
+            self.threeDsActionHandler.cleanup()
             switch result {
             case .success(let session):
-                self?.handleChallengeResultSession(
+                self.handleChallengeResultSession(
                     session,
                     threeDSServerTransactionId: threeDSServerTransactionId
                 )
             case .failure(let error):
-                self?.checkSession(SessionCheck(
+                self.checkSession(SessionCheck(
                     paymentSessionId: paymentSessionId,
                     threeDSServerTransactionId: threeDSServerTransactionId,
                     fallback: .failure(challengeError ?? error),

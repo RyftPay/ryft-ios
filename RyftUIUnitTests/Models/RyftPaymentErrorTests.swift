@@ -13,6 +13,7 @@ final class RyftPaymentErrorTests: XCTestCase {
         XCTAssertEqual(error.paymentSessionError, .insufficientFunds)
         XCTAssertNil(error.errorCode)
         XCTAssertNil(error.errorMessage)
+        XCTAssertNil(error.threeDsError)
     }
 
     func test_init_shouldUseLocalizedCvvMessage_whenErrorIsCvv2Failure() {
@@ -60,20 +61,76 @@ final class RyftPaymentErrorTests: XCTestCase {
         XCTAssertNil(error.errorMessage)
     }
 
-    func test_from_shouldReturnNilCodeAndMessage_whenHttpErrorIsNotBadResponse() {
+    func test_from_shouldReturnErrorMessage_whenHttpErrorIsGeneral() {
         let error = RyftPaymentError.from(error: HttpError.general(message: "timeout"))
 
         XCTAssertEqual(error.paymentSessionError, .unknown)
         XCTAssertNil(error.errorCode)
-        XCTAssertNil(error.errorMessage)
+        XCTAssertEqual(error.errorMessage, "timeout")
     }
 
-    func test_from_shouldReturnNilCodeAndMessage_whenErrorIsNotHttpError() {
+    func test_from_shouldReturnErrorMessage_whenHttpErrorIsPreRequest() {
+        let error = RyftPaymentError.from(error: HttpError.preRequest(message: "invalid request"))
+
+        XCTAssertEqual(error.paymentSessionError, .unknown)
+        XCTAssertNil(error.errorCode)
+        XCTAssertEqual(error.errorMessage, "invalid request")
+    }
+
+    func test_from_shouldReturnErrorDescription_whenErrorIsNotHttpError() {
         let error = RyftPaymentError.from(error: RyftRequiredActionError.missingIdentifyDetails)
 
         XCTAssertEqual(error.paymentSessionError, .unknown)
         XCTAssertNil(error.errorCode)
+        XCTAssertEqual(error.errorMessage, "missingIdentifyDetails")
+        XCTAssertNil(error.threeDsError)
+    }
+
+    func test_from_shouldReturnThreeDsErrorWithoutErrorCode_whenErrorIsThreeDsError() {
+        let threeDsError = RyftThreeDsError(
+            type: .protocolError,
+            errorCode: "201",
+            errorComponent: "C",
+            errorDescription: "Required element missing",
+            errorDetail: "oobContinueLabel"
+        )
+
+        let error = RyftPaymentError.from(error: threeDsError)
+
+        XCTAssertEqual(error.paymentSessionError, .unknown)
+        XCTAssertEqual(error.displayError, unknownDisplayError)
+        XCTAssertNil(error.errorCode)
+        XCTAssertEqual(error.errorMessage, "Required element missing")
+        XCTAssertEqual(error.threeDsError, threeDsError)
+        XCTAssertEqual(error.threeDsError?.errorCode, "201")
+    }
+
+    func test_from_shouldReturnThreeDsErrorType_whenThreeDsErrorHasNoDescription() {
+        let error = RyftPaymentError.from(error: RyftThreeDsError(type: .timeout))
+
+        XCTAssertNil(error.errorCode)
+        XCTAssertEqual(error.errorMessage, "timeout")
+        XCTAssertEqual(error.threeDsError, RyftThreeDsError(type: .timeout))
+    }
+
+    func test_from_shouldKeepPaymentSessionError_whenGiven() {
+        let error = RyftPaymentError.from(
+            error: RyftThreeDsError(type: .timeout),
+            paymentSessionError: .threeDSecureAuthenticationFailure
+        )
+
+        XCTAssertEqual(error.paymentSessionError, .threeDSecureAuthenticationFailure)
+        XCTAssertNotEqual(error.displayError, unknownDisplayError)
+        XCTAssertEqual(error.threeDsError, RyftThreeDsError(type: .timeout))
+    }
+
+    func test_from_shouldReturnNilDetails_whenErrorIsNilAndPaymentSessionErrorIsGiven() {
+        let error = RyftPaymentError.from(error: nil, paymentSessionError: .insufficientFunds)
+
+        XCTAssertEqual(error.paymentSessionError, .insufficientFunds)
+        XCTAssertNil(error.errorCode)
         XCTAssertNil(error.errorMessage)
+        XCTAssertNil(error.threeDsError)
     }
 
     func test_from_shouldReturnNilCodeAndMessage_whenErrorIsNil() {

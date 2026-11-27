@@ -10,6 +10,8 @@ final class MockRyftApiClient: RyftApiClient {
     var continuePaymentRequest: ContinuePaymentRequest?
     var continuePaymentRequests: [ContinuePaymentRequest] = []
     var continuePaymentResults: [Result<PaymentSession, HttpError>] = []
+    var deferContinuePaymentFromRequest: Int?
+    private var deferredContinuePayments: [() -> Void] = []
     var didCallGetPaymentSession = false
     var getPaymentSessionRequestCount = 0
     var getPaymentSessionIds: [String] = []
@@ -29,6 +31,22 @@ final class MockRyftApiClient: RyftApiClient {
         completion(.success(paymentSession))
     }
 
+    func completeDeferredContinuePayments() {
+        let completions = deferredContinuePayments
+        deferredContinuePayments = []
+        completions.forEach { $0() }
+    }
+
+    private func nextContinuePaymentResult() -> Result<PaymentSession, HttpError> {
+        guard continuePaymentResults.isEmpty else {
+            return continuePaymentResults.removeFirst()
+        }
+        guard let paymentSession = paymentSession else {
+            return .failure(HttpError.general(message: "API response [continue-payment]"))
+        }
+        return .success(paymentSession)
+    }
+
     func continuePayment(
         request: ContinuePaymentRequest,
         accountId: String?,
@@ -37,15 +55,12 @@ final class MockRyftApiClient: RyftApiClient {
         self.accountId = accountId
         continuePaymentRequest = request
         continuePaymentRequests.append(request)
-        guard continuePaymentResults.isEmpty else {
-            completion(continuePaymentResults.removeFirst())
+        let result = nextContinuePaymentResult()
+        if let firstDeferred = deferContinuePaymentFromRequest, continuePaymentRequests.count >= firstDeferred {
+            deferredContinuePayments.append { completion(result) }
             return
         }
-        guard let paymentSession = paymentSession else {
-            completion(.failure(HttpError.general(message: "API response [continue-payment]")))
-            return
-        }
-        completion(.success(paymentSession))
+        completion(result)
     }
 
     func getPaymentSession(
